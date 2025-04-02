@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+{% import 'macro/breadcrumb.html.twig' as breadcrumb %}
+{% import 'macro/action.html.twig' as action %}
+
+{% set _title = 'Usuario' %}
+{% set _main_title = 'Mostrar' %}
+{% set _section =  'usuario_index' %}
+
+{% block _breadcrumb %}
+    {{ breadcrumb.show2(_title,_section,'Mostrar') }}
+{% endblock %}
+
+{% block _main %}
+    {{ action.tbl_start() }}
+    {{ action.tbl_tr('Nombre',usuario.fullName) }}
+    {{ action.tbl_tr('Usuario',usuario.username) }}
+    {{ action.tbl_tr('Email',usuario.email) }}
+    {{ action.tbl_tr('Activo',usuario.isActive | yesno) }}
+    {{ action.tbl_tr_td_multiple('Roles',usuario.usuarioRoles) }}
+    {% if usuario.foto != null %}
+        <tr>
+            <th>FOTO</th>
+            <td>
+                <img src="{{ asset(_media_directory ~ usuario.foto.path) | imagine_filter('small') }}" alt="Fotografia">
+            </td>
+        </tr>
+    {% endif %}
+    <tr>
+        <th>Ubicación</th>
+        <td class="d-none d-sm-table-cell text-left">
+            Provincia: {{ usuario.provincia ? usuario.provincia :"No asignado" }}<br>
+            Distrito: {{ usuario.distrito ? usuario.distrito :"No asignado" }}<br>
+            Centro Poblado: {{ usuario.centroPoblado ? usuario.centroPoblado :"No asignado" }}
+
+        </td>
+    </tr>
+    {{ action.tbl_end() }}
+{% endblock %}
+
+{% block _main_tools %}
+    {% include 'crud/_options_ico.html.twig' %}
+{% endblock %}
+
+{% block _main_footer %}
+    {% include 'crud/_show_links.html.twig' with {'route_base':'usuario','entity': usuario} %}
+{% endblock %}
+
+{% block _main_actions %}
+    {% include 'crud/_show_links_ico.html.twig' with {'route_base':'usuario','entity': usuario} %}
+{% endblock %}
+
+{% block _javascripts %}
+{% endblock %}
+
+{% block _stylesheets %}
+{% endblock %}

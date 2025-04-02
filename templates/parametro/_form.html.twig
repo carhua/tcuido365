@@ -1,0 +1,9 @@
+{% import 'macro/action.html.twig' as action %}
+
+{{ action.frm_start(form) }}
+    {{ action.frm_field(form.padre) }}
+    {{ action.frm_field(form.nombre) }}
+    {{ action.frm_field(form.alias) }}
+    {{ action.frm_field(form.valor) }}
+    {{ action.frm_btn(button_label|default('Guardar')) }}
+{{ action.frm_end(form) }}

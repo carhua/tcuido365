@@ -1,0 +1,28 @@
+{% macro show(items, route) -%}
+    {% if items.haveToPaginate %}
+        <div class="navigation">
+            {{ pagerfanta(items, 'low_proximity_and_spanish_messages', {routeName: route ~ '_paginated', routeParams: app.request.query.all}) }}
+        </div>
+    {% endif %}
+{%- endmacro %}
+
+{% macro pager(paginator, route) -%}
+    {% import _self as paginations %}
+    <div class="row">
+        <div class="col-lg-10 col-sm-8">
+            {{ paginations.show(paginator,route) }}
+        </div>
+        <div class="col-lg-2 col-sm-4">
+            <div class="d-flex justify-content-end">
+                {% if default_results_per_page is defined %}
+                    <select id="filter_size" class="mr-2" name="n">
+                        {% for key,value in default_results_per_page %}
+                            <option value="{{ value }}" {% if app.request.get('n') == value %} selected {% endif %}>{{key}}</option>
+                        {% endfor %}
+                    </select>
+                {% endif %}
+{#                <span> de {{ paginator.count }}</span>#}
+            </div>
+        </div>
+    </div>
+{%- endmacro %}

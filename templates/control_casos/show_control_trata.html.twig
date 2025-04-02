@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+{% import 'macro/breadcrumb.html.twig' as breadcrumb %}
+{% import 'macro/action.html.twig' as action %}
+
+{% set _title = 'Caso Trata' %}
+{% set _main_title = 'Mostrar' %}
+{% set _section =  'caso_tratac_index'%}
+
+{% block _breadcrumb %}
+    {{ breadcrumb.show2(_title,_section,'Mostrar') }}
+{% endblock %}
+
+{% block _main %}
+    {{ action.tbl_start('table-sm table-bordered') }}
+    {{ action.tbl_tr('Distrito',caso_trata.distrito) }}
+    {{ action.tbl_tr('Centro Poblado',caso_trata.centroPoblado.nombre) }}
+    {{ action.tbl_tr('Fecha de Reporte',caso_trata.fechaReporte) }}
+    {{ action.tbl_tr('Descripcion Reporte',caso_trata.descripcionReporte) }}
+    <tr>
+        <th class="">Detenido(s)</th>
+        {% for tipo in caso_trata.detenidos %}
+            <td class="text-left">
+                <span class="font-weight-bold">Nombres: </span> {{ tipo.nombres|upper }} <br>
+                <span class="font-weight-bold">Apellidos :</span> {{ tipo.apellidos|upper  }} <br>
+                <span class="font-weight-bold">Tipo Documento: </span>    {{ tipo.tipoDocumento.nombre |upper }} <br>
+                <span class="font-weight-bold">Número Documento: </span> {{ tipo.numeroDocumento }}<br>
+                <span class="font-weight-bold">Edad: </span>  {{ tipo.edad }}<br>
+                <span class="font-weight-bold">Sexo: </span> {{ tipo.sexo.nombre |upper }}<br>
+                <span class="font-weight-bold">Nacionalidad: </span>  {{ tipo.nacionalidad.nombre|upper  }} <br>
+                <span class="font-weight-bold">Forma Captación: </span>  {{ tipo.formaCaptacion.nombre|upper  }} <br>
+            </td>
+
+        {% endfor %}
+    </tr>
+    <tr>
+        <th class="">Victima(s)</th>
+        {% for tipo in caso_trata.victimas %}
+            <td class="text-left">
+                <span class="font-weight-bold">Nombres: </span> {{ tipo.nombres |upper }} <br>
+                <span class="font-weight-bold">Apellidos: </span> {{ tipo.apellidos |upper }} <br>
+                <span class="font-weight-bold">Tipo Documento: </span>    {{ tipo.tipoDocumento.nombre |upper }} <br>
+                <span class="font-weight-bold">Número Documento: </span> {{ tipo.numeroDocumento }}<br>
+                <span class="font-weight-bold">Edad: </span> {{ tipo.edad }}<br>
+                <span class="font-weight-bold">Sexo: </span> {{ tipo.sexo.nombre |upper }}<br>
+                <span class="font-weight-bold">Nacionalidad: </span>  {{ tipo.nacionalidad.nombre|upper  }} <br>
+                <span class="font-weight-bold">Tipo Explotaciones: </span>  {{ tipo.tipoExplotaciones|upper  }} <br>
+                <span class="font-weight-bold">Lugar y forma de rescate: </span> {{ tipo.lugarFormaRescate|upper }}<br>
+            </td>
+        {% endfor %}
+    </tr>
+
+    {{ action.tbl_end() }}
+{% endblock %}
+
+{% block _main_tools %}
+    <button type="button" onclick="imprimir()"
+            class="btn-print btn btn-light-primary px-6 font-weight-bold mr-2">
+        <i class="fas fa-print"></i>
+        Imprimir
+    </button>
+{% endblock %}
+
+{% block _main_footer %}
+
+{% endblock %}
+
+{% block _main_actions %}
+{% endblock %}
+
+{% block _javascripts %}
+    <script>
+        function imprimir() {
+            window.print();
+        }
+    </script>
+
+{% endblock %}
+
+{% block _stylesheets %}
+    <style>
+        @media print {
+            .btn-print, .oculto-impresion * {
+                display: none !important;
+            }
+        }
+    </style>
+
+{% endblock %}

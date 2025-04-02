@@ -1,0 +1,150 @@
+{% extends 'base.html.twig' %}
+{% import 'macro/breadcrumb.html.twig' as breadcrumb %}
+{% import 'macro/action.html.twig' as action %}
+{% import 'macro/pagination.html.twig' as pagination %}
+
+{% set _title = 'Blog' %}
+{% set _main_title = 'Listado' %}
+{% set _section =  'blog_index' %}
+
+{% block _breadcrumb %}
+    {{ breadcrumb.show('blogs') }}
+{% endblock %}
+
+{% block _main %}
+    <div class="table-responsive">
+        {{ action.tbl_start() }}
+        <thead>
+        <tr>
+            {{ action.th('#', false, 'text-left') }}
+            {{ action.th('Titulo', false, 'text-left d-sm-table-cell') }}
+            {{ action.th('Descripcion', false, 'text-left  d-sm-table-cell') }}
+            {{ action.th('Imagen', false, 'text-left  d-sm-table-cell') }}
+            {{ action.th('Ubicacion', false, 'text-left  d-sm-table-cell') }}
+            {{ action.th('Tipo', false, 'text-left  d-sm-table-cell') }}
+            {{ action.th('Activo', true, 'text-left  d-sm-table-cell') }}
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for blog in paginator %}
+            <tr>
+                <td class="text-center">{{ loop.index | index(paginator) }}</td>
+                <td class="d-sm-table-cell">{{ blog.titulo }}</td>
+                <td class="d-sm-table-cell">{{ blog.descripcion }}</td>
+                <td class="d-sm-table-cell">
+                    {% if blog.adjunto is not null %}
+                        <img src="{{ asset(_media_directory ~ blog.adjunto.path) | imagine_filter('small') }}"
+                             alt="Fotografia">
+                    {% else %}
+                        <strong>No hay imagen</strong>
+                    {% endif %}
+                </td>
+                <td class="d-none d-sm-table-cell text-left">
+                    Provincia: {{ blog.provincia ? blog.provincia :"No asignado" }}<br>
+                    Distrito: {{ blog.distrito ? blog.distrito :"No asignado" }}<br>
+                    Centro Poblado: {{ blog.centroPoblado ? blog.centroPoblado :"No asignado" }}
+                </td>
+                <td class="d-sm-table-cell text-center">{{ blog.tipo }}</td>
+                <td class="d-sm-table-cell text-center">{{ blog.isActive | yesnocustom | raw }}</td>
+                <td class="text-right pr-0">
+                    {% if access.has('view') %}
+                        {{ action.btn_show_link2_ico(path('blog_show', {'id': blog.id})) }}
+                    {% endif %}
+                    {% if access.has('edit', blog) %}
+                        {{ action.btn_edit_link2_ico(path('blog_edit', {'id': blog.id})) }}
+                    {% endif %}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">No hay registros</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        {{ action.tbl_end() }}
+    </div>
+
+    {{ pagination.pager(paginator, _section) }}
+{% endblock %}
+
+{% block _main_filters %}
+    <form class="mb-7" id="frm_filters">
+        <div class="row align-items-center">
+            <div class="col-lg-9 col-xl-8">
+                <div class="row align-items-center">
+                    <div class="col-md-4 my-2 my-md-0">
+                        <div class="input-icon">
+                            <input type="text" class="form-control" placeholder="Buscar..." id="filter_text"
+                                   value="{{ app.request.get('b') }}" name="b"/>
+                            <span>
+                                <i class="flaticon2-search-1 text-muted"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 my-2 my-md-0">
+                        <div class="d-flex align-items-center">
+                            <label class="mr-3 mb-0 d-none d-md-block" for="filter_active">Activo: </label>
+                            <select class="form-control" id="filter_active" name="ac">
+                                <option value="" {% if app.request.get('ac') == '' %} selected {% endif %}>Todos
+                                </option>
+                                <option value="1" {% if app.request.get('ac') == '1' %} selected {% endif %}>Si</option>
+                                <option value="0" {% if app.request.get('ac') == '0' %} selected {% endif %}>No</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn-send btn btn-light-primary px-6 font-weight-bold mr-2">Aplicar</button>
+                    <button class="btn-clear btn btn-outline-secondary mr-2">Limpiar</button>
+                </div>
+            </div>
+            <div class="col-lg-3 col-xl-4 mt-5 mt-lg-0">
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block _main_tools %}
+    {% include 'crud/_options_ico.html.twig' %}
+{% endblock %}
+
+{% block _main_footer %}
+    {% include 'crud/_index_links.html.twig' with {'route_base': 'blog'} %}
+{% endblock %}
+
+{% block _main_actions %}
+    {% include 'crud/_index_links_ico.html.twig' with {'route_base': 'blog'} %}
+{% endblock %}
+
+{% block _stylesheets %}
+{% endblock %}
+
+{% block _javascripts %}
+    <script>
+        let route;
+
+        function filter(routeBase) {
+            route = routeBase + "?" + 'n=' + $('#filter_size option:selected').val();
+            route = route + "&" + 'b=' + $('#filter_text').val();
+            route = route + "&" + 'ac=' + "{{ app.request.get('ac') }}";
+
+            return route;
+        }
+
+        $(document).ready(function () {
+            $(document).on('change', '#filter_size', function () {
+                route = '{{ path('blog_index') }}';
+                window.location = filter(route);
+            });
+
+            $(document).on('click', '.btn-send', function () {
+                route = '{{ path('blog_index') }}';
+                window.location = filter(route);
+            });
+
+            $(document).on('click', '.btn-clear', function () {
+                route = '{{ path('blog_index') }}';
+                window.location.href = route;
+            });
+        });
+    </script>
+{% endblock %}

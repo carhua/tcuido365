@@ -1,0 +1,299 @@
+{% extends 'base.html.twig' %}
+{% import 'macro/breadcrumb.html.twig' as breadcrumb %}
+
+{% set _title = 'Inicio' %}
+
+{% block _breadcrumb %}
+    {{ breadcrumb.show('Inicio') }}
+{% endblock %}
+
+{% block _main %}
+    <!--Begin::Section-->
+    <div class="kt-portlet kt-faq-v1">
+        <div class="kt-portlet__head">
+            <div class="kt-portlet__head-label">
+                <h3 class="kt-portlet__head-title">
+
+                </h3>
+            </div>
+        </div>
+        <div class="kt-portlet__body">
+            <div class="row">
+                <div class="col-xl-6">
+                    <!--begin::Stats Widget 13-->
+                    <a href="{{ path('caso_violencia_index') }}" class="card card-custom bg-danger bg-hover-state-danger card-stretch gutter-b">
+                        <!--begin::Body-->
+                        <div class="card-body">
+                           <span class="svg-icon svg-icon-3x svg-icon-white d-block my-2"><!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2020-09-29-132851/theme/html/demo1/dist/../src/media/svg/icons/Layout/Layout-top-panel-4.svg--><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect x="0" y="0" width="24" height="24"/>
+        <path d="M3,4 L20,4 C20.5522847,4 21,4.44771525 21,5 L21,7 C21,7.55228475 20.5522847,8 20,8 L3,8 C2.44771525,8 2,7.55228475 2,7 L2,5 C2,4.44771525 2.44771525,4 3,4 Z M3,10 L13,10 C13.5522847,10 14,10.4477153 14,11 L14,13 C14,13.5522847 13.5522847,14 13,14 L3,14 C2.44771525,14 2,13.5522847 2,13 L2,11 C2,10.4477153 2.44771525,10 3,10 Z M3,16 L13,16 C13.5522847,16 14,16.4477153 14,17 L14,19 C14,19.5522847 13.5522847,20 13,20 L3,20 C2.44771525,20 2,19.5522847 2,19 L2,17 C2,16.4477153 2.44771525,16 3,16 Z" fill="#000000"/>
+        <rect fill="#000000" opacity="0.3" x="16" y="10" width="5" height="10" rx="1"/>
+    </g>
+</svg><!--end::Svg Icon--></span>
+                            <div class="text-inverse-danger font-weight-bolder font-size-h5 mb-2 mt-5">Casos de Violencia</div>
+                            <div class="font-weight-bold text-inverse-danger font-size-sm">Revisar Lista</div>
+                        </div>
+                        <!--end::Body-->
+                    </a>
+                    <!--end::Stats Widget 13-->
+                </div>
+                <div class="col-xl-6">
+                    <!--begin::Stats Widget 14-->
+                    <a href="{{ path('caso_desproteccion_index') }}" class="card card-custom bg-primary bg-hover-state-primary card-stretch gutter-b">
+                        <!--begin::Body-->
+                        <div class="card-body">
+                           <span class="svg-icon svg-icon-3x svg-icon-white d-block my-2">
+																<!--begin::Svg Icon | path:/metronic/theme/html/demo1/dist/assets/media/svg/icons/Communication/Add-user.svg-->
+																<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+																	 <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect x="0" y="0" width="24" height="24"/>
+        <path d="M3,4 L20,4 C20.5522847,4 21,4.44771525 21,5 L21,7 C21,7.55228475 20.5522847,8 20,8 L3,8 C2.44771525,8 2,7.55228475 2,7 L2,5 C2,4.44771525 2.44771525,4 3,4 Z M10,10 L20,10 C20.5522847,10 21,10.4477153 21,11 L21,13 C21,13.5522847 20.5522847,14 20,14 L10,14 C9.44771525,14 9,13.5522847 9,13 L9,11 C9,10.4477153 9.44771525,10 10,10 Z M10,16 L20,16 C20.5522847,16 21,16.4477153 21,17 L21,19 C21,19.5522847 20.5522847,20 20,20 L10,20 C9.44771525,20 9,19.5522847 9,19 L9,17 C9,16.4477153 9.44771525,16 10,16 Z" fill="#000000"/>
+        <rect fill="#000000" opacity="0.3" x="2" y="10" width="5" height="10" rx="1"/>
+    </g>
+																</svg>
+
+							</span>
+                            <div class="text-inverse-primary font-weight-bolder font-size-h5 mb-2 mt-5">Casos Riesgo de desprotección</div>
+                            <div class="font-weight-bold text-inverse-primary font-size-sm">Revisar Lista</div>
+                        </div>
+                        <!--end::Body-->
+                    </a>
+                    <!--end::Stats Widget 14-->
+                </div>
+
+                <div class="col-xl-6">
+                    <!--begin::Stats Widget 14-->
+                    <a href="{{ path('caso_trata_index') }}" class="card card-custom bg-danger bg-hover-state-danger card-stretch gutter-b">
+                        <!--begin::Body-->
+                        <div class="card-body">
+                           <span class="svg-icon svg-icon-3x svg-icon-white d-block my-2">
+																<!--begin::Svg Icon | path:/metronic/theme/html/demo1/dist/assets/media/svg/icons/Communication/Add-user.svg-->
+																<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+																	 <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect x="0" y="0" width="24" height="24"/>
+        <path d="M3,4 L20,4 C20.5522847,4 21,4.44771525 21,5 L21,7 C21,7.55228475 20.5522847,8 20,8 L3,8 C2.44771525,8 2,7.55228475 2,7 L2,5 C2,4.44771525 2.44771525,4 3,4 Z M10,10 L20,10 C20.5522847,10 21,10.4477153 21,11 L21,13 C21,13.5522847 20.5522847,14 20,14 L10,14 C9.44771525,14 9,13.5522847 9,13 L9,11 C9,10.4477153 9.44771525,10 10,10 Z M10,16 L20,16 C20.5522847,16 21,16.4477153 21,17 L21,19 C21,19.5522847 20.5522847,20 20,20 L10,20 C9.44771525,20 9,19.5522847 9,19 L9,17 C9,16.4477153 9.44771525,16 10,16 Z" fill="#000000"/>
+        <rect fill="#000000" opacity="0.3" x="2" y="10" width="5" height="10" rx="1"/>
+    </g>
+																</svg>
+
+							</span>
+                            <div class="text-inverse-primary font-weight-bolder font-size-h5 mb-2 mt-5">Casos de Trata de Personas</div>
+                            <div class="font-weight-bold text-inverse-primary font-size-sm">Revisar Lista</div>
+                        </div>
+                        <!--end::Body-->
+                    </a>
+                    <!--end::Stats Widget 14-->
+                </div>
+
+                <div class="col-xl-6">
+                    <!--begin::Stats Widget 14-->
+                    <a href="{{ path('caso_desaparecido_index') }}" class="card card-custom bg-primary bg-hover-state-primary card-stretch gutter-b">
+                        <!--begin::Body-->
+                        <div class="card-body">
+                           <span class="svg-icon svg-icon-3x svg-icon-white d-block my-2">
+																<!--begin::Svg Icon | path:/metronic/theme/html/demo1/dist/assets/media/svg/icons/Communication/Add-user.svg-->
+																<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+																	 <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect x="0" y="0" width="24" height="24"/>
+        <path d="M3,4 L20,4 C20.5522847,4 21,4.44771525 21,5 L21,7 C21,7.55228475 20.5522847,8 20,8 L3,8 C2.44771525,8 2,7.55228475 2,7 L2,5 C2,4.44771525 2.44771525,4 3,4 Z M10,10 L20,10 C20.5522847,10 21,10.4477153 21,11 L21,13 C21,13.5522847 20.5522847,14 20,14 L10,14 C9.44771525,14 9,13.5522847 9,13 L9,11 C9,10.4477153 9.44771525,10 10,10 Z M10,16 L20,16 C20.5522847,16 21,16.4477153 21,17 L21,19 C21,19.5522847 20.5522847,20 20,20 L10,20 C9.44771525,20 9,19.5522847 9,19 L9,17 C9,16.4477153 9.44771525,16 10,16 Z" fill="#000000"/>
+        <rect fill="#000000" opacity="0.3" x="2" y="10" width="5" height="10" rx="1"/>
+    </g>
+																</svg>
+
+							</span>
+                            <div class="text-inverse-primary font-weight-bolder font-size-h5 mb-2 mt-5">Casos Personas Desaparecidas</div>
+                            <div class="font-weight-bold text-inverse-primary font-size-sm">Revisar Lista</div>
+                        </div>
+                        <!--end::Body-->
+                    </a>
+                    <!--end::Stats Widget 14-->
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xl-6">
+                    <!--begin::Charts Widget 1-->
+                    <div class="card card-custom bg-gray-100 card-stretch gutter-b text-center" >
+                        <div class="card-body " style="position: relative;" >
+                            <figure class="highcharts-figure">
+                                <div id="container1"></div>
+                            </figure>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-6">
+                    <!--begin::Charts Widget 2-->
+                    <div class="card card-custom bg-gray-100 card-stretch gutter-b">
+                        <div class="card-body" style="position: relative;">
+                            <figure class="highcharts-figure">
+                                <div id="container2"></div>
+
+                            </figure>
+                        </div>
+                        <!--end::Body-->
+                    </div>
+                    <!--end::Charts Widget 2-->
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!--End::Section-->
+{% endblock %}
+
+{% block _body_tools %}
+    <form id="form_filter" class="form-inline">
+        <div class="form-group mx-1 mb-0">
+            <select id="producto" class="form-control kt-selectpicker" name="producto">
+                <option value="0">Producto 01</option>
+                <option value="1">Producto 02</option>
+                <option value="2">Producto 03</option>
+                <option value="3">Producto 04</option>
+            </select>
+        </div>
+    </form>
+{% endblock %}
+
+{% block _stylesheets %}
+{% endblock %}
+
+{% block _javascripts %}
+{#    <script src="https://www.amcharts.com/lib/4/core.js"></script>#}
+{#    <script src="https://www.amcharts.com/lib/4/charts.js"></script>#}
+{#    <script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>#}
+{#    <script src="https://www.amcharts.com/lib/4/themes/dark.js"></script>#}
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+    <script>
+        jQuery(document).ready(function() {
+
+        });
+        Highcharts.chart('container1', {
+            chart: {
+                type: 'column'
+            },
+            credits:{
+                enabled:false
+            },
+            title: {
+                text: 'Cantidad de Casos Reportados'
+            },
+            subtitle: {
+                text: 'Año: '+{{ anioActual }}
+            },
+
+            xAxis: {
+                categories: ['Casos']
+            },
+
+            yAxis: {
+                allowDecimals: false,
+                min: 0,
+                title: {
+                    text: 'Cantidad'
+                }
+            },
+
+            tooltip: {
+                formatter: function () {
+                    return '<b>' + this.x + '</b><br/>' +
+                        this.series.name + ': ' + this.y + '<br/>'
+                        //'Total: ' + this.point.stackTotal;
+                }
+            },
+            series: [{
+                name: 'Casos Violencia',
+                data: [{{ c1 }}],
+            }, {
+                name: 'Casos Riesgo de Desprotección',
+                data: [{{ c2 }}],
+            },{
+                name: 'Casos Trata Personas',
+                data: [{{ c3 }}],
+            },
+                {
+                    name: 'Casos Personas Desaparecidas',
+                    data: [{{ c4}}],
+                }]
+        });
+
+        Highcharts.chart('container2', {
+            chart: {
+                type: 'column'
+            },
+            credits:{
+                enabled:false
+            },
+            title: {
+                text: 'Casos Reportados por Meses'
+            },
+            subtitle: {
+                text: 'Año: '+{{ anioActual }}
+            },
+            xAxis: {
+                categories: [
+                    'Ene',
+                    'Feb',
+                    'Mar',
+                    'Abr',
+                    'May',
+                    'Jun',
+                    'Jul',
+                    'Ago',
+                    'Sep',
+                    'Oct',
+                    'Nov',
+                    'Dic'
+                ],
+                crosshair: true
+            },
+            yAxis: {
+                allowDecimals: false,
+                min: 0,
+                title: {
+                    text: 'Cantidad'
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y:.0f}</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            series: [{
+                name: 'Casos Violencia',
+                data: [{{ datacv }}]
+
+            }, {
+                name: 'Casos Riesgo Desprotrección',
+                data: [{{ datacd }}]
+
+            },
+                {
+                    name: 'Casos Trata Personas',
+                    data: [{{ datatp }}]
+
+                },
+                {
+                    name: 'Casos Personas Desaparecidas',
+                    data: [{{ datapd }}]
+
+                }]
+        });
+
+
+
+    </script>
+{% endblock %}

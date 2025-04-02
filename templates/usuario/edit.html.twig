@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+{% import 'macro/breadcrumb.html.twig' as breadcrumb %}
+{% import 'macro/action.html.twig' as action %}
+
+{% set _title = 'Usuario' %}
+{% set _main_title = 'Editar' %}
+{% set _section =  'usuario_index'%}
+
+{% block _breadcrumb %}
+    {{ breadcrumb.show2('Usuarios','usuario_index','Editar') }}
+{% endblock %}
+
+{% block _main %}
+    {{ include('usuario/_form.html.twig', {'button_label': 'Actualizar'}) }}
+{% endblock %}
+
+{% block _main_tools %}
+    {% include 'crud/_options_ico.html.twig' %}
+{% endblock %}
+
+{% block _main_actions %}
+    {% include 'crud/_edit_links_ico.html.twig' with {'route_base':'usuario','entity': usuario} %}
+{% endblock %}
+
+{% block _body_tools_ico %}
+    {% include 'crud/_edit_links_tool.html.twig' with {'route_base':'usuario','entity': usuario} %}
+{% endblock %}
+
+{% block _main_footer %}
+    {% include 'crud/_edit_links.html.twig' with {'route_base':'usuario','entity': usuario} %}
+{% endblock %}
+
+{% block _javascripts %}
+    <script>
+        jQuery(document).ready(function() {
+            $('.m-select2').select2({placeholder:"Seleccione"});
+            $('#usuario_usuarioRoles').select2();
+            $('#usuario_centroPoblado').select2();
+
+            $("#usuario_provincia").change(function () {
+                var data = {
+                    provincia_id: $(this).val()
+                };
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ path('distrito_ajax') }}",
+                    data: data,
+                    success: function (data) {
+                        var $selector = $('#usuario_distrito');
+                        //alert(data);
+                        $selector.html('<option>Seleccione Distrito</option>');
+                        for (var i = 0, total = data.length; i < total; i++) {
+                            $selector.append('<option value="' + data[i].id + '">' + data[i].name + '</option>');
+                        }
+                    }
+                });
+            });
+
+            $("#usuario_distrito").change(function () {
+                var data = {
+                    distrito_id: $(this).val()
+                };
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ path('centros_ajax') }}",
+                    data: data,
+                    success: function (data) {
+                        var $selector = $('#usuario_centroPoblado');
+                        //alert(data);
+                        $selector.html('<option>Seleccione Centro Poblado</option>');
+                        for (var i = 0, total = data.length; i < total; i++) {
+                            $selector.append('<option value="' + data[i].id + '">' + data[i].name + '</option>');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,246 @@
+{% extends 'base.html.twig' %}
+{% import 'macro/breadcrumb.html.twig' as breadcrumb %}
+{% import 'macro/action.html.twig' as action %}
+
+{% set _title = 'Caso Violencia' %}
+{% set _main_title = 'Mostrar' %}
+{% set _section =  'caso_violencia_index'%}
+
+{% block _breadcrumb %}
+    {{ breadcrumb.show2(_title,_section,'Mostrar') }}
+{% endblock %}
+
+{% block _main %}
+    {{ action.tbl_start('table-sm table-bordered') }}
+    {{ action.tbl_tr('Distrito',caso_violencia.distrito) }}
+    {{ action.tbl_tr('Centro Poblado',caso_violencia.centroPoblado.nombre) }}
+    {{ action.tbl_tr('Lugar del Caso',caso_violencia.lugarMaltrato) }}
+    {{ action.tbl_tr('Fecha de Reporte',caso_violencia.fechaReporte) }}
+    {{ action.tbl_tr('Tipos de Maltrato',caso_violencia.tipoMaltratos) }}
+    {{ action.tbl_tr('Descripcion/Hechos ocurridos',caso_violencia.descripcionReporte) }}
+    <tr>
+        <th class="">Denunciante(s)</th>
+        {% for tipo in caso_violencia.casoViolenciaDenunciantes %}
+{#            {% set data = tipo.datosGenerales|json_decode %}#}
+            <td class="text-left">
+                <span class="font-weight-bold">Nombres: </span> {{ tipo.denunciante.nombres|upper }} <br>
+                <span class="font-weight-bold">Apellidos :</span> {{ tipo.denunciante.apellidos|upper  }} <br>
+                <span class="font-weight-bold">Tipo Documento: </span>    {{ tipo.denunciante.tipoDocumento.nombre |upper }} <br>
+                <span class="font-weight-bold">Numero Documento: </span> {{ tipo.denunciante.numeroDocumento }}<br>
+                <span class="font-weight-bold">Edad: </span>  {{ tipo.denunciante.edad }}<br>
+                <span class="font-weight-bold">Sexo: </span> {{ tipo.denunciante.sexo.nombre |upper }}<br>
+                <span class="font-weight-bold">Teléfono: </span> {{ tipo.denunciante.telefono}}<br>
+                <span class="font-weight-bold">Email: </span> {{ tipo.denunciante.email}}<br>
+            </td>
+
+        {% endfor %}
+    </tr>
+    <tr>
+        <th class="">Agraviado(s)</th>
+        {% for tipo in caso_violencia.casoViolenciaAgraviados %}
+            <td class="text-left">
+                <span class="font-weight-bold">Nombres: </span> {{ tipo.agraviado.nombres |upper }} <br>
+                <span class="font-weight-bold">Apellidos: </span> {{ tipo.agraviado.apellidos |upper }} <br>
+                <span class="font-weight-bold">Tipo Documento: </span>    {{ tipo.agraviado.tipoDocumento.nombre |upper }} <br>
+                <span class="font-weight-bold">Número Documento: </span> {{ tipo.agraviado.numeroDocumento }}<br>
+                <span class="font-weight-bold">Edad: </span> {{ tipo.agraviado.edad }}<br>
+                <span class="font-weight-bold">Sexo: </span> {{ tipo.agraviado.sexo.nombre |upper }}<br>
+                <span class="font-weight-bold">Estado Civil: </span> {{ tipo.agraviado.estadoCivil.nombre |upper }}<br>
+                <span class="font-weight-bold">Dirección: </span> {{ tipo.agraviado.direccion |upper }}<br>
+                <span class="font-weight-bold">Referencia Domicilio: </span> {{ tipo.agraviado.referenciaDomicilio |upper }}<br>
+                <span class="font-weight-bold">Gestación: </span> {{ tipo.agraviado.gestacion |upper }}<br>
+                <span class="font-weight-bold">Discapacidad: </span> {{ tipo.agraviado.discapacidad |upper }}<br>
+                <span class="font-weight-bold">Nacionalidad: </span>  {{ tipo.agraviado.nacionalidad.nombre|upper  }} <br>
+                <span class="font-weight-bold">Vínculo Familiar: </span>  {{ tipo.agraviado.vinculoFamiliar.nombre|upper }}<br>
+                <span class="font-weight-bold">Teléfono: </span> {{ tipo.agraviado.telefono}}<br>
+                <span class="font-weight-bold">Email: </span> {{ tipo.agraviado.email}}<br>
+                <span class="font-weight-bold">Tipo de Maltrato Recibido: </span> {{ tipo.tipoMaltratos}}<br>
+            </td>
+        {% endfor %}
+    </tr>
+
+    <tr>
+        <th class="">Agresor(es)</th>
+        {% for tipo in caso_violencia.casoViolenciaAgresors %}
+            <td class="text-left">
+                <span class="font-weight-bold">Nombres: </span> {{ tipo.agresor.nombres |upper }} <br>
+                <span class="font-weight-bold">Apellidos: </span> {{ tipo.agresor.apellidos |upper }} <br>
+                <span class="font-weight-bold">Tipo Documento: </span>    {{ tipo.agresor.tipoDocumento.nombre |upper }} <br>
+                <span class="font-weight-bold">Número Documento: </span> {{ tipo.agresor.numeroDocumento }}<br>
+                <span class="font-weight-bold">Sexo: </span> {{ tipo.agresor.sexo.nombre |upper }}<br>
+                <span class="font-weight-bold">Edad: </span> {{ tipo.agresor.edad  }}<br>
+                <span class="font-weight-bold">Estado Civil: </span> {{ tipo.agresor.estadoCivil.nombre |upper }}<br>
+                <span class="font-weight-bold">Dirección: </span> {{ tipo.agresor.direccion |upper }}<br>
+                <span class="font-weight-bold">Nacionalidad: </span>  {{ tipo.agresor.nacionalidad.nombre|upper  }}<br>
+                <span class="font-weight-bold">Vínculo Familiar: </span>  {{ tipo.agresor.vinculoFamiliar.nombre|upper }}<br>
+                <span class="font-weight-bold">Teléfono: </span> {{ tipo.agresor.telefono}}<br>
+                <span class="font-weight-bold">Email: </span> {{ tipo.agresor.email}}<br>
+            </td>
+        {% endfor %}
+    </tr>
+
+    {{ action.tbl_tr('Estado actual',caso_violencia.EstadoCaso) }}
+    {{ action.tbl_tr('Institución',caso_violencia.Institucion) }}
+
+    {{ action.tbl_end() }}
+
+
+
+    <h3>Acciones</h3>
+
+    <table id="pc-dt-simple" class="table dataTable-table">
+        <thead class="thead-light">
+            <tr>
+                <th>Nro</th>
+                <th>Acciones</th>
+                <th>Estado</th>
+                <th>Institucion</th>                
+                <th>Usuario</th>
+                <th>Fecha</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for acc in accion %}
+            <tr>
+                <td class="text-left">{{ loop.index }}</td>
+                <td class="text-left">{{ acc.descripcion }}</td>
+                <td class="text-left">{{ acc.estado.estado }}</td>
+                <td class="text-left">{{ acc.institucion ? acc.institucion.name }}</td>
+                <td class="text-left">{{ acc.owner.username }}</td>
+                <td class="text-left">{{ acc.fecha |date('d-m-Y') }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+
+
+
+
+
+    <div class="card">
+        <div class="card-header flex-column flex-lg-row  d-flex align-items-lg-center gap-2 justify-content-between">
+            <h6>Nueva acción</h6>
+                                        </div>
+        <form method="POST" class="needs-validation" novalidate="">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm p-0">
+                        <div class="form-group  row p-1 ">
+                            <div class="col-sm-4">Fecha</div>
+                            <div class="col-sm-4">
+                                <input class="form-control x_datepicker" type="text" name="fecha" value="" required="">
+                                <input type="hidden" name="codigo" value="{{ caso_violencia.codigo }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm p-0">                
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm p-0">
+                        <div class="form-group  row p-1 ">
+                            <div class="col-sm-4">Estado</div>
+                            <div class="col-sm-8">
+                                <select class="form-control" id="estado" name="estado" style="max-width:265px;">
+                                    <option></option>
+                                    <option value="1">Recibido</option>
+                                    <option value="2">Derivado</option>
+                                    <option value="3">Atendido</option>
+                                    <option value="4">Observado</option>
+                                    <option value="5">Cerrado</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm p-0">                
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm p-0">
+                        <div class="form-group  row p-1 ">
+                            <div class="col-sm-4">Institución</div>
+                            <div class="col-sm-8">
+                                <select class="form-control" id="institucion" name="institucion" style="max-width:265px;">
+                                    <option></option>
+                                    {% for inst in institucion %}
+                                        <option value="{{ inst.id }}">{{ inst.name }}</option>
+                                   {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm p-0">                
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm p-0">
+                        <div class="form-group  row p-1 ">
+                            <div class="col-sm-4">Descripción</div>
+                            <div class="col-sm-8">
+                                        <textarea name="descripcion" id="descripcion" class="form-control" rows="5" ></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm p-0">                
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm p-0">
+                        <div class="form-group  row p-1 ">
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-8">
+                                <div class="text-end">
+                                    <button class="btn btn-warning m-btn m-btn--custom m-btn--icon ">
+                                        <span><i class="fa flaticon-folder-2"></i><span>Registrar</span></span>    
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm p-0">                
+                    </div>
+                </div>
+                
+            </div>
+        </form>
+    </div>
+
+{% endblock %}
+
+{% block _main_tools %}
+    <button type="button" onclick="imprimir()"
+            class="btn-print btn btn-light-primary px-6 font-weight-bold mr-2">
+        <i class="fas fa-print"></i>
+        Imprimir
+    </button>
+{% endblock %}
+
+{% block _main_footer %}
+
+{% endblock %}
+
+{% block _main_actions %}
+{% endblock %}
+
+{% block _javascripts %}
+    <script>
+        function imprimir() {
+            window.print();
+        }
+    </script>
+
+{% endblock %}
+
+{% block _stylesheets %}
+    <style>
+        @media print {
+            .btn-print, .oculto-impresion * {
+                display: none !important;
+            }
+        }
+    </style>
+
+{% endblock %}

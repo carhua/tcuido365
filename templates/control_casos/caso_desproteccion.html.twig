@@ -1,0 +1,252 @@
+{% extends 'base.html.twig' %}
+{% import 'macro/breadcrumb.html.twig' as breadcrumb %}
+{% import 'macro/action.html.twig' as action %}
+{% import 'macro/pagination.html.twig' as pagination %}
+
+{% set _title = 'Control - Casos de Riesgo Desprotección' %}
+{% set _main_title = 'Listado' %}
+{% set _section =  'caso_desproteccionc_index'%}
+
+{% block _breadcrumb %}
+    {{ breadcrumb.show('Control-Casos Riesgo Desprotección') }}
+{% endblock %}
+
+{% block _main %}
+    <div class="table-responsive">
+        {{ action.tbl_start('table-sm table-bordered') }}
+        <thead class="table-primary">
+        <tr>
+            {{ action.th('Nº', false, 'text-center') }}
+            {{ action.th('Distrito', false, 'text-center d-none d-sm-table-cell') }}
+            {{ action.th('Centro Poblado', false, 'text-center  d-sm-table-cell') }}
+            {{ action.th('Fecha Reporte', false, 'text-center d-sm-table-cell') }}
+            {{ action.th('Situaciones Encontradas', false, 'text-center  d-sm-table-cell') }}
+            {{ action.th('Detalle', true, 'text-center  d-sm-table-cell') }}
+        </tr>
+        </thead>
+        <tbody>
+        {% for tipo in paginator %}
+            <tr>
+                <td class="text-center">{{ loop.index | index(paginator) }}</td>
+                <td class="d-sm-table-cell">{{ tipo.distrito }}</td>
+                <td class="d-sm-table-cell">{{ tipo.centroPoblado.nombre }}</td>
+                <td class="d-sm-table-cell">{{ tipo.fechaReporte |date('d/m/Y H:i:s') }}</td>
+                <td class="d-sm-table-cell">{{ tipo.situacionesEncontradas }}</td>
+                <td class="text-center pr-0">
+                    {% if access.has('view') %}
+                        {{ action.btn_show_link2(path('caso_desproteccionc_show', {'id': tipo.id})) }}
+                    {% endif %}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">No hay registros</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        {{ action.tbl_end() }}
+    </div>
+
+    {% if paginator is not null %}
+        {{ pagination.pager(paginator, _section) }}
+    {% endif %}
+{% endblock %}
+
+{% block _main_filters %}
+    <form class="mb-7" id="frm_filters">
+        <div class="row align-items-center">
+            <div class="col-lg-12 col-xl-12">
+                <div class="row align-items-center">
+                    <div class="col-md-12">
+                        <label> <strong>Seleccionar rango de fechas:</strong></label>
+                    </div>
+                    <div class="col-md-3 my-1 my-md-0">
+
+                        <div class="form-group">
+                            <label for="finicial">Fecha Inicial</label>
+                            <input type="date" id="fechaInicio" name="finicial" required class="form-control"
+                                   value="{{ finicio is null ? "now"| date('Y-m-01','America/Lima') : finicio }}">
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 my-1 my-md-0">
+                        <div class="form-group">
+                            <label for="ffinal">Fecha Final</label>
+                            <input type="date" id="fechaFinal" name="ffinal" required class="form-control"
+                                   value="{{ ffinal is null ? "now"| date('Y-m-d','America/Lima')  : ffinal }}">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row align-items-center">
+                    <div class="col-md-12">
+                        <label><strong>Seleccionar Ubicación:</strong></label>
+                    </div>
+                    <div class="col-md-3 my-2 my-md-0">
+                        <div class="form-group">
+                            <label for="provincia">Provincia</label>
+                            <select name="provincia" id="select_provincias" class="form-control m-select2">
+                                <option value="" selected>Seleccione</option>
+                                {% for provincia in provincias  %}
+                                    <option value="{{ provincia.id }}" {{ provincia.id == provinciaId ? "selected":"" }}>
+                                        {{ provincia.nombre }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 my-2 my-md-0">
+                        <div class="form-group">
+                            <label for="distrito">Distrito</label>
+                            <select name="distrito" id="select_distritos" class="form-control m-select2">
+                                {% if odistrito is not null %}
+                                    <option value="{{ odistrito.id }}" >
+                                        {{ odistrito.nombre }}
+                                    </option>
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3 my-2 my-md-0">
+                        <div class="form-group">
+                            <label for="centroPoblado">Centro Poblado</label>
+                            <select name="centroPoblado" id="select_centros" class="form-control m-select2">
+                                {% if ocentro is not null %}
+                                    <option value="{{ ocentro.id }}" >
+                                        {{ ocentro.nombre }}
+                                    </option>
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 my-2 my-md-0">
+                        <div class="form-group">
+                            <label for="situaciones">Situación Encontrada</label>
+                            <select name="situacion" id="situaciones" class="form-control m-select2">
+                                <option value="0">TODOS</option>
+                                {% for key,tipo in tipos  %}
+                                    <option value="{{ tipo.id }}" {{ tipo.id == app.request.get('situacion') ? 'selected':'' }}>
+                                        {{ tipo.nombre }}  </option>
+                                {% endfor %}
+                            </select>
+                            <input type="hidden" name="estado" value="Notificado">
+                        </div>
+                    </div>
+                    <div class="col-md-4 my-2 my-md-0">
+                        <button class="btn-send btn btn-light-primary px-6 font-weight-bold mr-2">
+                            <i class="fas fa-search"></i>
+                            Buscar
+                        </button>
+                        <button type="button" onclick="actionForm(this.form.id)"
+                                class="btn-excel btn btn-light-primary px-6 font-weight-bold mr-2">
+                            <i class="fas fa-file-excel"></i>
+                            Exportar
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-xl-4 mt-5 mt-lg-0">
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+
+{% block _main_tools %}
+{#    {% include 'crud/_options_ico.html.twig' %}#}
+{% endblock %}
+
+{% block _main_footer %}
+{#    {% include 'crud/_index_links.html.twig' with {'route_base': 'caso_desproteccion'} %}#}
+{% endblock%}
+
+{% block _main_actions %}
+{#    {% include 'crud/_index_links_ico.html.twig' with {'route_base': 'caso_desproteccion'}  %}#}
+{% endblock %}
+
+{% block _stylesheets %}
+{% endblock %}
+
+{% block _javascripts %}
+    <script>
+        let route;
+        function filter(routeBase)
+        {
+
+            route = routeBase + "?" + 'n=' + $('#filter_size option:selected').val();
+            route = route + "&" + 'centroPoblado=' + "{{app.request.get('centroPoblado')}}";
+            route = route + "&" + 'situacion=' + "{{app.request.get('situacion')}}";
+            route = route + "&" + 'estado=' + "{{app.request.get('estado')}}";
+            return route;
+        }
+
+        $(document).ready(function() {
+            $('.m-select2').select2({placeholder:"Seleccione"});
+            $(document).on('change', '#filter_size', function(){
+                route = '{{ path('caso_desproteccionc_index') }}';
+                window.location = filter(route);
+            });
+
+            $(document).on('click', '.btn-send', function(){
+                route = '{{ path('caso_desproteccionc_index') }}';
+                window.location = filter(route);
+
+            });
+
+
+            $(document).on('click', '.btn-clear', function(){
+                route = '{{ path('caso_desproteccionc_index') }}';
+                window.location.href = route;
+            });
+
+            $("#select_provincias").change(function () {
+                var data = {
+                    provincia_id: $(this).val()
+                };
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ path('distrito_ajax') }}",
+                    data: data,
+                    success: function (data) {
+                        var $selector = $('#select_distritos');
+                        //alert(data);
+                        $selector.html('<option>Seleccione Distrito</option>');
+                        for (var i = 0, total = data.length; i < total; i++) {
+                            $selector.append('<option value="' + data[i].id + '">' + data[i].name + '</option>');
+                        }
+                    }
+                });
+            });
+
+            $("#select_distritos").change(function () {
+                var data = {
+                    distrito_id: $(this).val()
+                };
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ path('centros_ajax') }}",
+                    data: data,
+                    success: function (data) {
+                        var $selector = $('#select_centros');
+                        //alert(data);
+                        $selector.html('<option>Seleccione Centro Poblado</option>');
+                        for (var i = 0, total = data.length; i < total; i++) {
+                            $selector.append('<option value="' + data[i].id + '">' + data[i].name + '</option>');
+                        }
+                    }
+                });
+            });
+        });
+
+        function actionForm(formid) {
+            route = '{{ path('excel_casos_desproteccion') }}';
+          //  window.open(filter(route),'_blank');
+            document.getElementById(formid).action = route;
+            document.getElementById(formid).submit();
+            document.getElementById(formid).action = '';
+        }
+    </script>
+{% endblock %}

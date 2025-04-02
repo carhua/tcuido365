@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+{% import 'macro/breadcrumb.html.twig' as breadcrumb %}
+{% import 'macro/action.html.twig' as action %}
+
+{% set _title = 'Forma Captación' %}
+{% set _main_title = 'Nuevo' %}
+{% set _section =  'forma_captacion_index'%}
+
+{% block _breadcrumb %}
+    {{ breadcrumb.show2('Forma Captaciones',_section,'Nuevo') }}
+{% endblock %}
+
+{% block _main %}
+    {{ include('forma_captacion/_form.html.twig') }}
+{% endblock %}
+
+{% block _main_tools %}
+    {% include 'crud/_options_ico.html.twig' %}
+{% endblock %}
+
+{% block _main_actions %}
+    {% include 'crud/_new_links_ico.html.twig' with {'route_base':'forma_captacion'} %}
+{% endblock %}
+
+{% block _body_tools_ico %}
+    {% include 'crud/_new_links_tool.html.twig' with {'route_base': 'forma_captacion'}  %}
+{% endblock %}
+
+{% block _main_footer %}
+    {% include 'crud/_new_links.html.twig' with {'route_base':'forma_captacion'} %}
+{% endblock %}
+
+{% block _javascripts %}
+{% endblock %}

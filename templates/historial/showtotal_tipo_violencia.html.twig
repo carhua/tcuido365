@@ -1,0 +1,165 @@
+{% extends 'base.html.twig' %}
+{% import 'macro/breadcrumb.html.twig' as breadcrumb %}
+{% import 'macro/action.html.twig' as action %}
+
+{% set _title = 'Historial - Casos por Tipo de Maltrato' %}
+{% set _main_title = 'Mostrar' %}
+{% set _section = section %}
+
+{% block _breadcrumb %}
+    {{ breadcrumb.show2(_title,_section,'Mostrar') }}
+{% endblock %}
+
+{% block _main %}
+    {% if persona != null and (historialData|length)>0 %}
+        <table class="table table-bordered">
+            <thead class="text-center">
+            <th colspan="5">Datos Personales</th>
+            </thead>
+            <thead class="table-secondary">
+            <th>Persona</th>
+            <th>Tipo Documento</th>
+            <th>Nº Documento</th>
+            <th>Tipo Persona</th>
+            <th>Tipo Maltrato</th>
+            </thead>
+            <tbody>
+            <tr class="font-weight-bold">
+                <td>{{ persona.nombres }} {{ persona.apellidos }}</td>
+                <td>{{ persona.tipoDocumento }} </td>
+                <td>{{ persona.numeroDocumento }}</td>
+                <td>{{ tipoPersonaNombre }}</td>
+                <td>Todos</td>
+            </tr>
+            </tbody>
+        </table>
+    {% else %}
+        <span class="font-weight-bold text-center">
+            <h2>No se encontraron casos para la persona seleccionada</h2>
+        </span>
+    {% endif %}
+    <br>
+    {% for caso_violencia in historialData %}
+
+            <span class="font-weight-bold"><h2>Caso Nº {{ loop.index }}</h2></span>
+            {{ action.tbl_start('table-sm table-bordered') }}
+            {{ action.tbl_tr('Distrito',caso_violencia.distrito) }}
+            {{ action.tbl_tr('Centro Poblado',caso_violencia.centroPoblado.nombre) }}
+            {{ action.tbl_tr('Lugar del Caso',caso_violencia.lugarMaltrato) }}
+            {{ action.tbl_tr('Fecha de Reporte',caso_violencia.fechaReporte) }}
+            {{ action.tbl_tr('Tipo Maltrato',caso_violencia.tipoMaltratos) }}
+            {{ action.tbl_tr('Descripción/Hechos ocurridos',caso_violencia.descripcionReporte) }}
+            <tr>
+                <th class="">Denunciante(s)</th>
+                {% for tipo in caso_violencia.casoViolenciaDenunciantes %}
+                    <td class="text-left">
+                        <span class="font-weight-bold">Nombres: </span> {{ tipo.denunciante.nombres|upper }} <br>
+                        <span class="font-weight-bold">Apellidos :</span> {{ tipo.denunciante.apellidos|upper }} <br>
+                        <span class="font-weight-bold">Tipo Documento: </span> {{ tipo.denunciante.tipoDocumento.nombre |upper }}
+                        <br>
+                        <span class="font-weight-bold">Número Documento: </span> {{ tipo.denunciante.numeroDocumento }}
+                        <br>
+                        <span class="font-weight-bold">Edad: </span> {{ tipo.denunciante.edad }}<br>
+                        <span class="font-weight-bold">Sexo: </span> {{ tipo.denunciante.sexo ? tipo.denunciante.sexo.nombre:"No Precisa"|upper }}<br>
+                        <span class="font-weight-bold">Teléfono: </span> {{ tipo.denunciante.telefono }}<br>
+                        <span class="font-weight-bold">Email: </span> {{ tipo.denunciante.email }}<br>
+                    </td>
+
+                {% endfor %}
+            </tr>
+            <tr>
+                <th class="">Agraviado(s)</th>
+                {% for tipo in caso_violencia.casoViolenciaAgraviados %}
+                    <td class="text-left">
+                        <span class="font-weight-bold">Nombres: </span> {{ tipo.agraviado.nombres |upper }} <br>
+                        <span class="font-weight-bold">Apellidos: </span> {{ tipo.agraviado.apellidos |upper }} <br>
+                        <span class="font-weight-bold">Tipo Documento: </span> {{ tipo.agraviado.tipoDocumento.nombre |upper }}
+                        <br>
+                        <span class="font-weight-bold">Número Documento: </span> {{ tipo.agraviado.numeroDocumento }}
+                        <br>
+                        <span class="font-weight-bold">Edad: </span> {{ tipo.agraviado.edad }}<br>
+                        <span class="font-weight-bold">Sexo: </span> {{ tipo.agraviado.sexo.nombre |upper }}<br>
+                        <span class="font-weight-bold">Estado Civil: </span> {{ tipo.agraviado.estadoCivil.nombre |upper }}
+                        <br>
+                        <span class="font-weight-bold">Dirección: </span> {{ tipo.agraviado.direccion |upper }}<br>
+                        <span class="font-weight-bold">Referencia Domicilio: </span> {{ tipo.agraviado.referenciaDomicilio |upper }}
+                        <br>
+                        <span class="font-weight-bold">Gestación: </span> {{ tipo.agraviado.gestacion |upper }}<br>
+                        <span class="font-weight-bold">Discapacidad: </span> {{ tipo.agraviado.discapacidad |upper }}
+                        <br>
+                        <span class="font-weight-bold">Nacionalidad: </span> {{ tipo.agraviado.nacionalidad.nombre|upper }}
+                        <br>
+                        <span class="font-weight-bold">Vínculo Familiar: </span>  {{ tipo.agraviado.vinculoFamiliar.nombre|upper }}<br>
+                        <span class="font-weight-bold">Teléfono: </span> {{ tipo.agraviado.telefono }}<br>
+                        <span class="font-weight-bold">Email: </span> {{ tipo.agraviado.email }}<br>
+                        <span class="font-weight-bold">Tipo de Maltrato Recibido: </span> {{ tipo.tipoMaltratos}}<br>
+                    </td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <th class="">Agresor(es)</th>
+                {% for tipo in caso_violencia.casoViolenciaAgresors %}
+                    <td class="text-left">
+                        <span class="font-weight-bold">Nombres: </span> {{ tipo.agresor.nombres |upper }} <br>
+                        <span class="font-weight-bold">Apellidos: </span> {{ tipo.agresor.apellidos |upper }} <br>
+                        <span class="font-weight-bold">Tipo Documento: </span> {{ tipo.agresor.tipoDocumento.nombre |upper }}
+                        <br>
+                        <span class="font-weight-bold">Número Documento: </span> {{ tipo.agresor.numeroDocumento }}<br>
+                        <span class="font-weight-bold">Sexo: </span> {{ tipo.agresor.sexo.nombre |upper }}<br>
+                        <span class="font-weight-bold">Edad: </span> {{ tipo.agresor.edad }}<br>
+                        <span class="font-weight-bold">Estado Civil: </span> {{ tipo.agresor.estadoCivil.nombre |upper }}
+                        <br>
+                        <span class="font-weight-bold">Dirección: </span> {{ tipo.agresor.direccion |upper }}<br>
+                        <span class="font-weight-bold">Nacionalidad: </span> {{ tipo.agresor.nacionalidad.nombre|upper }}
+                        <br>
+                        <span class="font-weight-bold">Vínculo Familiar: </span> {{ tipo.agresor.vinculoFamiliar ? tipo.agresor.vinculoFamiliar.nombre:"No Precisa"|upper }}
+                        <br>
+                        <span class="font-weight-bold">Teléfono: </span> {{ tipo.agresor.telefono }}<br>
+                        <span class="font-weight-bold">Email: </span> {{ tipo.agresor.email }}<br>
+                    </td>
+                {% endfor %}
+            </tr>
+            {{ action.tbl_end() }}
+            <hr/>
+    {% endfor %}
+
+{% endblock %}
+
+{% block _main_tools %}
+    <button type="button" onclick="imprimir()"
+            class="btn-print btn btn-light-primary px-6 font-weight-bold mr-2">
+        <i class="fas fa-print"></i>
+        Imprimir
+    </button>
+{% endblock %}
+
+{% block _main_footer %}
+
+{% endblock %}
+
+{% block _main_actions %}
+{% endblock %}
+
+{% block _javascripts %}
+    <script>
+        function imprimir() {
+            window.print();
+        }
+    </script>
+
+{% endblock %}
+
+{% block _stylesheets %}
+    <style>
+        @media print {
+            .btn-print, .oculto-impresion * {
+                display: none !important;
+            }
+            .subheader *{
+                display: none !important;
+            }
+        }
+    </style>
+
+{% endblock %}

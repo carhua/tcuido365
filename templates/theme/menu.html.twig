@@ -1,0 +1,34 @@
+{% for key,values in menus %}
+    <li class="menu-item menu-item-submenu
+            {% if values.ruta is defined and values.ruta == _section %}{% endif %}
+            {% if values.clases is defined %}{{ values.clases }}{% endif %}"
+        aria-haspopup="true" data-menu-toggle="hover">
+        <a href="{% if values.ruta is defined and values.ruta !='' %}{{ path(values.ruta) }}{% else %}javascript:;{% endif %}"
+           class="menu-link menu-toggle">
+            {% if values.icono is defined %}<i class="navi-icon menu-icon {{ values.icono }}"></i>{% endif %}
+            <span class="menu-text">{{ key | trans | upper }}</span>
+            {% if values.menus is defined %}<i class="menu-arrow"></i>{% endif %}
+        </a>
+        {% if values.menus is defined and values.menus | length > 0 %}
+            <div class="menu-submenu">
+                <i class="menu-arrow"></i>
+                <ul class="menu-subnav">
+                    <li class="menu-item menu-item-parent" aria-haspopup="true">
+                        <span class="menu-link"><span class="menu-text">{{ key }}</span></span>
+                    </li>
+                    {% for menu in values.menus %}
+                        <li class="menu-item menu-item-submenu {% if menu.ruta == _section %}menu-item-active{% endif %}" aria-haspopup="true" data-menu-toggle="hover">
+                            <a href="{{ path(menu.ruta) }}" class="menu-link menu-toggle">
+                                <i class="menu-bullet menu-bullet-dot">
+                                    <span></span>
+                                </i>
+                                <span class="menu-text">{{ menu.nombre | trans }}</span>
+{#                                <i class="menu-arrow"></i>#}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    </li>
+{% endfor %}

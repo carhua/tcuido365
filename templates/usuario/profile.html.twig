@@ -1,0 +1,207 @@
+{% extends 'base.html.twig' %}
+{% import 'macro/breadcrumb.html.twig' as breadcrumb %}
+{% import 'macro/action.html.twig' as action %}
+
+{% set _title = 'Usuario' %}
+{% set _main_title = 'Perfil' %}
+{% set _section =  'usuario_index'%}
+
+{% block _breadcrumb %}
+    {{ breadcrumb.show2('Usuarios','usuario_index','Perfil') }}
+{% endblock %}
+
+{% block _main %}
+
+    <div class="d-flex flex-row">
+        <!--begin::Aside-->
+        <div class="flex-row-auto offcanvas-mobile w-250px w-xxl-350px" id="kt_profile_aside">
+            <!--begin::Profile Card-->
+            <div class="card card-custom card-stretch">
+                <!--begin::Body-->
+                <div class="navi navi-bold navi-hover navi-active navi-link-rounded">
+                    <div class="navi-item mb-2">
+                        <a  class="navi-link py-4">
+															<span class="navi-icon mr-2">
+																<span class="svg-icon">
+																	<!--begin::Svg Icon | path:/metronic/theme/html/demo1/dist/assets/media/svg/icons/Design/Layers.svg-->
+																	<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+																		<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+																			<polygon points="0 0 24 0 24 24 0 24"></polygon>
+																			<path d="M12.9336061,16.072447 L19.36,10.9564761 L19.5181585,10.8312381 C20.1676248,10.3169571 20.2772143,9.3735535 19.7629333,8.72408713 C19.6917232,8.63415859 19.6104327,8.55269514 19.5206557,8.48129411 L12.9336854,3.24257445 C12.3871201,2.80788259 11.6128799,2.80788259 11.0663146,3.24257445 L4.47482784,8.48488609 C3.82645598,9.00054628 3.71887192,9.94418071 4.23453211,10.5925526 C4.30500305,10.6811601 4.38527899,10.7615046 4.47382636,10.8320511 L4.63,10.9564761 L11.0659024,16.0730648 C11.6126744,16.5077525 12.3871218,16.5074963 12.9336061,16.072447 Z" fill="#000000" fill-rule="nonzero"></path>
+																			<path d="M11.0563554,18.6706981 L5.33593024,14.122919 C4.94553994,13.8125559 4.37746707,13.8774308 4.06710397,14.2678211 C4.06471678,14.2708238 4.06234874,14.2738418 4.06,14.2768747 L4.06,14.2768747 C3.75257288,14.6738539 3.82516916,15.244888 4.22214834,15.5523151 C4.22358765,15.5534297 4.2250303,15.55454 4.22647627,15.555646 L11.0872776,20.8031356 C11.6250734,21.2144692 12.371757,21.2145375 12.909628,20.8033023 L19.7677785,15.559828 C20.1693192,15.2528257 20.2459576,14.6784381 19.9389553,14.2768974 C19.9376429,14.2751809 19.9363245,14.2734691 19.935,14.2717619 L19.935,14.2717619 C19.6266937,13.8743807 19.0546209,13.8021712 18.6572397,14.1104775 C18.654352,14.112718 18.6514778,14.1149757 18.6486172,14.1172508 L12.9235044,18.6705218 C12.377022,19.1051477 11.6029199,19.1052208 11.0563554,18.6706981 Z" fill="#000000" opacity="0.3"></path>
+																		</g>
+																	</svg>
+                                                                    <!--end::Svg Icon-->
+																</span>
+															</span>
+                            <span class="navi-text font-size-lg">Informacion Personal</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body pt-4">
+                    <!--begin::User-->
+                    <div class="d-flex align-items-center">
+                        <div class="symbol symbol-60 symbol-xxl-100 mr-5 align-self-start align-self-xxl-center">
+                            <div class="symbol-label" style="background-image:url({{ asset(_theme ~ 'media/users/default.jpg') }})"></div>
+                            <i class="symbol-badge bg-success"></i>
+                        </div>
+                        <div>
+                            <a  class="font-weight-bolder font-size-h5 text-dark-75 text-hover-primary">{{ usuario.fullName }}</a>
+                            <div class="text-muted"></div>
+                          {#  <div class="mt-2">
+                                <a href="#" class="btn btn-sm btn-primary font-weight-bold mr-2 py-2 px-3 px-xxl-5 my-1">Chat</a>
+                                <a href="#" class="btn btn-sm btn-success font-weight-bold py-2 px-3 px-xxl-5 my-1">Follow</a>
+                            </div>#}
+                        </div>
+                    </div>
+                    <!--end::User-->
+                    <!--begin::Contact-->
+                    <div class="py-9">
+                        <div class=" align-items-center justify-content-between mb-2">
+                            <span class="font-weight-bold mr-2">Usuario:</span><br>
+                            <span class="text-muted">
+                                {{ usuario.username}}
+                            </span>
+                        </div>
+                        <div class="align-items-center justify-content-between mb-2">
+                            <span class="font-weight-bold mr-2">Email:</span><br>
+                            <span class="text-muted">
+                                {{ usuario.email != null ? usuario.email :"No registra" }}
+                            </span>
+                        </div>
+                        <div class="align-items-center justify-content-between mb-2">
+                            <span class="font-weight-bold mr-2">Telefono:</span><br>
+                            <span class="text-muted">{{ usuario.telefono != null ? usuario.telefono : "No Registra" }}</span>
+                        </div>
+                        <div class="align-items-center justify-content-between mb-2">
+                            <span class="font-weight-bold mr-2">Centro Poblado:</span><br>
+                            <span class="text-muted">{{ usuario.centroPoblado != null ? usuario.centroPoblado.nombre:"No asignado" }}</span>
+                        </div>
+                    </div>
+                    <!--end::Contact-->
+                    <!--begin::Nav-->
+
+                    <!--end::Nav-->
+                </div>
+                <!--end::Body-->
+            </div>
+            <!--end::Profile Card-->
+        </div>
+        <!--end::Aside-->
+        <!--begin::Content-->
+        <div class="flex-row-fluid ml-lg-8">
+            <!--begin::Card-->
+            <div class="card card-custom">
+                <!--begin::Header-->
+                <div class="card-header py-3">
+                    <div class="card-title align-items-start flex-column">
+                        <h3 class="card-label font-weight-bolder text-dark">Cambiar Contraseña</h3>
+                        <span class="text-muted font-weight-bold font-size-sm mt-1">Actualize la contraseña de su cuenta</span>
+                    </div>
+                    <div class="card-toolbar">
+
+                    </div>
+                </div>
+                <!--end::Header-->
+                <!--begin::Form-->
+                {{ action.frm_start(form) }}
+                    <div class="card-body">
+                        <!--begin::Alert-->
+                        <div class="alert alert-custom alert-light-danger fade show mb-10" role="alert">
+                            <div class="alert-icon">
+															<span class="svg-icon svg-icon-3x svg-icon-danger">
+																<!--begin::Svg Icon | path:/metronic/theme/html/demo1/dist/assets/media/svg/icons/Code/Info-circle.svg-->
+																<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+																	<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+																		<rect x="0" y="0" width="24" height="24"></rect>
+																		<circle fill="#000000" opacity="0.3" cx="12" cy="12" r="10"></circle>
+																		<rect fill="#000000" x="11" y="10" width="2" height="7" rx="1"></rect>
+																		<rect fill="#000000" x="11" y="7" width="2" height="2" rx="1"></rect>
+																	</g>
+																</svg>
+                                                                <!--end::Svg Icon-->
+															</span>
+                            </div>
+                            <div class="alert-text font-weight-bold">
+                                La contraseña debe contener al menos:
+                                una letra Mayuscula,
+                                una letra Minuscula,
+                                un numero,
+                                maximo 8 caracteres
+                            </div>
+                            <div class="alert-close">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+																<span aria-hidden="true">
+																	<i class="ki ki-close"></i>
+																</span>
+                                </button>
+                            </div>
+                        </div>
+
+
+                        {{ action.frm_column(
+                            action.frm_column_field(form.password.first),
+                            null,null,null,1
+                        ) }}
+
+                        {{ action.frm_column(
+                            action.frm_column_field(form.password.second),
+                            null,null,null,1
+                        ) }}
+
+                        {{ action.frm_column(
+                            action.frm_column_btn(button_label|default('Actualizar')),
+                            null,
+                            null,
+                            null,
+                            1
+                        ) }}
+
+
+                        <!--end::Alert-->
+                       {# <div class="form-group row">
+                            <label class="col-xl-3 col-lg-3 col-form-label text-alert">Contraseña actual</label>
+                            <div class="col-lg-9 col-xl-6">
+                                <input type="password" class="form-control form-control-lg form-control-solid mb-2" value="" placeholder="Current password">
+                               #}{# <a href="#" class="text-sm font-weight-bold">Forgot password ?</a>#}{#
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xl-3 col-lg-3 col-form-label text-alert">Nueva Contraseña</label>
+                            <div class="col-lg-9 col-xl-6">
+                                <input type="password" class="form-control form-control-lg form-control-solid" value="" placeholder="New password">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-xl-3 col-lg-3 col-form-label text-alert">Repetir Contraseña</label>
+                            <div class="col-lg-9 col-xl-6">
+                                <input type="password" class="form-control form-control-lg form-control-solid" value="" placeholder="Verify password">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <button type="reset" class="btn btn-success mr-2">Guardar</button>
+                            <button type="reset" class="btn btn-secondary">Cancelar</button>
+                        </div>#}
+                    </div>
+                {{ action.frm_end(form) }}
+
+                <!--end::Form-->
+            </div>
+        </div>
+        <!--end::Content-->
+    </div>
+
+
+{% endblock %}
+
+{% block _main_tools %}
+{% endblock %}
+
+{% block _javascripts_vendors %}
+    <script>
+        jQuery(document).ready(function() {
+            //$('#usuario_usuarioRoles').select2();
+        });
+    </script>
+{% endblock %}

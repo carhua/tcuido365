@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+{% import 'macro/breadcrumb.html.twig' as breadcrumb %}
+{% import 'macro/action.html.twig' as action %}
+
+{% set _title = 'centro poblado' %}
+{% set _main_title = 'Mostrar' %}
+{% set _section =  'centro_poblado_index'%}
+
+{% block _breadcrumb %}
+    {{ breadcrumb.show2(_title,_section,'Mostrar') }}
+{% endblock %}
+
+{% block _main %}
+    {{ action.tbl_start() }}
+    {{ action.tbl_tr('Codigo',centro_poblado.codigo) }}
+    {{ action.tbl_tr('Nombre',centro_poblado.nombre) }}
+    {{ action.tbl_tr('Categoria',centro_poblado.categoria) }}
+    {{ action.tbl_tr('Tipo',centro_poblado.tipo) }}
+    {{ action.tbl_tr('Activo',centro_poblado.isActive | yesno) }}
+    {{ action.tbl_end() }}
+{% endblock %}
+
+{% block _main_tools %}
+    {% include 'crud/_options_ico.html.twig' %}
+{% endblock %}
+
+{% block _main_footer %}
+    {% include 'crud/_show_links.html.twig' with {'route_base':'centro_poblado','entity': centro_poblado} %}
+{% endblock %}
+
+{% block _main_actions %}
+    {% include 'crud/_show_links_ico.html.twig' with {'route_base':'centro_poblado','entity': centro_poblado} %}
+{% endblock %}
+
+{% block _javascripts %}
+{% endblock %}
+
+{% block _stylesheets %}
+{% endblock %}

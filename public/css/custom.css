@@ -1,0 +1,9 @@
+/* Codigo personalizado */
+.form-inline * {
+    display: inline-block;
+    width: inherit;
+}
+
+.datepicker {
+    z-index: 120 !important;
+}

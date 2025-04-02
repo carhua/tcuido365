@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+{% import 'macro/breadcrumb.html.twig' as breadcrumb %}
+{% import 'macro/action.html.twig' as action %}
+
+{% set _title = 'Situación Encontrada' %}
+{% set _main_title = 'Mostrar' %}
+{% set _section =  'situacion_encontrada_index'%}
+
+{% block _breadcrumb %}
+    {{ breadcrumb.show2(_title,_section,'Mostrar') }}
+{% endblock %}
+
+{% block _main %}
+    {{ action.tbl_start() }}
+    {{ action.tbl_tr('Nombre',situacion_encontrada.nombre) }}
+    {{ action.tbl_tr('Activo',situacion_encontrada.isActive | yesno) }}
+    {{ action.tbl_end() }}
+{% endblock %}
+
+{% block _main_tools %}
+    {% include 'crud/_options_ico.html.twig' %}
+{% endblock %}
+
+{% block _main_footer %}
+    {% include 'crud/_show_links.html.twig' with {'route_base':'situacion_encontrada','entity': situacion_encontrada} %}
+{% endblock %}
+
+{% block _main_actions %}
+    {% include 'crud/_show_links_ico.html.twig' with {'route_base':'situacion_encontrada','entity': situacion_encontrada} %}
+{% endblock %}
+
+{% block _javascripts %}
+{% endblock %}
+
+{% block _stylesheets %}
+{% endblock %}

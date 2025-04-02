@@ -1,0 +1,212 @@
+{% extends 'base.html.twig' %}
+{% import 'macro/breadcrumb.html.twig' as breadcrumb %}
+
+{% set _title = 'Inicio' %}
+
+{% block _breadcrumb %}
+    {{ breadcrumb.show('Inicio') }}
+{% endblock %}
+
+{% block _main %}
+    <!--Begin::Section-->
+    <div class="kt-portlet kt-faq-v1">
+        <div class="kt-portlet__head">
+            <div class="kt-portlet__head-label">
+                <h3 class="kt-portlet__head-title">
+
+                </h3>
+            </div>
+        </div>
+        <div class="kt-portlet__body">
+            <div class="row">
+                <div class="col-xl-12">
+                    <!--begin::Charts Widget 1-->
+                    <div class="card card-custom bg-gray-100 card-stretch gutter-b text-center" >
+                        <div class="card-body " style="position: relative;" >
+                            <div id="chart_barra_anios"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!--End::Section-->
+{% endblock %}
+
+{% block _main_filters %}
+    <form class="mb-7" id="frm_filters">
+        <div class="row align-items-center">
+            <div class="col-lg-12 col-xl-12">
+{#                <div class="row align-items-center">#}
+{#                    <div class="col-md-12">#}
+{#                        <label> <strong>Seleccionar rango de fechas:</strong></label>#}
+{#                    </div>#}
+{#                    <div class="col-md-2 my-1 my-md-0">#}
+{#                        <div class="form-group">#}
+{#                            <label for="anioInicio">Año inicio</label>#}
+{#                            <select id="anioInicio" name="anioInicio" required class="form-control">#}
+{#                                {% for anio in range(('now') | date('Y'), 2020) %}#}
+{#                                    <option value="{{ anio }}" {% if anioInicio == anio %}selected{% endif %}>{{ anio }}</option>#}
+{#                                {% endfor %}#}
+{#                            </select>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                    <div class="col-md-2 my-1 my-md-0">#}
+{#                        <div class="form-group">#}
+{#                            <label for="anioFinal">Año final</label>#}
+{#                            <select id="anioFinal" name="anioFinal" required class="form-control">#}
+{#                                {% for anio in range(('now') | date('Y'), 2020) %}#}
+{#                                    <option value="{{ anio }}">{{ anio }}</option>#}
+{#                                {% endfor %}#}
+{#                            </select>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+
+                <div class="row align-items-center">
+                    <div class="col-md-12">
+                        <label><strong>Seleccionar Ubicacion:</strong></label>
+                    </div>
+                    <div class="col-md-3 my-2 my-md-0">
+                        <div class="form-group">
+                            <label for="select_provincias">Provincias</label>
+                            <select name="provincia" id="select_provincias" class="form-control m-select2">
+                                <option value="" selected>Seleccione</option>
+                                {% for provincia in provincias  %}
+                                    <option value="{{ provincia.id }}" {{ provincia.id == app.request.get('provincia') ? "selected":"" }}>
+                                        {{ provincia.nombre }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 my-2 my-md-0">
+                        <div class="form-group">
+                            <label for="select_distritos">Distritos</label>
+                            <select name="distrito" id="select_distritos" class="form-control m-select2">
+                                {% if odistrito is not null %}
+                                    <option value="{{ odistrito.id }}" >
+                                        {{ odistrito.nombre }}
+                                    </option>
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3 my-2 my-md-0">
+                        <div class="form-group">
+                            <label for="select_centros">Centros Poblados</label>
+                            <select name="centroPoblado" id="select_centros" class="form-control m-select2">
+                                {% if ocentro is not null %}
+                                    <option value="{{ ocentro.id }}" >
+                                        {{ ocentro.nombre }}
+                                    </option>
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 my-2 my-md-0">
+                        <div class="form-group">
+                            <label for="usuario">Usuarios</label>
+                            <select name="usuario" id="usuario" class="form-control m-select2">
+                                <option value="">TODOS</option>
+                                {% for item in usuarios  %}
+                                    <option value="{{ item.username }}" {{ item.username == app.request.get('usuario') ? 'selected':'' }}>
+                                        {{ item.nombre }}  </option>
+                                {% endfor %}
+                            </select>
+                            <input type="hidden" name="estado" value="Notificado">
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 my-2 my-md-0">
+                        <button class="btn-send btn btn-light-primary px-6 font-weight-bold mr-2">
+                            <i class="fas fa-search"></i>
+                            Buscar
+                        </button>
+
+                        <a href="{{ path('grafico_total_descargar', app.current_route_parameters) }}" class="btn-export btn btn-secondary px-6 font-weight-bold mr-2">
+                            <i class="fas fa-download"></i>
+                            Descargar
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-xl-4 mt-5 mt-lg-0">
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block _stylesheets %}
+    <style>
+        #chart_barra_anios {
+            width: 100%;
+            height: 100%;
+            min-height: 500px;
+        }
+    </style>
+{% endblock %}
+
+{% block _javascripts %}
+    <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/themes/Kelly.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/plugins/exporting.js"></script>
+    <script src="{{ asset('js/amcharts.js') }}" type="text/javascript"></script>
+    <script>
+        $(document).ready(function() {
+            $('.m-select2').select2({placeholder:"Seleccione"});
+
+            $(document).on('click', '.btn-send', function(){
+                route = '{{ path('grafico_total') }}';
+                window.location = route;
+            });
+
+
+            $("#select_provincias").change(function () {
+                let data = {
+                    provincia_id: $(this).val()
+                };
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ path('distrito_ajax') }}",
+                    data: data,
+                    success: function (data) {
+                        const $selector = $('#select_distritos');
+                        $selector.html('<option>Seleccione Distrito</option>');
+                        for (let i = 0, total = data.length; i < total; i++) {
+                            $selector.append('<option value="' + data[i].id + '">' + data[i].name + '</option>');
+                        }
+                    }
+                });
+            });
+
+            $("#select_distritos").change(function () {
+                let data = {
+                    distrito_id: $(this).val()
+                };
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ path('centros_ajax') }}",
+                    data: data,
+                    success: function (data) {
+                        const $selector = $('#select_centros');
+                        //alert(data);
+                        $selector.html('<option>Seleccione Centro Poblado</option>');
+                        for (let i = 0, total = data.length; i < total; i++) {
+                            $selector.append('<option value="' + data[i].id + '">' + data[i].name + '</option>');
+                        }
+                    }
+                });
+            });
+
+            let data = {{ dataAnual | json_encode |raw }};
+            amChart.clusterColumn('chart_barra_anios', data.category, data.values, data.series, "Casos reportados", "Casos Reportados por Años");
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,268 @@
+{% extends 'base.html.twig' %}
+{% import 'macro/breadcrumb.html.twig' as breadcrumb %}
+{% import 'macro/action.html.twig' as action %}
+{% import 'macro/pagination.html.twig' as pagination %}
+
+{% set _title = 'Gráficos - Casos Riesgo Desprotección' %}
+{% set _main_title = 'Reporte' %}
+{% set _section =  'grafico_desproteccion_index'%}
+
+{% block _breadcrumb %}
+    {{ breadcrumb.show('Casos Riesgo Desprotección') }}
+{% endblock %}
+
+{% block _main %}
+    <div class="row">
+        <div class="col-xl-6">
+            <div class="card card-custom bg-gray-100 card-stretch gutter-b text-center" >
+                <div class="card-body " style="position: relative;" >
+                    <div id="chart_barra_anios"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6">
+            <div class="card card-custom bg-gray-100 card-stretch gutter-b">
+                <div class="card-body" style="position: relative;">
+                    <div id="chart_barra_meses"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block _main_filters %}
+    <form class="mb-7" id="frm_filters">
+        <div class="row align-items-center">
+            <div class="col-lg-12 col-xl-12">
+                <div class="row align-items-center">
+                    <div class="col-md-12">
+                        <label> <strong>Seleccionar rango de fechas:</strong></label>
+                    </div>
+                    <div class="col-md-2 my-1 my-md-0">
+                        <div class="form-group">
+                            <label for="anioInicio">Año inicio</label>
+                            <select id="anioInicio" name="anioInicio" required class="form-control">
+                                {% for anio in range(('now') | date('Y'), 2020) %}
+                                    <option value="{{ anio }}" {% if anioInicio == anio %}selected{% endif %}>{{ anio }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2 my-1 my-md-0">
+                        <div class="form-group">
+                            <label for="anioFinal">Año final</label>
+                            <select id="anioFinal" name="anioFinal" required class="form-control">
+                                {% for anio in range(('now') | date('Y'), 2020) %}
+                                    <option value="{{ anio }}">{{ anio }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                        <div class="col-md-3 my-1 my-md-0">
+                            <div class="form-group">
+                                <label for="finicial">Fecha Inicial</label>
+                                <input type="date" id="fechaInicio" name="finicial" required class="form-control"
+                                       value="{{ finicio is null ? "now"| date('Y-m-01','America/Lima') : finicio }}">
+                            </div>
+                        </div>
+                        <div class="col-md-3 my-1 my-md-0">
+                            <div class="form-group">
+                                <label for="ffinal">Fecha Final</label>
+                                <input type="date" id="fechaFinal" name="ffinal" required class="form-control"
+                                       value="{{ ffinal is null ? "now"| date('Y-m-d','America/Lima')  : ffinal }}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row align-items-center">
+                        <div class="col-md-12">
+                            <label><strong>Seleccionar Ubicación:</strong></label>
+                        </div>
+                        <div class="col-md-3 my-2 my-md-0">
+                            <div class="form-group">
+                                <label for="provincia">Provincia</label>
+                                <select name="provincia" id="select_provincias" class="form-control m-select2">
+                                    <option value="" selected>Seleccione</option>
+                                    {% for provincia in provincias  %}
+                                        <option value="{{ provincia.id }}" {{ provincia.id == provinciaId ? "selected":"" }}>
+                                            {{ provincia.nombre }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 my-2 my-md-0">
+                            <div class="form-group">
+                                <label for="distrito">Distrito</label>
+                                <select name="distrito" id="select_distritos" class="form-control m-select2">
+                                    {% if odistrito is not null %}
+                                        <option value="{{ odistrito.id }}" >
+                                            {{ odistrito.nombre }}
+                                        </option>
+                                    {% endif %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3 my-2 my-md-0">
+                            <div class="form-group">
+                                <label for="centroPoblado">Centro Poblado</label>
+                                <select name="centroPoblado" id="select_centros" class="form-control m-select2">
+                                    {% if ocentro is not null %}
+                                        <option value="{{ ocentro.id }}" >
+                                            {{ ocentro.nombre }}
+                                        </option>
+                                    {% endif %}
+                                </select>
+                            </div>
+                        </div>
+
+                    <div class="col-md-3 my-2 my-md-0">
+                        <div class="form-group">
+                            <label for="situaciones">Situación Encontrada</label>
+                            <select name="situacion" id="situaciones" class="form-control m-select2">
+                                <option value="0">TODOS</option>
+                                {% for key,tipo in tipos  %}
+                                    <option value="{{ tipo.id }}" {{ tipo.id == app.request.get('situacion') ? 'selected':'' }}>
+                                        {{ tipo.nombre }}  </option>
+                                {% endfor %}
+                            </select>
+                            <input type="hidden" name="estado" value="Notificado">
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 my-2 my-md-0">
+                        <div class="form-group">
+                            <label for="usuario">Usuarios</label>
+                            <select name="usuario" id="usuario" class="form-control m-select2">
+                                <option value="">TODOS</option>
+                                {% for item in usuarios  %}
+                                    <option value="{{ item.username }}" {{ item.username == app.request.get('usuario') ? 'selected':'' }}>
+                                        {{ item.nombre }}  </option>
+                                {% endfor %}
+                            </select>
+                            <input type="hidden" name="estado" value="Notificado">
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 my-2 my-md-0">
+                        <button class="btn-send btn btn-light-primary px-6 font-weight-bold mr-2">
+                            <i class="fas fa-search"></i>
+                            Buscar
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-xl-4 mt-5 mt-lg-0">
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block _main_tools %}
+{% endblock %}
+
+{% block _main_footer %}
+{% endblock%}
+
+{% block _main_actions %}
+{% endblock %}
+
+{% block _stylesheets %}
+    <style>
+        #chart_barra_anios, #chart_barra_meses {
+            width: 100%;
+            height: 100%;
+            min-height: 435px;
+        }
+    </style>
+{% endblock %}
+
+{% block _javascripts %}
+    <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/themes/Kelly.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/plugins/exporting.js"></script>
+    <script src="{{ asset('js/amcharts.js') }}" type="text/javascript"></script>
+    <script>
+        let route;
+        function filter(routeBase)
+        {
+
+            route = routeBase + "?" + 'n=' + $('#filter_size option:selected').val();
+            route = route + "&" + 'b=' + $('#filter_text').val();
+            route = route + "&" + 'centroPoblado=' + "{{app.request.get('centroPoblado')}}";
+            route = route + "&" + 'situacion=' + "{{app.request.get('situacion')}}";
+            route = route + "&" + 'estado=' + "{{app.request.get('estado')}}";
+            return route;
+        }
+
+        $(document).ready(function() {
+            $('.m-select2').select2({placeholder:"Seleccione"});
+
+
+            $(document).on('change', '#filter_size', function(){
+                route = '{{ path('caso_desproteccion_index') }}';
+                window.location = filter(route);
+            });
+
+            $(document).on('click', '.btn-send', function(){
+                route = '{{ path('caso_desproteccion_index') }}';
+                window.location = filter(route);
+                $('.btn-excel').show();
+
+            });
+
+
+            $(document).on('click', '.btn-clear', function(){
+                route = '{{ path('caso_desproteccion_index') }}';
+                window.location.href = route;
+            });
+
+            $("#select_provincias").change(function () {
+                var data = {
+                    provincia_id: $(this).val()
+                };
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ path('distrito_ajax') }}",
+                    data: data,
+                    success: function (data) {
+                        var $selector = $('#select_distritos');
+                        //alert(data);
+                        $selector.html('<option>Seleccione Distrito</option>');
+                        for (var i = 0, total = data.length; i < total; i++) {
+                            $selector.append('<option value="' + data[i].id + '">' + data[i].name + '</option>');
+                        }
+                    }
+                });
+            });
+
+            $("#select_distritos").change(function () {
+                var data = {
+                    distrito_id: $(this).val()
+                };
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ path('centros_ajax') }}",
+                    data: data,
+                    success: function (data) {
+                        var $selector = $('#select_centros');
+                        //alert(data);
+                        $selector.html('<option>Seleccione Centro Poblado</option>');
+                        for (var i = 0, total = data.length; i < total; i++) {
+                            $selector.append('<option value="' + data[i].id + '">' + data[i].name + '</option>');
+                        }
+                    }
+                });
+            });
+
+            let data = {{ dataMeses | json_encode |raw }};
+            amChart.clusterColumn('chart_barra_anios', data.category, data.values, data.series, "Casos reportados", "Casos Reportados por Meses");
+            let dataAnios = {{ dataAnios | json_encode |raw }};
+            amChart.simpleColumn('chart_barra_meses', dataAnios.categoryX, dataAnios.valueY, dataAnios.values, "Casos Reportados por Año");
+        });
+    </script>
+{% endblock %}

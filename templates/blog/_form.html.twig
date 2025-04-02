@@ -1,0 +1,45 @@
+{% import 'macro/action.html.twig' as action %}
+
+{{ action.frm_start(form) }}
+
+   {{ action.frm_column(
+       action.frm_column_field(form.titulo),
+       action.frm_column_field(form.descripcion)
+   ) }}
+
+{#    action.frm_column(#}
+{#       action.frm_column_field(form.descripcion),#}
+{#       null,#}
+{#       null,#}
+{#       null,#}
+{#       1#}
+{#   ) #}
+
+   {{ action.frm_column(
+       action.frm_column_field(form.adjunto),
+       action.frm_column_field(form.provincia,'','m-select2')
+   ) }}
+
+   {{ action.frm_column(
+
+       action.frm_column_field(form.distrito,'','m-select2'),
+       action.frm_column_field(form.centroPoblado,'','m-select2')
+   ) }}
+
+  {{  action.frm_column(
+       action.frm_column_field(form.tipo),
+       null,
+       null,
+       null,
+       2
+   ) }}
+
+    {{ action.frm_column(
+        action.frm_column_btn(button_label|default('Guardar')),
+        null,
+        null,
+        null,
+        2
+    ) }}
+
+{{ action.frm_end(form) }}

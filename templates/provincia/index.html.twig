@@ -1,0 +1,136 @@
+{% extends 'base.html.twig' %}
+{% import 'macro/breadcrumb.html.twig' as breadcrumb %}
+{% import 'macro/action.html.twig' as action %}
+{% import 'macro/pagination.html.twig' as pagination %}
+
+{% set _title = 'Provincia' %}
+{% set _main_title = 'Listado' %}
+{% set _section =  'provincia_index'%}
+
+{% block _breadcrumb %}
+    {{ breadcrumb.show('provincias') }}
+{% endblock %}
+
+{% block _main %}
+    <div class="table-responsive">
+        {{ action.tbl_start() }}
+        <thead>
+        <tr>
+            {{ action.th('#', false, 'text-left') }}
+            {{ action.th('Nombre', false, 'text-left d-none d-sm-table-cell') }}
+            {{ action.th('Región', false, 'text-left d-none d-sm-table-cell') }}
+            {{ action.th('Activo', true, 'text-left d-none d-sm-table-cell') }}
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for provincia in paginator %}
+            <tr>
+                <td class="text-center">{{ loop.index | index(paginator) }}</td>
+                <td class="d-block d-sm-none font-size-xs">
+                    {{ provincia.nombre }} <br>
+                    {{ provincia.isActive | yesnocustom | raw }}
+                </td>
+                <td class="d-none d-sm-table-cell">{{ provincia.nombre }}</td>
+                <td class="d-none d-sm-table-cell">{{ provincia.region.nombre }}</td>
+                <td class="d-none d-sm-table-cell text-center">{{ provincia.isActive | yesnocustom | raw }}</td>
+                <td class="text-right pr-0">
+                    {% if access.has('view') %}
+                        {{ action.btn_show_link2_ico(path('provincia_show', {'id': provincia.id})) }}
+                    {% endif %}
+                    {% if access.has('edit', provincia) %}
+                        {{ action.btn_edit_link2_ico(path('provincia_edit', {'id': provincia.id})) }}
+                    {% endif %}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">No hay registros</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        {{ action.tbl_end() }}
+    </div>
+
+    {{ pagination.pager(paginator, _section) }}
+{% endblock %}
+
+{% block _main_filters %}
+    <form class="mb-7" id="frm_filters">
+        <div class="row align-items-center">
+            <div class="col-lg-9 col-xl-8">
+                <div class="row align-items-center">
+                    <div class="col-md-4 my-2 my-md-0">
+                        <div class="input-icon">
+                            <input type="text" class="form-control" placeholder="Buscar..." id="filter_text"
+                                   value="{{app.request.get('b')}}" name="b" />
+                            <span>
+                                <i class="flaticon2-search-1 text-muted"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 my-2 my-md-0">
+                        <div class="d-flex align-items-center">
+                            <label class="mr-3 mb-0 d-none d-md-block" for="filter_active">Activo: </label>
+                            <select class="form-control" id="filter_active" name="ac">
+                                <option value="" {% if app.request.get('ac') == '' %} selected {% endif %}>Todos</option>
+                                <option value="1" {% if app.request.get('ac') == '1' %} selected {% endif %}>Si</option>
+                                <option value="0" {% if app.request.get('ac') == '0' %} selected {% endif %}>No</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn-send btn btn-light-primary px-6 font-weight-bold mr-2">Aplicar</button>
+                    <button class="btn-clear btn btn-outline-secondary mr-2">Limpiar</button>
+                </div>
+            </div>
+            <div class="col-lg-3 col-xl-4 mt-5 mt-lg-0">
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block _main_tools %}
+    {% include 'crud/_options_ico.html.twig' %}
+{% endblock %}
+
+{% block _main_footer %}
+    {% include 'crud/_index_links.html.twig' with {'route_base': 'provincia'} %}
+{% endblock%}
+
+{% block _main_actions %}
+    {% include 'crud/_index_links_ico.html.twig' with {'route_base': 'provincia'}  %}
+{% endblock %}
+
+{% block _stylesheets %}
+{% endblock %}
+
+{% block _javascripts %}
+    <script>
+        let route;
+        function filter(routeBase)
+        {
+            route = routeBase + "?" + 'n=' + $('#filter_size option:selected').val();
+            route = route + "&" + 'b=' + $('#filter_text').val();
+            route = route + "&" + 'ac=' + "{{app.request.get('ac')}}";
+
+            return route;
+        }
+
+        $(document).ready(function() {
+            $(document).on('change', '#filter_size', function(){
+                route = '{{ path('provincia_index') }}';
+                window.location = filter(route);
+            });
+
+            $(document).on('click', '.btn-send', function(){
+                route = '{{ path('provincia_index') }}';
+                window.location = filter(route);
+            });
+
+            $(document).on('click', '.btn-clear', function(){
+                route = '{{ path('provincia_index') }}';
+                window.location.href = route;
+            });
+        });
+    </script>
+{% endblock %}

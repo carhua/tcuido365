@@ -1,0 +1,9 @@
+twig:
+    default_path: '%kernel.project_dir%/templates'
+    globals:
+        default_results_per_page: '%default_results_per_page%'
+        _media_directory: 'media'
+
+when@test:
+    twig:
+        strict_variables: true

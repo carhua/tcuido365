@@ -1,0 +1,259 @@
+{% extends 'base.html.twig' %}
+{% import 'macro/breadcrumb.html.twig' as breadcrumb %}
+{% import 'macro/action.html.twig' as action %}
+{% import 'macro/pagination.html.twig' as pagination %}
+
+{% set _title = 'Historial - Tipos de Maltrato' %}
+{% set _main_title = 'Listado' %}
+{% set _section =  'historial_tipoviolencia_index'%}
+
+{% block _breadcrumb %}
+    {{ breadcrumb.show('Historial - Tipos de Violencia ') }}
+{% endblock %}
+
+{% block _main %}
+    <div class="table-responsive">
+        {{ action.tbl_start('table-sm table-bordered') }}
+        <thead class="table-primary">
+        <tr>
+            <th class="text-center pb-10" rowspan="2">Nº</th>
+            <th class="text-center d-sm-table-cell pb-10" rowspan="2">Distrito.</th>
+            <th class="text-center d-sm-table-cell pb-10" rowspan="2">Centro Poblado.</th>
+            <th class="text-center d-sm-table-cell pb-10 " rowspan="2">Nombres</th>
+            <th class="text-center d-sm-table-cell pb-10" rowspan="2">Edad</th>
+            <th class="text-center d-sm-table-cell pb-10" rowspan="2">Sexo</th>
+            {% if tipoPersona == 1 %}
+                <th class="text-center d-sm-table-cell " colspan="4">Tipos de Maltrato que ha cometido</th>
+            {% else %}
+                <th class="text-center d-sm-table-cell " colspan="4">Tipos de Maltrato que ha recibido</th>
+            {% endif %}
+
+            <th class="text-center d-sm-table-cell pb-10" rowspan="2">Total</th>
+        </tr>
+        <tr>
+            <th>Psicológico</th>
+            <th>Físico</th>
+            <th>Sexual</th>
+            <th>Económico/Patrimonial</th>
+        </tr>
+        </thead>
+        <tbody class="font-weight-bold">
+        {% for den in paginator %}
+            {% set c1 =  den.tipoPsicologico %}
+            {% set c2 =  den.tipoFisico %}
+            {% set c3 =  den.tipoSexual %}
+            {% set c4 =  den.tipoEconomico %}
+            {% set total = c1+c2+c3+c4%}
+            <tr class="{{ total|semaforo }}">
+                <td class=" d-sm-table-cell">{{ loop.index }}</td>
+                <td class=" d-sm-table-cell">{{ den.nombreDistrito}}</td>
+                <td class=" d-sm-table-cell">{{ den.nombreCentro |upper}}</td>
+                <td class=" d-sm-table-cell">{{ den.nombres |upper }}</td>
+                <td class=" d-sm-table-cell">{{ den.edad }} años</td>
+                <td class=" d-sm-table-cell">{{ den.sexo|upper }}</td>
+                <td class=" d-sm-table-cell">
+                    {{  den.tipoPsicologico }}
+                    {{ action.btn_show_link2_ico(path('show_tipoviolencia_index',{'nd': den.numeroDocumento,'tp':tipoPersona,'tv':'Psicologico','tvn':'Psicologico','pid':den.id})) }}
+                </td>
+                <td class=" d-sm-table-cell">
+                    {{  den.tipoFisico }}
+                    {{ action.btn_show_link2_ico(path('show_tipoviolencia_index',{'nd': den.numeroDocumento,'tp':tipoPersona,'tv':'Fisico','tvn':'Fisico','pid':den.id})) }}
+                </td>
+                <td class=" d-sm-table-cell">
+                    {{  den.tipoSexual }}
+                    {{ action.btn_show_link2_ico(path('show_tipoviolencia_index',{'nd': den.numeroDocumento,'tp':tipoPersona,'tv':'Sexual','tvn':'Sexual','pid':den.id})) }}
+                </td>
+                <td class=" d-sm-table-cell">
+                    {{  den.tipoEconomico }}
+                    {{ action.btn_show_link2_ico(path('show_tipoviolencia_index',{'nd': den.numeroDocumento,'tp':tipoPersona,'tv':'Economico','tvn':'Economico/Patrimonial','pid':den.id})) }}
+                </td>
+
+                <td class=" d-sm-table-cell">
+                    {{ total}}
+                    {{ action.btn_show_link2_ico(path('showtotal_tipoviolencia_index',{'nd': den.numeroDocumento,'tp':tipoPersona,'pid':den.id})) }}
+                </td>
+            </tr>
+         {% else %}
+            <tr>
+                <td colspan="11">No hay registros</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        {{ action.tbl_end() }}
+    </div>
+
+    {{ pagination.pager(paginator, _section) }}
+{% endblock %}
+
+{% block _main_filters %}
+    <form class="mb-7" id="frm_filters">
+        <div class="row align-items-center">
+            <div class="col-lg-12 col-xl-12">
+                <div class="row align-items-center">
+
+                    <div class="col-md-3 my-2 my-md-0">
+                        <div class="form-group">
+                            <label for="centros">Nombres</label>
+                            <div class="input-icon">
+                                <input type="text" class="form-control" placeholder="Buscar..." id="filter_text"
+                                       value="{{app.request.get('b')}}" name="b" />
+                                <span>
+                                    <i class="flaticon2-search-1 text-muted"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 my-2 my-md-0">
+                        <div class="form-group">
+                            <label for="provincia">Provincia</label>
+                            <select name="provincia" id="select_provincias" class="form-control m-select2">
+                                <option value="" selected>Seleccione</option>
+                                {% for provincia in provincias  %}
+                                    <option value="{{ provincia.id }}" {{ provincia.id == provinciaId ? "selected":"" }}>
+                                        {{ provincia.nombre }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 my-2 my-md-0">
+                        <div class="form-group">
+                            <label for="distrito">Distrito</label>
+                            <select name="distrito" id="select_distritos" class="form-control m-select2">
+                                {% if odistrito is not null %}
+                                    <option value="{{ odistrito.id }}" >
+                                        {{ odistrito.nombre }}
+                                    </option>
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3 my-2 my-md-0">
+                        <div class="form-group">
+                            <label for="centroPoblado">Centro Poblado</label>
+                            <select name="centroPoblado" id="select_centros" class="form-control m-select2">
+                                {% if ocentro is not null %}
+                                    <option value="{{ ocentro.id }}" >
+                                        {{ ocentro.nombre }}
+                                    </option>
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 my-2 my-md-0">
+                        <div class="form-group">
+                            <label for="centros">Tipo Persona</label>
+                            <select name="tipoPersona" id="tiposPersona" class="form-control m-select2">
+                                <option value="1" {{ 1 == app.request.get('tipoPersona') ?'selected':'' }}>Agresor</option>
+                                <option value="2" {{ 2 == app.request.get('tipoPersona') ?'selected':'' }}>Agraviado</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3 my-2 my-md-0">
+                        <button class="btn-send btn btn-light-primary px-6 font-weight-bold mr-2">Buscar</button>
+                        <button type="button" onclick="actionForm(this.form.id)"
+                                class="btn-excel btn btn-light-primary px-6 font-weight-bold mr-2">
+                            <i class="fas fa-file-excel"></i>
+                            Exportar
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-xl-4 mt-5 mt-lg-0">
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block _main_tools %}
+
+{% endblock %}
+
+{% block _main_footer %}
+
+{% endblock%}
+
+{% block _main_actions %}
+
+{% endblock %}
+
+{% block _stylesheets %}
+{% endblock %}
+
+{% block _javascripts %}
+    <script>
+        let route;
+        function filter(routeBase)
+        {
+            route = routeBase + "?" + 'n=' + $('#filter_size option:selected').val();
+            route = route + "&" + 'b=' + $('#filter_text').val();
+            route = route + "&" + 'centroPoblado=' + "{{app.request.get('centroPoblado')}}";
+            route = route + "&" + 'tipoPersona=' + "{{app.request.get('tipoPersona')}}";
+            return route;
+        }
+
+        $(document).ready(function() {
+            $('.m-select2').select2({placeholder:"Seleccione"});
+            $(document).on('change', '#filter_size', function(){
+                route = '{{ path('historial_tipoviolencia_index') }}';
+                window.location = filter(route);
+            });
+
+            $(document).on('click', '.btn-send', function(){
+                route = '{{ path('historial_tipoviolencia_index') }}';
+                window.location = filter(route);
+            });
+
+            $(document).on('click', '.btn-clear', function(){
+                route = '{{ path('historial_tipoviolencia_index') }}';
+                window.location.href = route;
+            });
+
+            $("#select_provincias").change(function () {
+                var data = {
+                    provincia_id: $(this).val()
+                };
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ path('distrito_ajax') }}",
+                    data: data,
+                    success: function (data) {
+                        var $selector = $('#select_distritos');
+                        //alert(data);
+                        $selector.html('<option>Seleccione Distrito</option>');
+                        for (var i = 0, total = data.length; i < total; i++) {
+                            $selector.append('<option value="' + data[i].id + '">' + data[i].name + '</option>');
+                        }
+                    }
+                });
+            });
+
+            $("#select_distritos").change(function () {
+                var data = {
+                    distrito_id: $(this).val()
+                };
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ path('centros_ajax') }}",
+                    data: data,
+                    success: function (data) {
+                        var $selector = $('#select_centros');
+                        //alert(data);
+                        $selector.html('<option>Seleccione Centro Poblado</option>');
+                        for (var i = 0, total = data.length; i < total; i++) {
+                            $selector.append('<option value="' + data[i].id + '">' + data[i].name + '</option>');
+                        }
+                    }
+                });
+            });
+        });
+        function actionForm(formid) {
+            route = '{{ path('historialexcel_tipoviolencia_index') }}';
+            document.getElementById(formid).action = route;
+            document.getElementById(formid).submit();
+            document.getElementById(formid).action = '';
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% import 'macro/action.html.twig' as action %}
+
+{{ action.frm_start(form) }}
+
+    {{ action.frm_column(
+        action.frm_column_field(form.nombre),
+        null,
+        null,
+        null,
+        2
+    ) }}
+
+ {{ action.frm_column(
+     action.frm_column_field(form.categoria),
+     action.frm_column_field(form.tipo)
+ ) }}
+
+
+ {{ action.frm_column(
+     action.frm_column_field(form.latitud),
+     action.frm_column_field(form.longitud)
+ ) }}
+
+  {{ action.frm_column(
+      action.frm_column_field(form.distrito,'','m-select2'),
+      action.frm_column_field(form.codigo)
+  ) }}
+
+    {{ action.frm_column(
+        action.frm_column_btn(button_label|default('Guardar')),
+        null,
+        null,
+        null,
+        2
+    ) }}
+
+{{ action.frm_end(form) }}

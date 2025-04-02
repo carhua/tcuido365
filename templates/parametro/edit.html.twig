@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+{% import 'macro/breadcrumb.html.twig' as breadcrumb %}
+{% import 'macro/action.html.twig' as action %}
+
+{% set _title = 'Parametro' %}
+{% set _main_title = 'Editar' %}
+{% set _section =  'parametro_index'%}
+
+{% block _breadcrumb %}
+    {{ breadcrumb.show2('Parametro',_section,'Editar') }}
+{% endblock %}
+
+{% block _main %}
+
+    {{ include('parametro/_form.html.twig', {'button_label': 'Actualizar'}) }}
+
+{% endblock %}
+
+{% block _main_tools %}
+    <ul class="nav nav-pills nav-pills--success">
+        <li class="nav-item">
+            {{ action.btn_list_link_ico(path('parametro_index')) }}
+        </li>
+        <li class="nav-item">
+            {{ action.btn_delete_form_ico(path('parametro_delete', {'id': parametro.id}), csrf_token('delete' ~ parametro.id)) }}
+        </li>
+    </ul>
+{% endblock %}

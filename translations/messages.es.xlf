@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" target-language="es" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="user_not_found">
+                <source>user_not_found</source>
+                <target>Usuario no existe</target>
+            </trans-unit>
+            <trans-unit id="user_disabled">
+                <source>user_disabled</source>
+                <target>Usuario deshabilitado</target>
+            </trans-unit>
+            <trans-unit id="lbl.yes">
+                <source>lbl.yes</source>
+                <target>Si</target>
+            </trans-unit>
+            <trans-unit id="lbl.no">
+                <source>lbl.no</source>
+                <target>No</target>
+            </trans-unit>
+            <trans-unit id="lbl.list">
+                <source>lbl.list</source>
+                <target>Listar</target>
+            </trans-unit>
+            <trans-unit id="lbl.view">
+                <source>lbl.view</source>
+                <target>Mostrar</target>
+            </trans-unit>
+            <trans-unit id="lbl.new">
+                <source>lbl.new</source>
+                <target>Nuevo</target>
+            </trans-unit>
+            <trans-unit id="lbl.edit">
+                <source>lbl.edit</source>
+                <target>Editar</target>
+            </trans-unit>
+            <trans-unit id="lbl.print">
+                <source>lbl.print</source>
+                <target>Imprimir</target>
+            </trans-unit>
+            <trans-unit id="lbl.pay">
+                <source>lbl.pay</source>
+                <target>Pagar</target>
+            </trans-unit>
+            <trans-unit id="lbl.delete">
+                <source>lbl.delete</source>
+                <target>Eliminar</target>
+            </trans-unit>
+            <trans-unit id="lbl.restore">
+                <source>lbl.restore</source>
+                <target>Restaurar</target>
+            </trans-unit>
+            <trans-unit id="lbl.delete.forever">
+                <source>lbl.delete.forever</source>
+                <target>Eliminar definitivamente</target>
+            </trans-unit>
+            <trans-unit id="lbl.report">
+                <source>lbl.report</source>
+                <target>Reporte</target>
+            </trans-unit>
+            <trans-unit id="lbl.export">
+                <source>lbl.export</source>
+                <target>Exportar</target>
+            </trans-unit>
+            <trans-unit id="lbl.import">
+                <source>lbl.import</source>
+                <target>Importar</target>
+            </trans-unit>
+            <trans-unit id="lbl.saveAndCreateNew">
+                <source>lbl.saveAndCreateNew</source>
+                <target>Guardar y crear nuevo</target>
+            </trans-unit>
+
+            <trans-unit id="dashboard">
+                <source>dashboard</source>
+                <target>escritorio</target>
+            </trans-unit>
+            <trans-unit id="system">
+                <source>system</source>
+                <target>sistema</target>
+            </trans-unit>
+
+            <trans-unit id="record_created">
+                <source>record_created</source>
+                <target>Registro creado</target>
+            </trans-unit>
+            <trans-unit id="record_updated">
+                <source>record_updated</source>
+                <target>Registro actualizado</target>
+            </trans-unit>
+            <trans-unit id="record_deleted">
+                <source>record_deleated</source>
+                <target>Registro borrado</target>
+            </trans-unit>
+            <trans-unit id="record_failed">
+                <source>record_failed</source>
+                <target>Registro con errores</target>
+            </trans-unit>
+            <trans-unit id="entry">
+                <source>entry</source>
+                <target>ingreso</target>
+            </trans-unit>
+            <trans-unit id="transfer">
+                <source>transfer</source>
+                <target>Salida</target>
+            </trans-unit>
+            <trans-unit id="logout">
+                <source>logout</source>
+                <target>Cerrar Sesión</target>
+            </trans-unit>
+            <trans-unit id="hi">
+                <source>hi</source>
+                <target>Hola</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

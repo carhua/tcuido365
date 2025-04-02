@@ -1,0 +1,155 @@
+{% extends 'base.html.twig' %}
+{% import 'macro/breadcrumb.html.twig' as breadcrumb %}
+{% import 'macro/action.html.twig' as action %}
+{% import 'macro/pagination.html.twig' as pagination %}
+
+{% set _title = 'Agraviado' %}
+{% set _main_title = 'Listado' %}
+{% set _section =  'agraviado_index'%}
+
+{% block _breadcrumb %}
+    {{ breadcrumb.show('agraviados') }}
+{% endblock %}
+
+{% block _main %}
+    <div class="table-responsive">
+        {{ action.tbl_start('table-sm table-bordered') }}
+        <thead class="table-primary">
+        <tr>
+            {{ action.th('Nº', false, 'text-center') }}
+            {{ action.th('Datos', false, 'd-block d-sm-none') }}
+            {{ action.th('Detalle', false, 'd-sm-none') }}
+
+            {{ action.th('Tipo Doc.', false, 'text-center d-none d-sm-table-cell') }}
+            {{ action.th('Numero Documento', false, 'text-center d-none d-sm-table-cell') }}
+            {{ action.th('Nombres', false, 'text-center d-none d-sm-table-cell') }}
+            {{ action.th('Apellidos', false, 'text-center d-none d-sm-table-cell') }}
+            {{ action.th('Edad', false, 'text-center d-none d-sm-table-cell') }}
+            {{ action.th('Sexo', false, 'text-center d-none d-sm-table-cell') }}
+            {{ action.th('Centro Poblado', false, 'text-center d-none d-sm-table-cell') }}
+            {{ action.th('Ver Historial', true, 'text-center d-none d-sm-table-cell') }}
+
+        </tr>
+        </thead>
+        <tbody>
+        {% for den in paginator %}
+            <tr>
+                <td class="text-center">{{ loop.index | index(paginator) }}</td>
+                <td class="d-block d-sm-none font-size-xs">
+                    {{ den.tipoDocumento.nombre }} <br>
+                    {{ den.numeroDocumento }}<br>
+                    {{ den.nombres }}<br>
+                    {{ den.apellidos }}<br>
+                    {{ den.edad }}<br>
+                    {{ den.sexo.nombre }}
+
+                </td>
+
+                <td class="d-none d-sm-table-cell">{{ den.tipoDocumento.nombre |upper}}</td>
+                <td class="d-none d-sm-table-cell">{{ den.numeroDocumento |upper }}</td>
+                <td class="d-none d-sm-table-cell">{{ den.nombres |upper }}</td>
+                <td class="d-none d-sm-table-cell">{{ den.apellidos|upper }}</td>
+                <td class="d-none d-sm-table-cell">{{ den.edad }}</td>
+                <td class="d-none d-sm-table-cell">{{ den.sexo.nombre |upper }}</td>
+                <td class="d-none d-sm-table-cell">{{ den.centroPoblado.nombre | upper}}</td>
+                <td class="text-center pr-0">
+                    {% if access.has('view') %}
+                        {{ action.btn_show_link2(path('historial_agraviado_index', {'numeroDocumento': den.numeroDocumento})) }}
+                    {% endif %}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">No hay registros</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        {{ action.tbl_end() }}
+    </div>
+
+    {{ pagination.pager(paginator, _section) }}
+{% endblock %}
+
+{% block _main_filters %}
+    <form class="mb-7" id="frm_filters">
+        <div class="row align-items-center">
+            <div class="col-lg-12 col-xl-12">
+                <div class="row align-items-center">
+                    <div class="col-md-4 my-2 my-md-0">
+                        <div class="input-icon">
+                            <input type="text" class="form-control" placeholder="Buscar..." id="filter_text"
+                                   value="{{app.request.get('b')}}" name="b" />
+                            <span>
+                                <i class="flaticon2-search-1 text-muted"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-5 my-2 my-md-0">
+                        <div class="form-group">
+                            <label for="centros">Centro Poblado</label>
+                            <select name="centroPoblado" id="centros" class="form-control m-select2">
+                                {% for key,centro in centros  %}
+                                    <option value="{{ centro.id }}" {{ centro.id == app.request.get('centroPoblado') ?'selected':'' }}>
+                                        {{ centro.nombre }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn-send btn btn-light-primary px-6 font-weight-bold mr-2">Buscar</button>
+                    <button type="reset" class="btn-clear btn btn-outline-secondary mr-2">Limpiar</button>
+                </div>
+            </div>
+            <div class="col-lg-3 col-xl-4 mt-5 mt-lg-0">
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block _main_tools %}
+
+{% endblock %}
+
+{% block _main_footer %}
+
+{% endblock%}
+
+{% block _main_actions %}
+
+{% endblock %}
+
+{% block _stylesheets %}
+{% endblock %}
+
+{% block _javascripts %}
+    <script>
+        let route;
+        function filter(routeBase)
+        {
+            route = routeBase + "?" + 'n=' + $('#filter_size option:selected').val();
+            route = route + "&" + 'b=' + $('#filter_text').val();
+            route = route + "&" + 'centroPoblado=' + "{{app.request.get('centroPoblado')}}";
+
+
+            return route;
+        }
+
+        $(document).ready(function() {
+            $('#centros').select2();
+            $(document).on('change', '#filter_size', function(){
+                route = '{{ path('agraviado_index') }}';
+                window.location = filter(route);
+            });
+
+            $(document).on('click', '.btn-send', function(){
+                route = '{{ path('agraviado_index') }}';
+                window.location = filter(route);
+            });
+
+            $(document).on('click', '.btn-clear', function(){
+                route = '{{ path('agraviado_index') }}';
+                window.location.href = route;
+            });
+        });
+    </script>
+{% endblock %}

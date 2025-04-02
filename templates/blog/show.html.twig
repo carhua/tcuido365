@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+{% import 'macro/breadcrumb.html.twig' as breadcrumb %}
+{% import 'macro/action.html.twig' as action %}
+
+{% set _title = 'Blog' %}
+{% set _main_title = 'Mostrar' %}
+{% set _section =  'blog_index'%}
+
+{% block _breadcrumb %}
+    {{ breadcrumb.show2(_title,_section,'Mostrar') }}
+{% endblock %}
+
+{% block _main %}
+    {{ action.tbl_start() }}
+    {{ action.tbl_tr('Titulo',blog.titulo) }}
+    {{ action.tbl_tr('Descripcion',blog.descripcion) }}
+    <tr>
+        <th>Imagen</th>
+        <td>
+            {% if blog.adjunto is not null %}
+                <img src="{{ asset(_media_directory ~ blog.adjunto.path) | imagine_filter('small') }}"
+                     alt="Fotografia">
+            {% else %}
+               <strong>No hay imagen</strong>
+            {% endif %}
+        </td>
+    </tr>
+
+    {{ action.tbl_tr('Activo',blog.isActive | yesno) }}
+    {{ action.tbl_end() }}
+{% endblock %}
+
+{% block _main_tools %}
+    {% include 'crud/_options_ico.html.twig' %}
+{% endblock %}
+
+{% block _main_footer %}
+    {% include 'crud/_show_links.html.twig' with {'route_base':'blog','entity': blog} %}
+{% endblock %}
+
+{% block _main_actions %}
+    {% include 'crud/_show_links_ico.html.twig' with {'route_base':'blog','entity': blog} %}
+{% endblock %}
+
+{% block _javascripts %}
+{% endblock %}
+
+{% block _stylesheets %}
+{% endblock %}

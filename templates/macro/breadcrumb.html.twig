@@ -1,0 +1,45 @@
+{% macro show(title) %}
+    <ul class="breadcrumb breadcrumb-transparent breadcrumb-dot font-weight-bold p-0 my-2 font-size-sm mr-5">
+        <li class="breadcrumb-item">
+            <a href="{{ path('homepage') }}" class="text-muted">INICIO</a>
+        </li>
+        <li class="breadcrumb-item">
+{#            <a href="#" class="text-muted">{{ title }}</a>#}
+            <span class="text-muted">{{ title }}</span>
+        </li>
+    </ul>
+
+{#    <div class="kt-subheader__breadcrumbs">#}
+{#        <a href="{{ path('homepage') }}" class="kt-subheader__breadcrumbs-home">#}
+{#            <i class="flaticon2-shelter"></i>#}
+{#        </a>#}
+{#        <span class="kt-subheader__breadcrumbs-separator"></span>#}
+{#        <span class="kt-subheader__breadcrumbs-link kt-subheader__breadcrumbs-link--active">{{ title }}</span>#}
+{#    </div>#}
+{% endmacro %}
+
+{% macro show2(title2, route2, title) %}
+    <ul class="breadcrumb breadcrumb-transparent breadcrumb-dot font-weight-bold p-0 my-2 font-size-sm mr-5">
+        <li class="breadcrumb-item">
+            <a href="{{ path('homepage') }}" class="text-muted">INICIO</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{{ path(route2) }}" class="text-muted">{{ title2 }}</a>
+        </li>
+        <li class="breadcrumb-item">
+            <span class="text-muted">{{ title }}</span>
+        </li>
+    </ul>
+
+{#    <div class="kt-subheader__breadcrumbs">#}
+{#        <a href="{{ path('homepage') }}" class="kt-subheader__breadcrumbs-home">#}
+{#            <i class="flaticon2-shelter"></i>#}
+{#        </a>#}
+{#        <span class="kt-subheader__breadcrumbs-separator"></span>#}
+{#        <a href="{{ path(route2) }}" class="kt-subheader__breadcrumbs-link">#}
+{#            {{ title2 }} </a>#}
+{#        <span class="kt-subheader__breadcrumbs-separator"></span>#}
+{#        <span class="kt-subheader__breadcrumbs-link kt-subheader__breadcrumbs-link--active">{{ title }}</span>#}
+{#    </div>#}
+{#    </ul>#}
+{% endmacro %}

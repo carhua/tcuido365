@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+{% import 'macro/breadcrumb.html.twig' as breadcrumb %}
+{% import 'macro/action.html.twig' as action %}
+
+{% set _title = 'Parametro' %}
+{% set _main_title = 'Nuevo' %}
+{% set _section =  'parametro_index'%}
+
+{% block _breadcrumb %}
+    {{ breadcrumb.show2('Parametros',_section,'Nuevo') }}
+{% endblock %}
+
+{% block _main %}
+
+    {{ include('parametro/_form.html.twig') }}
+
+{% endblock %}
+
+{% block _main_tools %}
+    <ul class="nav nav-pills nav-pills--success">
+        <li class="nav-item">
+            {{ action.btn_list_link_ico(path('parametro_index')) }}
+        </li>
+    </ul>
+{% endblock %}
+
+{% block _javascripts %}
+    {{ parent() }}
+    <script>
+        jQuery(document).ready(function() {
+        });
+    </script>
+{% endblock %}

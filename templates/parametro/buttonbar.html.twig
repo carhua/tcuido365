@@ -1,0 +1,5 @@
+{% import 'macro/action.html.twig' as action %}
+
+{{ action.btn_show_link2_ico(path('parametro_show', {'id': row.id})) }}
+{{ action.btn_edit_link2_ico(path('parametro_edit', {'id': row.id})) }}
+{{ action.btn_print_link2_ico(path('parametro_show', {'id': row.id})) }}

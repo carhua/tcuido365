@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+{% import 'macro/breadcrumb.html.twig' as breadcrumb %}
+{% import 'macro/action.html.twig' as action %}
+{% import 'macro/pagination.html.twig' as pagination %}
+
+{% set _title = 'Usuario' %}
+{% set _main_title = 'Importados' %}
+{% set _section = 'usuario_index' %}
+
+{% block page_breadcrumb -%}
+    {{ breadcrumb.show(_title) }}
+{% endblock %}
+
+{% block _main_options %}
+    <div class="col-12 mb-10">
+        <a href="{{ path('import') }}" class="btn btn-success">Importar Nuevo</a>
+        <a href="{{ path('usuario_import_process') }}" class="btn btn-secondary">Recargar</a>
+    </div>
+{% endblock %}
+
+{% block _main %}
+    <form method="post">
+        <button type="submit" class="btn btn-primary">Procesar</button>
+        <label class="css-control css-control-primary css-checkbox ml-20">
+            <input type="checkbox" id="guardar" name="guardar" class="css-control-input " {% if app.request.get('guardar') %}checked{% endif %}>
+            <span class="css-control-indicator"></span> Guardar Datos
+        </label>
+        <label class="css-control css-control-primary css-checkbox">
+            <input type="checkbox" id="errors" name="errors" class="css-control-input " {% if app.request.get('errors') %}checked{% endif %}>
+            <span class="css-control-indicator"></span> Solo con errores
+        </label>
+
+        {% embed 'theme/_table.html.twig' %}
+            {% block table_class %}table-xs font-size-xs mt-10{% endblock %}
+            {% import 'macro/action.html.twig' as action %}
+            {% block table_head %}
+                <tr>
+                    {% if result is not empty %}
+                        <th>STAT.</th>
+                    {% endif %}
+                    <th>#</th>
+                    {% for col, header in data.headers %}
+                        <th>
+                            {{- header -}}
+                            <select id="options{{ loop.index }}" name="options[{{ loop.index }}]" class="form-control form-control-sm">
+                                {% for key, value in headerOptions %}
+                                    <option value="{{ key }}" {% if key == header or (selectedOptions is not empty and selectedOptions[col+1] == key) %}selected="selected"{% endif %}>{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                        </th>
+                    {% endfor %}
+                </tr>
+            {% endblock %}
+            {% block table_body %}
+                {% for row in data.rows %}
+                    <tr class="{% if onlyErrors and result is not empty and result[loop.index - 1] is empty %}d-none{% endif %}">
+                        {% if result is not empty %}
+                            <td class="font-size-sm {% if result[loop.index - 1] is not empty %}text-danger{% endif %}">
+                                {{ result[loop.index - 1] | join('; ') }}
+                            </td>
+                        {% endif %}
+                        <th>{{ loop.index }}</th>
+                        {% for element in row %}
+                            <td>{{ element }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            {% endblock %}
+        {% endembed %}
+    </form>
+{% endblock %}
+
+{% block _main_footer %}
+{% endblock%}

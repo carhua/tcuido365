@@ -1,0 +1,235 @@
+{% extends 'base.html.twig' %}
+
+{% set _title = 'Login' %}
+
+{% block _stylesheets %}
+    <link href="{{ asset(_theme ~ 'css/pages/login/login-2.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block _body %}
+    <!--begin::Main-->
+    <div class="d-flex flex-column flex-root">
+        <!--begin::Login-->
+        <div class="login login-2 login-signin-on d-flex flex-column flex-lg-row flex-row-fluid bg-white" id="kt_login">
+            <!--begin::Aside-->
+            <div class="login-aside position-relative overflow-hidden order-2 order-lg-1 d-flex flex-column-fluid flex-lg-row-auto px-7 py-lg-2 px-lg-35">
+                <!--begin: Aside Container-->
+                <div class="d-flex flex-row-fluid flex-column justify-content-between">
+                    <!--begin::Logo-->
+                    <a href="#" class="text-center pt-2">
+{#                        <img src="{{ asset(_theme ~ 'media/logos/logo.png') }}" class="max-h-75px" alt="" />#}
+                        <img src="{{ asset('img/tcuido_logo.png') }}" class="max-h-100px" alt="" />
+                    </a>
+                    <!--end::Logo-->
+                    <!--begin::Aside body-->
+                    <div class="d-flex flex-column-fluid flex-column flex-center">
+                        <!--begin::Signin-->
+                        <div class="login-form login-signin py-11">
+                                <div class="frmRecupera">
+                                    <div class="text-center pb-8">
+                                        <h2 class="font-weight-bolder text-dark display5">Correo enviado</h2>
+                                    </div>
+
+{% block body %}
+    <p>
+        Si existe una cuenta que coincide con su correo electrónico, se acaba de enviar un correo electrónico que contiene un enlace que puede usar para restablecer su contraseña.
+        Este enlace expirará en {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+    </p>
+    <p>Si no recibe un correo electrónico, revise su carpeta de correo no deseado o <a href="{{ path('app_forgot_password_request') }}">intentar nuevamente</a>.</p>
+
+        <div class="form-group d-flex">
+            <div class="text-center mt-2">
+                <a href="/es/login" class="btn btn-dark font-weight-bolder font-size-h6 px-8 py-4 my-3">Ingresar</a>
+            </div>
+        </div>
+{% endblock %}
+
+                                </div>
+                            <!--end::Form-->
+                        </div>
+                        <!--end::Signin-->
+                    </div>
+                    <!--end::Aside body-->
+                </div>
+                <!--end: Aside Container-->
+            </div>
+            <!--begin::Aside-->
+            <!--begin::Content-->
+            <div class="content order-1 order-lg-2 flex-column-row-auto flex-grow-1 pt-md-0 pb-40 bgi-no-repeat bgi-position-y-bottom bgi-position-x-center"
+                 style="background-color: #b1dced66;background-image: url({{ asset('img/paisaje.jpg') }});">
+                <!--begin::Content body-->
+                <div class="d-flex flex-center pb-lg-10 pt-lg-0 pt-md-0 pb-10">
+                    <div class="d-flex flex-column justify-content-center text-center pt-xl-10 pt-lg-10 pb-sm-10">
+                        <h3 class="display4 font-weight-bolder my-7 text-dark">Sistema de Reporte de Casos</h3>
+                        <p class="font-weight-bolder font-size-h4 font-size-lg text-dark opacity-70 pb-lg-3 pb-sm-40 pb-10">
+                            Revisa la lista de casos reportados de violencia y riesgo de desprotección de menores de edad
+
+                    </div>
+                </div>
+                <!--end::Content body-->
+            </div>
+            <!--end::Content-->
+        </div>
+        <!--end::Login-->
+    </div>
+    <!--end::Main-->
+    <script>var HOST_URL = "https://keenthemes.com/metronic/tools/preview";</script>
+    <!--begin::Global Config(global config for global JS scripts)-->
+    <script>var KTAppSettings = { "breakpoints": { "sm": 576, "md": 768, "lg": 992, "xl": 1200, "xxl": 1200 }, "colors": { "theme": { "base": { "white": "#ffffff", "primary": "#6993FF", "secondary": "#E5EAEE", "success": "#1BC5BD", "info": "#8950FC", "warning": "#FFA800", "danger": "#F64E60", "light": "#F3F6F9", "dark": "#212121" }, "light": { "white": "#ffffff", "primary": "#E1E9FF", "secondary": "#ECF0F3", "success": "#C9F7F5", "info": "#EEE5FF", "warning": "#FFF4DE", "danger": "#FFE2E5", "light": "#F3F6F9", "dark": "#D6D6E0" }, "inverse": { "white": "#ffffff", "primary": "#ffffff", "secondary": "#212121", "success": "#ffffff", "info": "#ffffff", "warning": "#ffffff", "danger": "#ffffff", "light": "#464E5F", "dark": "#ffffff" } }, "gray": { "gray-100": "#F3F6F9", "gray-200": "#ECF0F3", "gray-300": "#E5EAEE", "gray-400": "#D6D6E0", "gray-500": "#B5B5C3", "gray-600": "#80808F", "gray-700": "#464E5F", "gray-800": "#1B283F", "gray-900": "#212121" } }, "font-family": "Poppins" };</script>
+    <!--end::Global Config-->
+    <!--begin::Global Theme Bundle(used by all pages)-->
+    <script src="{{ asset(_theme ~ 'plugins/global/plugins.bundle.js') }}"></script>
+    <script src="{{ asset(_theme ~ 'plugins/custom/prismjs/prismjs.bundle.js') }}"></script>
+    <script src="{{ asset(_theme ~ 'js/scripts.bundle.js') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.21.0/jquery.validate.min.js"></script>
+    <!--end::Global Theme Bundle-->
+    <!--begin::Page Scripts(used by this page)-->
+{#    <script src="{{ asset(_theme ~ 'js/pages/custom/login/login.js') }}"></script>#}
+    <script src="https://www.google.com/recaptcha/api.js?render=6Le3wqIUAAAAAMsaTXZss_NHLOYtGKNjvARsto5y"></script>
+    <script>
+        $(document).ready(function () {
+            //document.getElementById("username").focus();
+            /*
+            $('#kt_login_signin_submit').on( "click", function(e) {
+                e.preventDefault();
+
+                let btn = $(this);
+                let form = $("#kt_login_signin_form");
+
+                form.validate({
+                    rules: {
+                        _username: {
+                            required: true
+                        },
+                        _password: {
+                            required: true
+                        }
+                    }
+                });
+                form.submit();
+
+                if (!form.valid()) {
+                    return;
+                }
+
+                btn.addClass('kt-spinner kt-spinner--right kt-spinner--sm kt-spinner--light').attr('disabled', true);
+
+                grecaptcha.ready(function() {
+                    grecaptcha.execute('6Le3wqIUAAAAAMsaTXZss_NHLOYtGKNjvARsto5y', {action: 'login'}).then(function(token) {
+                        let recaptchaResponse = document.getElementById('recaptchaResponse');
+                        recaptchaResponse.value = token;
+                        Notify.success('Validando datos del sistema')
+                        form.submit();
+                    });
+                });
+                
+            });
+*/
+            $(".olvido").on( "click", function(e) {
+                e.preventDefault();
+                $('.frmLogin').hide();
+                $('.frmRecupera').show();
+            } );
+
+            $("#kt_login_forgot_cancel").on( "click", function(e) {
+                e.preventDefault();
+                $('.frmLogin').show();
+                $('.frmRecupera').hide();
+            } );
+
+        });
+    </script>
+    <!--end::Page Scripts-->
+{% endblock %}
+
+{% block _xxbody %}
+<!-- begin:: Page -->
+<div class="kt-grid kt-grid--ver kt-grid--root">
+    <div class="kt-grid kt-grid--hor kt-grid--root  kt-login kt-login--v5 kt-login--signin" id="kt_login">
+        <div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--desktop kt-grid--ver-desktop kt-grid--hor-tablet-and-mobile"
+             style="background-image: url({{ asset(_theme ~ 'media/bg/bg-3.jpg') }});">
+            <div class="kt-login__left">
+                <div class="kt-login__wrapper">
+                    <div class="kt-login__content">
+                        <h3 class="kt-login__title"></h3>
+                        <span class="kt-login__desc">
+                            Les damos la Bienvenida a ...<br>
+                        </span>
+                        {#<div class="kt-login__actions">
+                            <button type="button" id="kt_login_signup" class="btn btn-outline-brand btn-pill">Get An Account</button>
+                        </div>#}
+                    </div>
+                </div>
+            </div>
+            <div class="kt-login__divider">
+                <div></div>
+            </div>
+            <div class="kt-login__right">
+                <div class="kt-login__wrapper">
+                    <div class="kt-login__signin">
+                        <div class="kt-login__head">
+                            <img src="{{ asset('img/tcuido_logo.png') }}" class="max-h-100px" alt="" />
+{#                            <img src="{{ asset(_theme ~ 'media/logos/logo-5.png') }}">#}
+                            <!-- <h3 class="kt-login__title">SISPRO V3</h3> -->
+                        </div>
+                        {% if error %}
+                            <!-- No llega a este punto. revisar Jquery -->
+                            <div class="kt-alert kt-alert--outline alert alert-danger alert-dismissible" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
+                                <span>{{ error.messageKey|trans(error.messageData, 'security') }}</span>
+                            </div>
+                        {% endif %}
+                        <div class="kt-login__form">
+                            <form class="kt-form" action="{{ path('security_login') }}" autocomplete="off" method="post">
+                                <div class="form-group">
+                                    <input id="username" class="form-control" type="text" placeholder="Usuario"
+                                           name="_username" value="{{ last_username }}" autocomplete="off">
+                                </div>
+                                <div class="form-group">
+                                    <input class="form-control form-control-last" type="Password" placeholder="Contraseña" name="_password">
+                                </div>
+                                <div class="row kt-login__extra">
+                                    <div class="col kt-align-left">
+                                        <label class="kt-checkbox">
+                                            <input type="checkbox" name="_remember_me" > Recordar
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                    <div class="col kt-align-right">
+                                        {#<a href="javascript:;" id="kt_login_forgot" class="kt-link">Forget Password ?</a>#}
+                                    </div>
+                                </div>
+                                <div class="kt-login__actions">
+                                    <button id="kt_login_signin_submit" class="btn btn-brand btn-pill btn-elevate">Ingresar</button>
+                                </div>
+                                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"/>
+                                <input type="hidden" name="recaptcha_response" id="recaptchaResponse">
+                            </form>
+                        </div>
+                    </div>
+                    <div class="kt-login__forgot">
+                        <div class="kt-login__head">
+                            <h3 class="kt-login__title">Forgotten Password ?</h3>
+                            <div class="kt-login__desc">Enter your email to reset your password:</div>
+                        </div>
+                        <div class="kt-login__form">
+                            <form class="kt-form" action="">
+                                <div class="form-group">
+                                    <input class="form-control" type="text" placeholder="Email" name="email" id="kt_email" autocomplete="off">
+                                </div>
+                                <div class="kt-login__actions">
+                                    <button id="kt_login_forgot_submit" class="btn btn-brand btn-pill btn-elevate">Request</button>
+                                    <button id="kt_login_forgot_cancel" class="btn btn-outline-brand btn-pill">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end:: Page -->
+
+{% endblock _xxbody %}

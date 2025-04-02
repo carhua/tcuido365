@@ -1,0 +1,132 @@
+{% extends 'base.html.twig' %}
+{% import 'macro/breadcrumb.html.twig' as breadcrumb %}
+{% import 'macro/action.html.twig' as action %}
+
+{% set _title = 'Historial - Caso Personas Desaparecidas' %}
+{% set _main_title = 'Mostrar' %}
+{% set _section =  'historial_desaparecido_index' %}
+
+{% block _breadcrumb %}
+    {{ breadcrumb.show2(_title,_section,'Mostrar') }}
+{% endblock %}
+
+{% block _main %}
+
+    {% if persona != null and (historialData|length)>0 %}
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                <th colspan="4" class="text-center">Datos Personales</th>
+                </thead>
+                <thead class="table-secondary">
+                <th>Persona</th>
+                <th>Tipo Documento</th>
+                <th>Nº Documento</th>
+                <th>Sexo</th>
+                </thead>
+                <tbody>
+                <tr class="font-weight-bold">
+                    <td>{{ persona.nombres }} {{ persona.apellidos }}</td>
+                    <td>{{ persona.tipoDocumento }} </td>
+                    <td>{{ persona.numeroDocumento }}</td>
+                    <td>{{ persona.sexo }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <span class="font-weight-bold text-center">
+            <h2>No se encontraron casos para la persona seleccionada</h2>
+        </span>
+    {% endif %}
+    <br>
+    {% for caso_desaparecido in historialData %}
+        <span class="font-weight-bold"><h2>Caso Nº {{ loop.index }}</h2></span>
+        <div class="table-responsive">
+            {{ action.tbl_start('table-sm table-bordered') }}
+            {{ action.tbl_tr('Distrito',caso_desaparecido.distrito) }}
+            {{ action.tbl_tr('Centro Poblado',caso_desaparecido.centroPoblado.nombre) }}
+            {{ action.tbl_tr('Fecha de Reporte',caso_desaparecido.fechaReporte) }}
+            {{ action.tbl_tr('Descripcion Reporte',caso_desaparecido.descripcionReporte) }}
+            <tr>
+                <th class="">Denunciante</th>
+                {% for tipo in caso_desaparecido.denuncianteDesaparecidos %}
+                    <td class="text-left">
+                        <span class="font-weight-bold">Nombres: </span> {{ tipo.nombres|upper }} <br>
+                        <span class="font-weight-bold">Apellidos :</span> {{ tipo.apellidos|upper }} <br>
+                        <span class="font-weight-bold">Tipo Documento: </span> {{ tipo.tipoDocumento.nombre |upper }}
+                        <br>
+                        <span class="font-weight-bold">Número Documento: </span> {{ tipo.numeroDocumento }}<br>
+                        <span class="font-weight-bold">Edad: </span> {{ tipo.edad }}<br>
+                        <span class="font-weight-bold">Sexo: </span> {{ tipo.sexo.nombre |upper }}<br>
+{#                        <span class="font-weight-bold">Nacionalidad: </span> {{ tipo.nacionalidad.nombre|upper }} <br>#}
+                        <span class="font-weight-bold">Teléfono: </span> {{ tipo.telefono }}<br>
+                        <span class="font-weight-bold">Email: </span> {{ tipo.email }}<br></td>
+
+                {% endfor %}
+            </tr>
+            <tr>
+                <th class="">Desaparecido(s)</th>
+                {% for tipo in caso_desaparecido.desaparecidos %}
+                    <td class="text-left">
+                        <span class="font-weight-bold">Nombres: </span> {{ tipo.nombres |upper }} <br>
+                        <span class="font-weight-bold">Apellidos: </span> {{ tipo.apellidos |upper }} <br>
+                        <span class="font-weight-bold">Tipo Documento: </span> {{ tipo.tipoDocumento.nombre |upper }}
+                        <br>
+                        <span class="font-weight-bold">Número Documento: </span> {{ tipo.numeroDocumento }}<br>
+                        <span class="font-weight-bold">Edad: </span> {{ tipo.edad }}<br>
+                        <span class="font-weight-bold">Sexo: </span> {{ tipo.sexo.nombre |upper }}<br>
+                        <span class="font-weight-bold">Nacionalidad: </span> {{ tipo.nacionalidad.nombre|upper }} <br>
+                        <span class="font-weight-bold">Teléfono: </span> {{ tipo.telefono|upper }} <br>
+                        <span class="font-weight-bold">Discapacidad: </span> {{ tipo.discapacidad|upper }}<br>
+                        <span class="font-weight-bold">Lugar de desaparición: </span> {{ tipo.lugarDesaparicion|upper }}
+                        <br>
+                        <span class="font-weight-bold">Dirección de desaparición: </span> {{ tipo.direccionDesaparicion|upper }}
+                        <br>
+                    </td>
+                {% endfor %}
+            </tr>
+
+            {{ action.tbl_end() }}
+        </div>
+    {% endfor %}
+{% endblock %}
+
+{% block _main_tools %}
+    <button type="button" onclick="imprimir()"
+            class="btn-print btn btn-light-primary px-6 font-weight-bold mr-2">
+        <i class="fas fa-print"></i>
+        Imprimir
+    </button>
+{% endblock %}
+
+{% block _main_footer %}
+
+{% endblock %}
+
+{% block _main_actions %}
+{% endblock %}
+
+{% block _javascripts %}
+    <script>
+        function imprimir() {
+            window.print();
+        }
+    </script>
+
+{% endblock %}
+
+{% block _stylesheets %}
+    <style>
+        @media print {
+            .btn-print, .oculto-impresion * {
+                display: none !important;
+            }
+            .subheader * {
+                display: none !important;
+            }
+
+        }
+    </style>
+
+{% endblock %}

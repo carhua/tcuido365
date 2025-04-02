@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+{% import 'macro/breadcrumb.html.twig' as breadcrumb %}
+{% import 'macro/action.html.twig' as action %}
+
+{% set _title = 'Institucion' %}
+{% set _main_title = 'Editar' %}
+{% set _section =  'institucion_index'%}
+
+{% block _breadcrumb %}
+    {{ breadcrumb.show2('instituciones','institucion_index','Editar') }}
+{% endblock %}
+
+{% block _main %}
+    {{ include('institucion/_form.html.twig', {'button_label': 'Actualizar'}) }}
+{% endblock %}
+
+{% block _main_tools %}
+    {% include 'crud/_options_ico.html.twig' %}
+{% endblock %}
+
+{% block _main_actions %}
+    {% include 'crud/_edit_links_ico.html.twig' with {'route_base':'institucion','entity': institucion} %}
+{% endblock %}
+
+{% block _body_tools_ico %}
+    {% include 'crud/_edit_links_tool.html.twig' with {'route_base':'institucion','entity': institucion} %}
+{% endblock %}
+
+{% block _main_footer %}
+    {% include 'crud/_edit_links.html.twig' with {'route_base':'institucion','entity': institucion} %}
+{% endblock %}
+
+{% block _javascripts %}
+    <script>
+        jQuery(document).ready(function() {
+
+        });
+    </script>
+{% endblock %}

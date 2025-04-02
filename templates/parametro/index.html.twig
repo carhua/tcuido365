@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+{% import 'macro/breadcrumb.html.twig' as breadcrumb %}
+{% import 'macro/action.html.twig' as action %}
+
+{% set _title = 'parametro' %}
+{% set _main_title = 'Listado' %}
+{% set _section =  'parametro_index'%}
+
+{% block _breadcrumb %}
+    {{ breadcrumb.show('parametros') }}
+{% endblock %}
+
+{% block _main %}
+    <div class="table-responsive">
+        <table class="table table-sm table-striped m-table m-table--head-bg-metal">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nombre</th>
+                    <th>Alias</th>
+                    <th>Valor</th>
+                    <th>Padre</th>
+                    <th>Activo</th>
+                    <th>actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for parametro in parametros %}
+                <tr>
+                    <td>{{ parametro.id }}</td>
+                    <td>{{ parametro.nombre }}</td>
+                    <td>{{ parametro.alias }}</td>
+                    <td>{{ parametro.valor }}</td>
+                    <td>{{ parametro.padre }}</td>
+                    <td>{{ parametro.activo | yesnocustom | raw }}</td>
+                    <td>
+                        {{ action.btn_show_link2_ico(path('parametro_show', {'id': parametro.id})) }}
+                        {{ action.btn_edit_link2_ico(path('parametro_edit', {'id': parametro.id})) }}
+                        {{ action.btn_print_link2_ico(path('parametro_show', {'id': parametro.id})) }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6">no records found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if parametros.haveToPaginate %}
+        <nav aria-label="Pagina de resultados" class="float-right">
+            {{ pagerfanta(parametros, 'twitter_bootstrap4_translated', {routeName: 'parametro_index_paginated', routeParams: app.request.query.all}) }}
+        </nav>
+    {% endif %}
+
+    {{ action.btn_new_link(path('parametro_new')) }}
+{% endblock %}
+
+{% block _main_tools %}
+    <ul class="nav nav-pills nav-pills--success" role="tablist">
+        <li class="nav-item">
+            {{ action.btn_new_link_ico(path('parametro_new')) }}
+        </li>
+    </ul>
+{% endblock %}

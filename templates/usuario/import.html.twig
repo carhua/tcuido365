@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+{% import 'macro/action.html.twig' as action %}
+
+{% set _title = 'Usuario' %}
+{% set _main_title = 'Importar' %}
+{% set _section =  'usuario_index' %}
+
+
+
+{% block _main %}
+
+    {{ action.frm_start(formImport) }}
+        {{ action.frm_column(
+            action.frm_column_field(formImport.file),
+            null,
+            null,
+            null,
+            2
+        ) }}
+
+        {{ action.frm_column(
+            action.frm_column_btn(button_label|default('Importar')),
+            null,
+            null,
+            null,
+            2
+        ) }}
+    {{ action.frm_end(formImport) }}
+
+{% endblock %}
+
+{% block _main_tools %}
+
+{% endblock %}
+
+{% block _main_actions %}
+{% endblock %}
+
+{% block _body_tools_ico %}
+
+{% endblock %}
+
+{% block _main_footer %}
+
+{% endblock %}
