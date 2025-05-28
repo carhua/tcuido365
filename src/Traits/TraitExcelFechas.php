@@ -1600,6 +1600,103 @@ trait TraitExcelFechas
         }
     }
 
+    public static function institucionesExp($data)
+    {
+        try {
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+            $sheet->setCellValue('A1', 'REPORTE DE INSTITUCIONES');
+            $spreadsheet->getActiveSheet()->mergeCells('A1:J1');
+            $fechaActual = date('Y-m-d');
+            $fechaFormateada = self::formatFecha($fechaActual);
+            $sheet->setCellValue('A2', 'FECHA DE REPORTE: '.$fechaFormateada);
+            $spreadsheet->getActiveSheet()->mergeCells('A2:J2');
+            $sheet->setCellValue('A3', 'Cantidad Registros: '.\count($data));
+            $spreadsheet->getActiveSheet()->mergeCells('A3:J3');
+
+            // estableciendo estilos de titulos
+            $styleArrayTitulo = [
+                'font' => [
+                    'bold' => true,
+                    'size' => '14',
+                ],
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                ],
+            ];
+
+            $spreadsheet->getActiveSheet()->getStyle('A1:D3')->applyFromArray($styleArrayTitulo);
+            $spreadsheet->getActiveSheet()->getStyle('A1:D3')->getFill()
+                ->setFillType(Fill::FILL_SOLID)
+                ->getStartColor()->setRGB('F2F2F2');
+
+            // agregando logo tcuido
+            $drawing = new Drawing();
+            $drawing->setName('Logo');
+            $drawing->setDescription('Logo');
+            $drawing->setPath('./img/tcuido_logo.png');
+            $drawing->setWidth(95);
+            $drawing->setHeight(75);
+            $drawing->setWorksheet($spreadsheet->getActiveSheet());
+
+            // establecer las cabeceras
+            $sheet->setCellValue('A5', 'NOMBRE');
+            $sheet->setCellValue('B5', 'Provincia/Distrito/Centro Poblado');
+            $sheet->setCellValue('C5', 'ACTIVO');
+
+            // estilos para las cabeceras
+            $styleArrayCabeceras = [
+                'font' => [
+                    'bold' => true,
+                    'size' => '11',
+                    'color' => [
+                        'rgb' => 'FFFFFF',
+                    ],
+                ],
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_LEFT,
+                ],
+            ];
+            $spreadsheet->getActiveSheet()->getStyle('A5:C5')->applyFromArray($styleArrayCabeceras);
+            $spreadsheet->getActiveSheet()->getStyle('A5:C5')->getFill()
+                ->setFillType(Fill::FILL_SOLID)
+                ->getStartColor()->setRGB('215967');
+            $spreadsheet->getActiveSheet()->setAutoFilter('A5:C5');
+
+            $i = 6;
+            //                         /** @var Distrito[] $data */
+            //  $sheet->setCellValue('A' . $i,"Hola");
+            foreach ($data as $dato) {
+                $sheet->setCellValue('A'.$i, $dato->getName());
+                $sheet->setCellValue('B'.$i, $dato->getProvincia()->getNombre().' / '.$dato->getDistrito()->getNombre().' / '.$dato->getCentroPoblado()->getNombre());
+                $sheet->setCellValue('C'.$i, $dato->isActive());
+
+                ++$i;
+            }
+
+            // estableciendo anchos de columa
+            for ($col = 65; $col <= 78; ++$col) {
+                $spreadsheet->getActiveSheet()->getColumnDimension(\chr($col))->setAutoSize(true);
+            }
+
+            $spreadsheet->getActiveSheet()->getColumnDimensionByColumn(3)->setAutoSize(false);
+            $spreadsheet->getActiveSheet()->getColumnDimensionByColumn(3)->setWidth(16);
+
+            self::agregarLeyenda($sheet, $i);
+
+            $sheet->setTitle('Distrito');
+            // $sheet->setTitle("Casos-" . self::getMes($mes)."-".$anio);
+            $writer = new Xlsx($spreadsheet);
+            $fileName = 'Distrito.xlsx';
+            $temp_file = tempnam(sys_get_temp_dir(), $fileName);
+            $writer->save($temp_file);
+
+            return $temp_file;
+        } catch (\Exception $ex) {
+            return new Response($ex->getMessage());
+        }
+    }
+
     public static function centroPobladoExp($data)
     {
         try {
