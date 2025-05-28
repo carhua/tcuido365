@@ -1880,6 +1880,9 @@ trait TraitExcelFechas
                 $spreadsheet->getActiveSheet()->getColumnDimension(\chr($col))->setAutoSize(true);
             }
 
+            $spreadsheet->getActiveSheet()->getColumnDimensionByColumn(6)->setAutoSize(false);
+            $spreadsheet->getActiveSheet()->getColumnDimensionByColumn(6)->setWidth(16);
+
             self::agregarLeyenda($sheet, $i);
 
             $sheet->setTitle('Noticia');
@@ -1984,6 +1987,9 @@ trait TraitExcelFechas
             for ($col = 65; $col <= 78; ++$col) {
                 $spreadsheet->getActiveSheet()->getColumnDimension(\chr($col))->setAutoSize(true);
             }
+
+            $spreadsheet->getActiveSheet()->getColumnDimensionByColumn(8)->setAutoSize(false);
+            $spreadsheet->getActiveSheet()->getColumnDimensionByColumn(8)->setWidth(16);
 
             self::agregarLeyenda($sheet, $i);
 

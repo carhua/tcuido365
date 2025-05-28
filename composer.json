@@ -22,6 +22,7 @@
         "ext-json": "*",
         "ext-zip": "*",
         "babdev/pagerfanta-bundle": "^4.2",
+        "carloschininin/php-spreadsheet": "^0.0.2",
         "doctrine/annotations": "^2.0",
         "doctrine/doctrine-bundle": "^2.6",
         "doctrine/doctrine-migrations-bundle": "^3.2",
