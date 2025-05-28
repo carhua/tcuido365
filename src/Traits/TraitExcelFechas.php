@@ -1397,6 +1397,9 @@ trait TraitExcelFechas
                 $spreadsheet->getActiveSheet()->getColumnDimension(\chr($col))->setAutoSize(true);
             }
 
+            $spreadsheet->getActiveSheet()->getColumnDimensionByColumn(2)->setAutoSize(false);
+            $spreadsheet->getActiveSheet()->getColumnDimensionByColumn(2)->setWidth(16);
+
             self::agregarLeyenda($sheet, $i);
 
             $sheet->setTitle('Region');
@@ -1491,6 +1494,9 @@ trait TraitExcelFechas
                 $spreadsheet->getActiveSheet()->getColumnDimension(\chr($col))->setAutoSize(true);
             }
 
+            $spreadsheet->getActiveSheet()->getColumnDimensionByColumn(3)->setAutoSize(false);
+            $spreadsheet->getActiveSheet()->getColumnDimensionByColumn(3)->setWidth(16);
+
             self::agregarLeyenda($sheet, $i);
 
             $sheet->setTitle('Provincia');
@@ -1584,6 +1590,9 @@ trait TraitExcelFechas
             for ($col = 65; $col <= 78; ++$col) {
                 $spreadsheet->getActiveSheet()->getColumnDimension(\chr($col))->setAutoSize(true);
             }
+
+            $spreadsheet->getActiveSheet()->getColumnDimensionByColumn(3)->setAutoSize(false);
+            $spreadsheet->getActiveSheet()->getColumnDimensionByColumn(3)->setWidth(16);
 
             self::agregarLeyenda($sheet, $i);
 
@@ -1779,6 +1788,9 @@ trait TraitExcelFechas
             for ($col = 65; $col <= 78; ++$col) {
                 $spreadsheet->getActiveSheet()->getColumnDimension(\chr($col))->setAutoSize(true);
             }
+
+            $spreadsheet->getActiveSheet()->getColumnDimensionByColumn(5)->setAutoSize(false);
+            $spreadsheet->getActiveSheet()->getColumnDimensionByColumn(5)->setWidth(16);
 
             self::agregarLeyenda($sheet, $i);
 
