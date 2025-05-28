@@ -2079,6 +2079,9 @@ trait TraitExcelFechas
                 $spreadsheet->getActiveSheet()->getColumnDimension(\chr($col))->setAutoSize(true);
             }
 
+            $spreadsheet->getActiveSheet()->getColumnDimensionByColumn(3)->setAutoSize(false);
+            $spreadsheet->getActiveSheet()->getColumnDimensionByColumn(3)->setWidth(16);
+
             self::agregarLeyenda($sheet, $i);
 
             $sheet->setTitle('UsuarioRol');
