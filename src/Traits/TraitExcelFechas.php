@@ -2074,6 +2074,9 @@ trait TraitExcelFechas
                 $spreadsheet->getActiveSheet()->getColumnDimension(\chr($col))->setAutoSize(true);
             }
 
+            $spreadsheet->getActiveSheet()->getColumnDimensionByColumn(2)->setAutoSize(false);
+            $spreadsheet->getActiveSheet()->getColumnDimensionByColumn(2)->setWidth(16);
+
             self::agregarLeyenda($sheet, $i);
 
             $sheet->setTitle($nombreHoja);
