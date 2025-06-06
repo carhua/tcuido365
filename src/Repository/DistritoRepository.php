@@ -43,8 +43,10 @@ class DistritoRepository extends BaseRepository
     public function findByProvincia($provinciaId)
     {
         return $this->createQueryBuilder('d')
+            ->andWhere('d.isActive = :active')
             ->andWhere('d.provincia = :val')
             ->orWhere('d.nombre = :val2')
+            ->setParameter('active', '1')
             ->setParameter('val', $provinciaId)
             ->setParameter('val2', 'TODOS')
             ->orderBy('d.id', 'ASC')

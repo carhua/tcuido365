@@ -49,6 +49,10 @@ class CasoTrataController extends BaseController
         $cantidad = "-";
 
         $user = $this->getUser();
+        $userIdProvincia = $user->getProvincia()->getId();
+        $userIdDistrito = $user->getDistrito()->getId();
+        $userIdCentro = $user->getCentroPoblado()->getId();
+
         $rteniente = self::validarRoles($user->getRoles());
         $provincias = self::listProvinciasByRol($rteniente, $user, $em);
         $tipos = $em->getRepository(TipoExplotacion::class)->findBy(['isActive' => true]);
@@ -71,7 +75,7 @@ class CasoTrataController extends BaseController
         if (null === $request->query->get('estado')) {
             $request->query->set('estado', 'Notificado');
         }
-
+//dd($request->query->all());
         if (null !== $oprovincia && null !== $odistrito) {
             $paginator = $manager->listIndex($request->query->all(), $page, $user);
             $cantidad = count($paginator);
@@ -236,6 +240,10 @@ class CasoTrataController extends BaseController
         $this->denyAccess(Security::VIEW, 'caso_trata_index');
 
         $cod = $casoTrata->getCodigo();
+        $distrito = $casoTrata->getDistrito();
+
+        $odistrito = null === $distrito ? null : $em->getRepository(Distrito::class)->findOneBy(['isActive' => true, 'nombre' => $distrito]);
+        $idProvincia = $odistrito->getProvincia()->getId();
 
         $query = $em->createQuery(
             'SELECT p
@@ -249,8 +257,11 @@ class CasoTrataController extends BaseController
 
         $query = $em->createQuery(
             'SELECT p
-            FROM App\Entity\Institucion p'
-        );
+            FROM App\Entity\Institucion p
+            WHERE p.provincia_id = :provinciaId
+            AND p.isActive = true
+            ORDER BY p.name ASC'
+        )->setParameter('provinciaId', $idProvincia);
 
         $institucion = $query->getResult();
 

@@ -224,6 +224,10 @@ class CasoDesaparecidoController extends BaseController
         $this->denyAccess(Security::VIEW, 'caso_desaparecido_index');
 
         $cod = $casoDesaparecido->getCodigo();
+        $distrito = $casoDesaparecido->getDistrito();
+
+        $odistrito = null === $distrito ? null : $em->getRepository(Distrito::class)->findOneBy(['isActive' => true, 'nombre' => $distrito]);
+        $idProvincia = $odistrito->getProvincia()->getId();
 
         $query = $em->createQuery(
             'SELECT p
@@ -237,8 +241,11 @@ class CasoDesaparecidoController extends BaseController
 
         $query = $em->createQuery(
             'SELECT p
-            FROM App\Entity\Institucion p'
-        );
+            FROM App\Entity\Institucion p
+            WHERE p.provincia_id = :provinciaId
+            AND p.isActive = true
+            ORDER BY p.name ASC'
+        )->setParameter('provinciaId', $idProvincia);
 
         $institucion = $query->getResult();
 

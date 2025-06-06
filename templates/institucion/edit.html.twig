@@ -32,7 +32,48 @@
 
 {% block _javascripts %}
     <script>
-        jQuery(document).ready(function() {
+        jQuery(document).ready(function () {
+            $('.m-select2').select2({placeholder:"Seleccione"});
+            $('#institucion_centroPoblado').select2();
+            $('#institucion_usuarioRoles').select2();
+
+            $("#institucion_provincia").change(function () {
+                var data = {
+                    provincia_id: $(this).val()
+                };
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ path('distrito_ajax') }}",
+                    data: data,
+                    success: function (data) {
+                        var $selector = $('#institucion_distrito');
+                        //alert(data);
+                        $selector.html('<option>Seleccione Distrito</option>');
+                        for (var i = 0, total = data.length; i < total; i++) {
+                            $selector.append('<option value="' + data[i].id + '">' + data[i].name + '</option>');
+                        }
+                    }
+                });
+            });
+
+            $("#institucion_distrito").change(function () {
+                var data = {
+                    distrito_id: $(this).val()
+                };
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ path('centros_ajax') }}",
+                    data: data,
+                    success: function (data) {
+                        var $selector = $('#institucion_centroPoblado');
+                        //alert(data);
+                        $selector.html('<option>Seleccione Centro Poblado</option>');
+                        for (var i = 0, total = data.length; i < total; i++) {
+                            $selector.append('<option value="' + data[i].id + '">' + data[i].name + '</option>');
+                        }
+                    }
+                });
+            });
 
         });
     </script>

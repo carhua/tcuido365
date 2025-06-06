@@ -241,6 +241,10 @@ class CasoDesproteccionController extends BaseController
         $this->denyAccess(Security::VIEW, 'caso_desproteccion_index');
 
         $cod = $casoDesproteccion->getCodigo();
+        $distrito = $casoDesproteccion->getDistrito();
+
+        $odistrito = null === $distrito ? null : $em->getRepository(Distrito::class)->findOneBy(['isActive' => true, 'nombre' => $distrito]);
+        $idProvincia = $odistrito->getProvincia()->getId();
 
         $query = $em->createQuery(
             'SELECT p
@@ -254,8 +258,11 @@ class CasoDesproteccionController extends BaseController
 
         $query = $em->createQuery(
             'SELECT p
-            FROM App\Entity\Institucion p'
-        );
+            FROM App\Entity\Institucion p
+            WHERE p.provincia_id = :provinciaId
+            AND p.isActive = true
+            ORDER BY p.name ASC'
+        )->setParameter('provinciaId', $idProvincia);
 
         $institucion = $query->getResult();
 
@@ -273,7 +280,7 @@ class CasoDesproteccionController extends BaseController
     #[Route(path: '/{id}', name: 'accion_desproteccionc_new', methods: ['POST'])]
     public function accion(Request $request, CasoDesproteccion $casoDesproteccion, EntityManagerInterface $em): Response
     {
-        $this->denyAccess(Security::NEW, 'caso_desaparecidoc_index');
+        $this->denyAccess(Security::NEW, 'caso_desproteccion_index');
 
         try{
             $data = $request->request->all();

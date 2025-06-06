@@ -21,6 +21,7 @@
             {{ action.th('Distrito', false, 'text-center d-sm-table-cell') }}
             {{ action.th('Centro Poblado', false, 'text-center  d-sm-table-cell') }}
             {{ action.th('Fecha Reporte', false, 'text-center  d-sm-table-cell') }}
+            {{ action.th('Estado', false, 'text-center  d-sm-table-cell') }}
             {{ action.th('Detalle', true, 'text-center  d-sm-table-cell') }}
         </tr>
         </thead>
@@ -36,6 +37,7 @@
                 <td class="d-sm-table-cell">{{ tipo.distrito }}</td>
                 <td class="d-sm-table-cell">{{ tipo.centroPoblado.nombre }}</td>
                 <td class="d-sm-table-cell">{{ tipo.fechaReporte |date('d/m/Y H:i:s') }}</td>
+                <td class="d-sm-table-cell">{{ tipo.getEstadoCaso }}</td>
                 <td class="text-center pr-0">
                     {% if access.has('view') %}
                         {{ action.btn_show_link2(path('caso_desaparecido_show', {'id': tipo.id})) }}
@@ -44,7 +46,7 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="7">No hay registros</td>
+                <td colspan="8">No hay registros</td>
             </tr>
         {% endfor %}
         </tbody>
