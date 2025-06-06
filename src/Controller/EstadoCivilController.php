@@ -40,11 +40,36 @@ class EstadoCivilController extends BaseController
     }
 
     #[Route(path: '/export', methods: ['GET'], name: 'estado_civil_export')]
-    public function export(EstadoCivilRepository $estadoCivilRepository): Response
+    public function export(Request $request, EstadoCivilRepository $estadoCivilRepository): Response
     {
         $this->denyAccess(Security::EXPORT, 'estado_civil_index');
         try {
-            $data = $estadoCivilRepository->findAll();
+            $b = $request->query->get('b');
+            $ac = $request->query->get('ac');
+
+            $filters = [];
+            if ($ac !== null && $ac !== '') {
+                $filters['isActive'] = (bool) $ac;
+            }
+            if ($b !== null && $b !== '') {
+                $filters['nombre'] = $b;
+            }
+            
+            if (empty($filters) || (isset($filters['nombre']) && $filters['nombre'] === '')) {
+                $data = $estadoCivilRepository->findAll();
+            } else {
+                $qb = $estadoCivilRepository->createQueryBuilder('e');
+                if (isset($filters['isActive'])) {
+                    $qb->andWhere('e.isActive = :isActive')
+                    ->setParameter('isActive', $filters['isActive']);
+                }
+                if (isset($filters['nombre']) && $filters['nombre'] !== '') {
+                    $qb->andWhere('e.nombre LIKE :nombre')
+                    ->setParameter('nombre', '%' . $filters['nombre'] . '%');
+                }
+                $data = $qb->getQuery()->getResult();
+            }
+            
             $fileNameTemp = self::generarExcel($data, 'REPORTE DE ESTADOS CIVILES', 'EstadoCivil', 'EstadoCivil.xlsx');
 
             return $this->file($fileNameTemp, 'EstadoCivil.xlsx', ResponseHeaderBag::DISPOSITION_ATTACHMENT);

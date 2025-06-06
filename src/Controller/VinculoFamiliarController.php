@@ -40,11 +40,36 @@ class VinculoFamiliarController extends BaseController
     }
 
     #[Route(path: '/export', methods: ['GET'], name: 'vinculo_familiar_export')]
-    public function export(VinculoFamiliarRepository $vinculoFamiliarRepository): Response
+    public function export(Request $request, VinculoFamiliarRepository $vinculoFamiliarRepository): Response
     {
         $this->denyAccess(Security::EXPORT, 'vinculo_familiar_index');
         try {
-            $data = $vinculoFamiliarRepository->findAll();
+            $b = $request->query->get('b');
+            $ac = $request->query->get('ac');
+
+            $filters = [];
+            if ($ac !== null && $ac !== '') {
+                $filters['isActive'] = (bool) $ac;
+            }
+            if ($b !== null && $b !== '') {
+                $filters['nombre'] = $b;
+            }
+            
+            if (empty($filters) || (isset($filters['nombre']) && $filters['nombre'] === '')) {
+                $data = $vinculoFamiliarRepository->findAll();
+            } else {
+                $qb = $vinculoFamiliarRepository->createQueryBuilder('e');
+                if (isset($filters['isActive'])) {
+                    $qb->andWhere('e.isActive = :isActive')
+                    ->setParameter('isActive', $filters['isActive']);
+                }
+                if (isset($filters['nombre']) && $filters['nombre'] !== '') {
+                    $qb->andWhere('e.nombre LIKE :nombre')
+                    ->setParameter('nombre', '%' . $filters['nombre'] . '%');
+                }
+                $data = $qb->getQuery()->getResult();
+            }
+            
             $fileNameTemp = self::generarExcel($data, 'REPORTE DE VINCULOS FAMILIARES', 'VinculoFamiliar', 'VinculoFamiliar.xlsx');
 
             return $this->file($fileNameTemp, 'VinculoFamiliar.xlsx', ResponseHeaderBag::DISPOSITION_ATTACHMENT);

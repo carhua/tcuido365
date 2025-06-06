@@ -40,11 +40,36 @@ class SituacionEncontradaController extends BaseController
     }
 
     #[Route(path: '/export', methods: ['GET'], name: 'situacion_encontrada_export')]
-    public function export(SituacionEncontradaRepository $situacionEncontradaRepository): Response
+    public function export(Request $request, SituacionEncontradaRepository $situacionEncontradaRepository): Response
     {
         $this->denyAccess(Security::EXPORT, 'situacion_encontrada_index');
         try {
-            $data = $situacionEncontradaRepository->findAll();
+            $b = $request->query->get('b');
+            $ac = $request->query->get('ac');
+
+            $filters = [];
+            if ($ac !== null && $ac !== '') {
+                $filters['isActive'] = (bool) $ac;
+            }
+            if ($b !== null && $b !== '') {
+                $filters['nombre'] = $b;
+            }
+            
+            if (empty($filters) || (isset($filters['nombre']) && $filters['nombre'] === '')) {
+                $data = $situacionEncontradaRepository->findAll();
+            } else {
+                $qb = $situacionEncontradaRepository->createQueryBuilder('e');
+                if (isset($filters['isActive'])) {
+                    $qb->andWhere('e.isActive = :isActive')
+                    ->setParameter('isActive', $filters['isActive']);
+                }
+                if (isset($filters['nombre']) && $filters['nombre'] !== '') {
+                    $qb->andWhere('e.nombre LIKE :nombre')
+                    ->setParameter('nombre', '%' . $filters['nombre'] . '%');
+                }
+                $data = $qb->getQuery()->getResult();
+            }
+            
             $fileNameTemp = self::generarExcel($data, 'REPORTE DE SITUACIONES ENCONTRADAS', 'SituacionEncontrada', 'SituacionEncontrada.xlsx');
 
             return $this->file($fileNameTemp, 'SituacionEncontrada.xlsx', ResponseHeaderBag::DISPOSITION_ATTACHMENT);

@@ -40,11 +40,36 @@ class UsuarioRolController extends BaseController
     }
 
     #[Route(path: '/export', methods: ['GET'], name: 'usuario_rol_export')]
-    public function export(UsuarioRolRepository $usuarioRolRepository): Response
+    public function export(Request $request, UsuarioRolRepository $usuarioRolRepository): Response
     {
         $this->denyAccess(Security::EXPORT, 'usuario_rol_index');
         try {
-            $data = $usuarioRolRepository->findAll();
+            $b = $request->query->get('b');
+            $ac = $request->query->get('ac');
+
+            $filters = [];
+            if ($ac !== null && $ac !== '') {
+                $filters['isActive'] = (bool) $ac;
+            }
+            if ($b !== null && $b !== '') {
+                $filters['nombre'] = $b;
+            }
+            
+            if (empty($filters) || (isset($filters['nombre']) && $filters['nombre'] === '')) {
+                $data = $usuarioRolRepository->findAll();
+            } else {
+                $qb = $usuarioRolRepository->createQueryBuilder('e');
+                if (isset($filters['isActive'])) {
+                    $qb->andWhere('e.isActive = :isActive')
+                    ->setParameter('isActive', $filters['isActive']);
+                }
+                if (isset($filters['nombre']) && $filters['nombre'] !== '') {
+                    $qb->andWhere('e.nombre LIKE :nombre')
+                    ->setParameter('nombre', '%' . $filters['nombre'] . '%');
+                }
+                $data = $qb->getQuery()->getResult();
+            }
+            
             $fileNameTemp = self::usuarioRolExport($data);
 
             return $this->file($fileNameTemp, 'UsuarioRol.xlsx', ResponseHeaderBag::DISPOSITION_ATTACHMENT);

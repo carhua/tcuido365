@@ -40,11 +40,36 @@ class NacionalidadController extends BaseController
     }
 
     #[Route(path: '/export', methods: ['GET'], name: 'nacionalidad_export')]
-    public function export(NacionalidadRepository $nacionalidadRepository): Response
+    public function export(Request $request, NacionalidadRepository $nacionalidadRepository): Response
     {
         $this->denyAccess(Security::EXPORT, 'nacionalidad_index');
         try {
-            $data = $nacionalidadRepository->findAll();
+            $b = $request->query->get('b');
+            $ac = $request->query->get('ac');
+
+            $filters = [];
+            if ($ac !== null && $ac !== '') {
+                $filters['isActive'] = (bool) $ac;
+            }
+            if ($b !== null && $b !== '') {
+                $filters['nombre'] = $b;
+            }
+            
+            if (empty($filters) || (isset($filters['nombre']) && $filters['nombre'] === '')) {
+                $data = $nacionalidadRepository->findAll();
+            } else {
+                $qb = $nacionalidadRepository->createQueryBuilder('e');
+                if (isset($filters['isActive'])) {
+                    $qb->andWhere('e.isActive = :isActive')
+                    ->setParameter('isActive', $filters['isActive']);
+                }
+                if (isset($filters['nombre']) && $filters['nombre'] !== '') {
+                    $qb->andWhere('e.nombre LIKE :nombre')
+                    ->setParameter('nombre', '%' . $filters['nombre'] . '%');
+                }
+                $data = $qb->getQuery()->getResult();
+            }
+            
             $fileNameTemp = self::generarExcel($data, 'REPORTE DE NACIONALIDADES', 'Nacionalidad', 'Nacionalidad.xlsx');
 
             return $this->file($fileNameTemp, 'Nacionalidad.xlsx', ResponseHeaderBag::DISPOSITION_ATTACHMENT);

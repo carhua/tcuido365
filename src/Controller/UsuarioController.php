@@ -46,11 +46,36 @@ class UsuarioController extends BaseController
     }
 
     #[Route(path: '/export', name: 'usuario_export', methods: ['GET'])]
-    public function export(UsuarioRepository $usuarioRepository): Response
+    public function export(Request $request, UsuarioRepository $usuarioRepository): Response
     {
         $this->denyAccess(Security::EXPORT, 'usuario_index');
         try {
-            $data = $usuarioRepository->findAll();
+            $b = $request->query->get('b');
+            $ac = $request->query->get('ac');
+
+            $filters = [];
+            if ($ac !== null && $ac !== '') {
+                $filters['isActive'] = (bool) $ac;
+            }
+            if ($b !== null && $b !== '') {
+                $filters['nombre'] = $b;
+            }
+            
+            if (empty($filters) || (isset($filters['nombre']) && $filters['nombre'] === '')) {
+                $data = $usuarioRepository->findAll();
+            } else {
+                $qb = $usuarioRepository->createQueryBuilder('e');
+                if (isset($filters['isActive'])) {
+                    $qb->andWhere('e.isActive = :isActive')
+                    ->setParameter('isActive', $filters['isActive']);
+                }
+                if (isset($filters['nombre']) && $filters['nombre'] !== '') {
+                    $qb->andWhere('e.nombre LIKE :nombre')
+                    ->setParameter('nombre', '%' . $filters['nombre'] . '%');
+                }
+                $data = $qb->getQuery()->getResult();
+            }
+            
             $fileNameTemp = self::usuarioExport($data);
 
             return $this->file($fileNameTemp, 'Usuarios.xlsx');

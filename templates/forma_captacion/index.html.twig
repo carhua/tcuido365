@@ -129,6 +129,12 @@
                 route = '{{ path('forma_captacion_index') }}';
                 window.location.href = route;
             });
+
+            let hr = $(location).attr('href');
+            const hra = hr.split("?");
+            if (hra.length > 1) {
+                $(".btn-export").attr("href", $(".btn-export").attr("href") + '?' + hra[1]);
+            }
         });
     </script>
 {% endblock %}

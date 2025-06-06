@@ -40,11 +40,36 @@ class InstitucionController extends BaseController
     }
 
     #[Route(path: '/export', methods: ['GET'], name: 'institucion_export')]
-    public function export(InstitucionRepository $institucionRepository): Response
+    public function export(Request $request, InstitucionRepository $institucionRepository): Response
     {
         $this->denyAccess(Security::EXPORT, 'institucion_index');
         try {
-            $data = $institucionRepository->findAll();
+            $b = $request->query->get('b');
+            $ac = $request->query->get('ac');
+
+            $filters = [];
+            if ($ac !== null && $ac !== '') {
+                $filters['isActive'] = (bool) $ac;
+            }
+            if ($b !== null && $b !== '') {
+                $filters['nombre'] = $b;
+            }
+            
+            if (empty($filters) || (isset($filters['nombre']) && $filters['nombre'] === '')) {
+                $data = $institucionRepository->findAll();
+            } else {
+                $qb = $institucionRepository->createQueryBuilder('e');
+                if (isset($filters['isActive'])) {
+                    $qb->andWhere('e.isActive = :isActive')
+                    ->setParameter('isActive', $filters['isActive']);
+                }
+                if (isset($filters['nombre']) && $filters['nombre'] !== '') {
+                    $qb->andWhere('e.nombre LIKE :nombre')
+                    ->setParameter('nombre', '%' . $filters['nombre'] . '%');
+                }
+                $data = $qb->getQuery()->getResult();
+            }
+
             $fileNameTemp = self::institucionesExp($data);
 
             return $this->file($fileNameTemp, 'Instituciones.xlsx', ResponseHeaderBag::DISPOSITION_ATTACHMENT);

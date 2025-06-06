@@ -40,11 +40,36 @@ class TipoDocumentoController extends BaseController
     }
 
     #[Route(path: '/export', methods: ['GET'], name: 'tipo_documento_export')]
-    public function export(TipoDocumentoRepository $tipoDocumentoRepository): Response
+    public function export(Request $request, TipoDocumentoRepository $tipoDocumentoRepository): Response
     {
         $this->denyAccess(Security::EXPORT, 'tipo_documento_index');
         try {
-            $data = $tipoDocumentoRepository->findAll();
+            $b = $request->query->get('b');
+            $ac = $request->query->get('ac');
+
+            $filters = [];
+            if ($ac !== null && $ac !== '') {
+                $filters['isActive'] = (bool) $ac;
+            }
+            if ($b !== null && $b !== '') {
+                $filters['nombre'] = $b;
+            }
+            
+            if (empty($filters) || (isset($filters['nombre']) && $filters['nombre'] === '')) {
+                $data = $tipoDocumentoRepository->findAll();
+            } else {
+                $qb = $tipoDocumentoRepository->createQueryBuilder('e');
+                if (isset($filters['isActive'])) {
+                    $qb->andWhere('e.isActive = :isActive')
+                    ->setParameter('isActive', $filters['isActive']);
+                }
+                if (isset($filters['nombre']) && $filters['nombre'] !== '') {
+                    $qb->andWhere('e.nombre LIKE :nombre')
+                    ->setParameter('nombre', '%' . $filters['nombre'] . '%');
+                }
+                $data = $qb->getQuery()->getResult();
+            }
+            
             $fileNameTemp = self::generarExcel($data, 'REPORTE DE TIPOS DE DOCUMENTO', 'TipoDocumento', 'TipoDocumento.xlsx');
 
             return $this->file($fileNameTemp, 'TipoDocumento.xlsx', ResponseHeaderBag::DISPOSITION_ATTACHMENT);
