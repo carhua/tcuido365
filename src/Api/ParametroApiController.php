@@ -73,14 +73,14 @@ class ParametroApiController extends ApiController
                 'name' => 'sub-form-agraviado',
                 'type' => 'sub-form',
                 'required' => false,
-                'title' => 'Agraviado',
+                'title' => 'Presunto Agraviado',
                  'icon' => 'icono2.png',
             ],
             [
                 'name' => 'sub-form-agresor',
                 'type' => 'sub-form',
                 'required' => false,
-                'title' => 'Agresor',
+                'title' => 'Presunto Agresor',
                  'icon' => 'icono3.png',
             ],
             [
@@ -229,7 +229,7 @@ class ParametroApiController extends ApiController
                 'name' => 'vinculo_familiar_id',
                 'type' => 'select',
                 'required' => true,
-                'title' => 'Vínculo Familiar Agraviado (*)',
+                'title' => 'Vínculo Familiar Presunto Agraviado (*)',
                 'options' => $this->listVinculos($em),
             ],
             [
@@ -350,7 +350,7 @@ class ParametroApiController extends ApiController
                 'name' => 'vinculo_familiar_id',
                 'type' => 'select',
                 'required' => true,
-                'title' => 'Vínculo Familiar Agresor (*)',
+                'title' => 'Vínculo Familiar Presunto Agresor (*)',
                 'options' => $this->listVinculos($em),
             ],
             [

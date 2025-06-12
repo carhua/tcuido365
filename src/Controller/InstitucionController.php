@@ -64,7 +64,7 @@ class InstitucionController extends BaseController
                     ->setParameter('isActive', $filters['isActive']);
                 }
                 if (isset($filters['nombre']) && $filters['nombre'] !== '') {
-                    $qb->andWhere('e.nombre LIKE :nombre')
+                    $qb->andWhere('e.name LIKE :nombre')
                     ->setParameter('nombre', '%' . $filters['nombre'] . '%');
                 }
                 $data = $qb->getQuery()->getResult();
