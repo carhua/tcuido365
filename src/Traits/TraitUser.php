@@ -14,7 +14,7 @@ trait TraitUser
 {
     public static function validarRoles($roles)
     {
-        return \in_array('ROLE_TENIENTE', $roles, true);
+        return \in_array('ROLE_AUTORIDADCOMUN', $roles, true);
     }
 
     public static function listCentrosByRol($rt, $user, $em)

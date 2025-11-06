@@ -76,7 +76,7 @@ class CasoTrataController extends BaseController
             $request->query->set('estado', 'Notificado');
         }
 //dd($request->query->all());
-        if (null !== $oprovincia && null !== $odistrito) {
+        if ((null !== $fechaInicio && null !== $fechaFinal) || (null !== $oprovincia && null !== $odistrito)) {
             $paginator = $manager->listIndex($request->query->all(), $page, $user);
             $cantidad = count($paginator);
         } else {

@@ -101,7 +101,7 @@ class CasoViolenciaRepository extends BaseRepository
             ->setParameter('final', $ff->format('Y-m-d').' 23:59:59');
 
         // if($provincia != null && $distrito != null){
-        if ('TODOS' !== $provincia->getNombre()) {
+        if (null !== $provincia && 'TODOS' !== $provincia->getNombre()) {
             if ('TODOS' !== $distrito->getNombre() && null !== $distrito) {
                 if (182 !== $params['centroPoblado']) {
                     $queryBuilder->andwhere('centroPoblado.id = :idcentro')

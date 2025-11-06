@@ -164,8 +164,8 @@ final class PersonaManager extends BaseManager
                 'centroPoblado' => (isset($queryValues['centroPoblado']) && '' !== $queryValues['centroPoblado']) ? (int) $queryValues['centroPoblado'] : null,
                 'provinciaUser' => $user->getProvincia(),
                 'distritoUser' => $user->getDistrito(),
-                'provincia' => isset($queryValues['oprovincia']) ? $queryValues['oprovincia'] : null,
-                'distrito' => isset($queryValues['odistrito']) ? $queryValues['odistrito'] : null,
+                'provincia' => isset($queryValues['provincia']) ? $queryValues['provincia'] : null,
+                'distrito' => isset($queryValues['distrito']) ? $queryValues['distrito'] : null,
             ]
         );
 

@@ -70,10 +70,11 @@ class UsuarioController extends BaseController
                     ->setParameter('isActive', $filters['isActive']);
                 }
                 if (isset($filters['nombre']) && $filters['nombre'] !== '') {
-                    $qb->andWhere('e.nombre LIKE :nombre')
+                    $qb->andWhere('e.fullName LIKE :nombre')
                     ->setParameter('nombre', '%' . $filters['nombre'] . '%');
                 }
                 $data = $qb->getQuery()->getResult();
+
             }
             
             $fileNameTemp = self::usuarioExport($data);
@@ -139,7 +140,10 @@ class UsuarioController extends BaseController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $usuario->setPassword($passwordEncoder->hashPassword($usuario, $usuario->getPassword()));
+            $plainPassword = $form->get('password')->getData();
+            if (null !== $plainPassword && '' !== $plainPassword) {
+                $usuario->setPassword($passwordEncoder->hashPassword($usuario, $plainPassword));
+            }
             $usuario->setOwner($this->getUser());
             if ($manager->save($usuario)) {
                 $this->addFlash('success', 'Registro creado!!!');
@@ -206,8 +210,9 @@ class UsuarioController extends BaseController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if (null !== $usuario->getPassword() && '' !== $usuario->getPassword()) {
-                $usuario->setPassword($passwordEncoder->hashPassword($usuario, $usuario->getPassword()));
+            $plainPassword = $form->get('password')->getData();
+            if (null !== $plainPassword && '' !== $plainPassword) {
+                $usuario->setPassword($passwordEncoder->hashPassword($usuario, $plainPassword));
             } else {
                 $usuario->setPassword($passwordOriginal);
             }

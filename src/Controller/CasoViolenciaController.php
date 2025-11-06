@@ -84,8 +84,8 @@ class CasoViolenciaController extends BaseController
         if ('' != $request->query->get('estado')) {
             $request->query->set('estado', $estado);
         }
-
-        if (null !== $oprovincia && null !== $odistrito) {
+        //if (null !== $oprovincia && null !== $odistrito) {    antes, obloigaba ambos
+        if ((null !== $fechaInicio && null !== $fechaFinal) || (null !== $oprovincia && null !== $odistrito)) {
             $paginator = $manager->listIndex($request->query->all(), $page, $user);
             $cantidad = count($paginator);
         } else {
@@ -289,7 +289,7 @@ class CasoViolenciaController extends BaseController
     #[Route(path: '/{id}', name: 'accion_violencia_new', methods: ['POST'])]
     public function accion(Request $request, CasoViolencia $casoviolencia, EntityManagerInterface $em): Response
     {
-        $this->denyAccess(Security::NEW, 'caso_violenciac_index');
+        $this->denyAccess(Security::NEW, 'caso_violencia_index');
 
         try{
             $data = $request->request->all();

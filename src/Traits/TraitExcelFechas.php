@@ -1677,7 +1677,10 @@ trait TraitExcelFechas
             //  $sheet->setCellValue('A' . $i,"Hola");
             foreach ($data as $dato) {
                 $sheet->setCellValue('A'.$i, $dato->getName());
-                $sheet->setCellValue('B'.$i, $dato->getProvincia()->getNombre().' / '.$dato->getDistrito()->getNombre().' / '.$dato->getCentroPoblado()->getNombre());
+                $provincia = $dato->getProvincia() ? $dato->getProvincia()->getNombre() : '';
+                $distrito = $dato->getDistrito() ? $dato->getDistrito()->getNombre() : '';
+                $centroPoblado = $dato->getCentroPoblado() ? $dato->getCentroPoblado()->getNombre() : '';
+                $sheet->setCellValue('B'.$i, $provincia.' / '.$distrito.' / '.$centroPoblado);
                 $sheet->setCellValue('C'.$i, $dato->isActive());
 
                 ++$i;

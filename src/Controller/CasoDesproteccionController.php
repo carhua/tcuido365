@@ -74,7 +74,7 @@ class CasoDesproteccionController extends BaseController
             $request->query->set('estado', 'Notificado');
         }
 
-        if (null !== $oprovincia && null !== $odistrito) {
+        if ((null !== $fechaInicio && null !== $fechaFinal) || (null !== $oprovincia && null !== $odistrito)) {
             $paginator = $manager->listIndex($request->query->all(), $page, $user);
             $cantidad = count($paginator);
         } else {

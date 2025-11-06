@@ -26,6 +26,9 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class UsuarioType extends AbstractType
 {
@@ -59,10 +62,15 @@ class UsuarioType extends AbstractType
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'invalid_message' => 'Las contraseñas no coinciden',
-                'required' => false,
+                'required' => true,
                 'first_options' => ['label' => 'Contraseña'],
                 'second_options' => ['label' => 'Repetir contraseña'],
                 'popover' => 'La contraseña debe ser minimo 8 caracteres, debe conterner al menos una letra minuscula,mayuscula,un numero',
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Por favor, introduzca una contraseña.',
+                    ]),
+                ],
             ])
             ->add('usuarioRoles', EntityType::class, [
                 'class' => UsuarioRol::class,
@@ -93,6 +101,20 @@ class UsuarioType extends AbstractType
                 'class' => 'class_select_provincia',
             ],
             'class' => Provincia::class,
+            'constraints' => [
+                new Assert\Callback(function ($value, ExecutionContextInterface $context) {
+                    if ($this->isAutoridadComunitaria($context) && null === $value) {
+                        $context->buildViolation('Este campo es obligatorio para la Autoridad Comunitaria.')->addViolation();
+                    }
+                    if ($this->isAutoridadComunitaria($context) && null !== $value && method_exists($value, 'getNombre') && 'TODOS' === $value->getNombre()) {
+                        $context->buildViolation('La Autoridad Comunitaria no puede seleccionar "TODOS" como Provincia.')->addViolation();
+                    }
+
+                    if ($this->isOperadorProteccion($context) && null === $value) {
+                        $context->buildViolation('Este campo es obligatorio para el Operador de Protección.')->addViolation();
+                    }
+                }),
+            ],
         ]);
 
         $form->add('distrito', EntityType::class, [
@@ -122,9 +144,24 @@ class UsuarioType extends AbstractType
                         ->setParameter('provinciaId', null)
                         ->orderBy('r.nombre', 'ASC');
             },
+            'constraints' => [
+                new Assert\Callback(function ($value, ExecutionContextInterface $context) {
+                    if ($this->isAutoridadComunitaria($context) && null === $value) {
+                        $context->buildViolation('Este campo es obligatorio para la Autoridad Comunitaria.')->addViolation();
+                    }
+                    if ($this->isAutoridadComunitaria($context) && null !== $value && method_exists($value, 'getNombre') && 'TODOS' === $value->getNombre()) {
+                        $context->buildViolation('La Autoridad Comunitaria no puede seleccionar "TODOS" como Distrito.')->addViolation();
+                    }
+
+                    if ($this->isOperadorProteccion($context) && null === $value) {
+                        $context->buildViolation('Este campo es obligatorio para el Operador de Protección.')->addViolation();
+                    }
+                }),
+            ],
         ]);
 
         $form->add('centroPoblado', EntityType::class, [
+            'required' => true,
             'class' => CentroPoblado::class,
             'placeholder' => 'Seleccionar',
             'query_builder' => function (EntityRepository $er) use ($distrito) {
@@ -144,6 +181,21 @@ class UsuarioType extends AbstractType
                         ->setParameter('distritoId', null)
                         ->orderBy('r.nombre', 'ASC');
             },
+            'constraints' => [
+                new Assert\Callback(function ($value, ExecutionContextInterface $context) {
+                    if ($this->isAutoridadComunitaria($context) && null === $value) {
+                        $context->buildViolation('Este campo es obligatorio para la Autoridad Comunitaria.')->addViolation();
+                    }
+
+                    if ($this->isAutoridadComunitaria($context) && null !== $value && method_exists($value, 'getNombre') && 'TODOS' === $value->getNombre()) {
+                        $context->buildViolation('La Autoridad Comunitaria no puede seleccionar "TODOS" como Centro Poblado.')->addViolation();
+                    }
+
+                    if ($this->isOperadorProteccion($context) && (null !== $value && (method_exists($value, 'getNombre') && 'TODOS' !== $value->getNombre()))) {
+                        $context->buildViolation('El Operador de Protección solo puede seleccionar "TODOS".')->addViolation();
+                    }
+                }),
+            ],
         ]);
 
         $form->add('institucion', EntityType::class, [
@@ -155,8 +207,6 @@ class UsuarioType extends AbstractType
             ],
             'class' => Institucion::class,
         ]);
-
-
     }
 
     public function onPreSubmit(FormEvent $event): void
@@ -180,6 +230,42 @@ class UsuarioType extends AbstractType
         $institucion = $usuario->getInstitucion() ?: null;
 
         $this->addElements($form, $provincia, $distrito, $institucion);
+    }
+
+    private function getRolesFromContext(ExecutionContextInterface $context): array
+    {
+        $form = $context->getRoot();
+        $data = $form->getData();
+
+        if ($data instanceof Usuario) {
+            return $data->getUsuarioRoles();
+        }
+
+        return [];
+    }
+
+    private function isAutoridadComunitaria(ExecutionContextInterface $context): bool
+    {
+        $roles = $this->getRolesFromContext($context);
+        foreach ($roles as $rol) {
+            if ('ROLE_AUTORIDADCOMUN' === $rol->getRol()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function isOperadorProteccion(ExecutionContextInterface $context): bool
+    {
+        $roles = $this->getRolesFromContext($context);
+        foreach ($roles as $rol) {
+            if ('ROLE_OPERADORPROTECCION' === $rol->getRol()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
