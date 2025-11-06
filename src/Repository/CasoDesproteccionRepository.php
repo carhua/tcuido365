@@ -98,7 +98,7 @@ class CasoDesproteccionRepository extends BaseRepository
             ->setParameter('inicio', $fi->format('Y-m-d'))
             ->setParameter('final', $ff->format('Y-m-d').' 23:59:59');
 
-        if ('TODOS' !== $provincia->getNombre()) {
+        if (null !== $provincia && 'TODOS' !== $provincia->getNombre()) {
             if ('TODOS' !== $distrito->getNombre() && null !== $distrito) {
                 if (182 !== $params['centroPoblado']) {
                     $queryBuilder->andwhere('centroPoblado.id = :idcentro')
@@ -239,8 +239,8 @@ class CasoDesproteccionRepository extends BaseRepository
                 ->setParameter('anioInicio', $anioInicio)
                 ->setParameter('anioFinal', $anioFinal);
         }
-
-        if ('TODOS' !== $provincia->getNombre()) {
+        
+        if (null !== $provincia && 'TODOS' !== $provincia->getNombre()) {
             if ('TODOS' !== $distrito->getNombre() && null !== $distrito) {
                 if (182 !== $params['centroPoblado']) {
                     $queryBuilder->andwhere('centroPoblado.id = :idcentro')
