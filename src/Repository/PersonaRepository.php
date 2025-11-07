@@ -61,8 +61,8 @@ class PersonaRepository extends BaseRepository
             ->orderBy('persona.casoViolenciaTotal', 'DESC')
             ->addOrderBy('persona.nombres', 'ASC');
 
-        if ('TODOS' !== $provincia->getNombre() && null !== $provincia) {
-            if ('TODOS' !== $distrito->getNombre() && null !== $distrito) {
+        if (null !== $provincia && 'TODOS' !== $provincia->getNombre()) {
+            if (null !== $distrito && 'TODOS' !== $distrito->getNombre()) {
                 if (182 !== $params['centroPoblado']) {
                     $queryBuilder->andwhere('centroPoblado.id = :idcentro')
                         ->setParameter('idcentro', $params['centroPoblado']);
@@ -105,8 +105,8 @@ class PersonaRepository extends BaseRepository
             ->orderBy('persona.casoDesproteccionTotal', 'DESC')
             ->addOrderBy('persona.nombres', 'ASC');
 
-        if ('TODOS' !== $provincia->getNombre() && null !== $provincia) {
-            if ('TODOS' !== $distrito->getNombre() && null !== $distrito) {
+        if (null !== $provincia && 'TODOS' !== $provincia->getNombre()) {
+            if (null !== $distrito && 'TODOS' !== $distrito->getNombre()) {
                 if (182 !== $params['centroPoblado']) {
                     $queryBuilder->andwhere('centroPoblado.id = :idcentro')
                         ->setParameter('idcentro', $params['centroPoblado']);
@@ -175,8 +175,8 @@ class PersonaRepository extends BaseRepository
         ->join('centroPoblado.distrito', 'distrito')
         ->add('orderBy', 'tipoPsicologico DESC, tipoFisico DESC, tipoSexual DESC, tipoEconomico DESC');
 
-        if ('TODOS' !== $provincia->getNombre() && null !== $provincia) {
-            if ('TODOS' !== $distrito->getNombre() && null !== $distrito) {
+        if (null !== $provincia && 'TODOS' !== $provincia->getNombre()) {
+            if (null !== $distrito && 'TODOS' !== $distrito->getNombre()) {
                 if (182 !== $params['centroPoblado']) {
                     $queryBuilder->andwhere('centroPoblado.id = :idcentro')
                         ->setParameter('idcentro', $params['centroPoblado']);
@@ -219,8 +219,8 @@ class PersonaRepository extends BaseRepository
             ->orderBy('persona.casoTrataTotal', 'DESC')
             ->addOrderBy('persona.nombres', 'ASC');
 
-        if ("3" != $provincia && null != $provincia) {
-            if ("4" != $distrito && null != $distrito) {
+        if (null !== $provincia && 'TODOS' !== $provincia->getNombre()) { // Assuming "3" means "TODOS" or similar
+            if (null !== $distrito && 'TODOS' !== $distrito->getNombre()) { // Assuming "4" means "TODOS" or similar
                 if ("182" !== $params['centroPoblado']) {
                     $queryBuilder->innerJoin('centroPoblado.distrito', 'distrito')
                         ->andWhere('distrito.id =:distritoId')
@@ -262,8 +262,8 @@ class PersonaRepository extends BaseRepository
             ->orderBy('persona.casoDesaparecidoTotal', 'DESC')
             ->addOrderBy('persona.nombres', 'ASC');
 
-        if ('TODOS' !== $provincia->getNombre() && null !== $provincia) {
-            if ('TODOS' !== $distrito->getNombre() && null !== $distrito) {
+        if (null !== $provincia && 'TODOS' !== $provincia->getNombre()) {
+            if (null !== $distrito && 'TODOS' !== $distrito->getNombre()) {
                 if (182 !== $params['centroPoblado']) {
                     $queryBuilder->andwhere('centroPoblado.id = :idcentro')
                         ->setParameter('idcentro', $params['centroPoblado']);

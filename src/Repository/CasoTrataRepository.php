@@ -46,8 +46,8 @@ class CasoTrataRepository extends BaseRepository
                 ->setParameter('mes', $mesActual);
         }
 
-        if ('TODOS' !== $provincia->getNombre() && null !== $provincia) {
-            if ('TODOS' !== $distrito->getNombre() && null !== $distrito) {
+        if (null !== $provincia && 'TODOS' !== $provincia->getNombre()) {
+            if (null !== $distrito && 'TODOS' !== $distrito->getNombre()) {
                 if (182 !== $params['centroPoblado']) {
                     $queryBuilder->andwhere('centroPoblado.id = :idcentro')
                         ->setParameter('idcentro', $params['centroPoblado']);
@@ -96,7 +96,7 @@ class CasoTrataRepository extends BaseRepository
             ->setParameter('final', $ff->format('Y-m-d').' 23:59:59');
 
         if (null !== $provincia && 'TODOS' !== $provincia->getNombre()) {
-            if ('TODOS' !== $distrito->getNombre() && null !== $distrito) {
+            if (null !== $distrito && 'TODOS' !== $distrito->getNombre()) {
                 if (182 !== $params['centroPoblado']) {
                     $queryBuilder->andwhere('centroPoblado.id = :idcentro')
                         ->setParameter('idcentro', $params['centroPoblado']);
@@ -260,7 +260,7 @@ class CasoTrataRepository extends BaseRepository
         }
         
         if (null !== $provincia && 'TODOS' !== $provincia->getNombre()) {
-            if ('TODOS' !== $distrito->getNombre() && null !== $distrito) {
+            if (null !== $distrito && 'TODOS' !== $distrito->getNombre()) {
                 if (182 !== $params['centroPoblado']) {
                     $queryBuilder->andwhere('centroPoblado.id = :idcentro')
                         ->setParameter('idcentro', $params['centroPoblado']);
@@ -320,8 +320,8 @@ class CasoTrataRepository extends BaseRepository
                 ->setParameter('mes', $mesActual);
         }
 
-        if ('TODOS' !== $provincia->getNombre() && null !== $provincia) {
-            if ('TODOS' !== $distrito->getNombre() && null !== $distrito) {
+        if (null !== $provincia && 'TODOS' !== $provincia->getNombre()) {
+            if (null !== $distrito && 'TODOS' !== $distrito->getNombre()) {
                 if (182 !== $params['centroPoblado']) {
                     $queryBuilder->andwhere('casoTrato.centroPoblado= :idcentro')
                         ->setParameter('idcentro', $params['centroPoblado']);
@@ -367,7 +367,7 @@ class CasoTrataRepository extends BaseRepository
             ->setParameter('final', $ff->format('Y-m-d').' 23:59:59');
 
         if (null !== $provincia && 'TODOS' !== $provincia->getNombre()) {
-            if ('TODOS' !== $distrito->getNombre() && null !== $distrito) {
+            if (null !== $distrito && 'TODOS' !== $distrito->getNombre()) {
                 if (182 !== $params['centroPoblado']) {
                     $queryBuilder->andwhere('centroPoblado.id = :idcentro')
                         ->setParameter('idcentro', $params['centroPoblado']);
