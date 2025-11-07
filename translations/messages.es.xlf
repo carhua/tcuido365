@@ -44,7 +44,7 @@
             </trans-unit>
             <trans-unit id="lbl.delete">
                 <source>lbl.delete</source>
-                <target>Eliminar</target>
+                <target>Desactivar</target>
             </trans-unit>
             <trans-unit id="lbl.restore">
                 <source>lbl.restore</source>

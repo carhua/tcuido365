@@ -108,6 +108,45 @@
                 });
             });
 
+            // Función para verificar el rol y mostrar/ocultar el campo
+            function toggleCentroPobladoVisibility() {
+                let esOperador = false;
+                let esAutoridad = false;
+                // Recorremos los roles seleccionados
+                $('#usuario_usuarioRoles option:selected').each(function() {
+                    // Comprueba si el texto del rol contiene "Operador de proteccion"
+                    if ($(this).text().includes('Operador de Protección')) {
+                        esOperador = true;
+                    }
+                    // Comprueba si el texto del rol contiene "Autoridad comunitaria"
+                    if ($(this).text().includes('Autoridad Comunitaria')) {
+                        esAutoridad = true;
+                    }
+                });
+
+                // Seleccionamos el contenedor del campo 'centroPoblado'
+                const centroPobladoField = $('#usuario_centroPoblado').closest('.form-group');
+                const institucionField = $('#usuario_institucion').closest('.form-group');
+
+                if (esOperador) {
+                    // Si es Operador, ocultamos el campo
+                    centroPobladoField.hide();
+                } else {
+                    centroPobladoField.show();
+                }
+
+                // Ocultar/mostrar institución para Autoridad Comunitaria
+                esAutoridad ? institucionField.hide() : institucionField.show();
+            }
+
+            // Ejecutamos la función al cargar la página
+            toggleCentroPobladoVisibility();
+
+            // Ejecutamos la función cada vez que se cambie la selección de roles
+            $('#usuario_usuarioRoles').on('change', function() {
+                toggleCentroPobladoVisibility();
+            });
+
         });
     </script>
 {% endblock %}

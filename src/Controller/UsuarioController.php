@@ -17,6 +17,7 @@ use App\Manager\UsuarioManager;
 use App\Repository\UsuarioRepository;
 use App\Security\Security;
 use App\Service\Import\FileUploader;
+use Doctrine\ORM\EntityManagerInterface;
 use App\Traits\TraitExcelFechas;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,6 +29,13 @@ use Symfony\Component\Routing\Attribute\Route;
 class UsuarioController extends BaseController
 {
     use TraitExcelFechas;
+
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+        Security $security
+    ) {
+        parent::__construct($security);
+    }
 
     #[Route(path: '/', name: 'usuario_index', defaults: ['page' => '1'], methods: ['GET'])]
     #[Route(path: '/page/{page<[1-9]\d*>}', name: 'usuario_index_paginated', methods: ['GET'])]
@@ -144,6 +152,8 @@ class UsuarioController extends BaseController
             if (null !== $plainPassword && '' !== $plainPassword) {
                 $usuario->setPassword($passwordEncoder->hashPassword($usuario, $plainPassword));
             }
+
+            $this->handleOperadorProteccion($usuario);
             $usuario->setOwner($this->getUser());
             if ($manager->save($usuario)) {
                 $this->addFlash('success', 'Registro creado!!!');
@@ -216,6 +226,8 @@ class UsuarioController extends BaseController
             } else {
                 $usuario->setPassword($passwordOriginal);
             }
+
+            $this->handleOperadorProteccion($usuario);
             if ($manager->save($usuario)) {
                 $this->addFlash('success', 'Registro actualizado!!!');
             } else {
@@ -234,6 +246,23 @@ class UsuarioController extends BaseController
         );
     }
 
+    private function handleOperadorProteccion(Usuario $usuario): void
+    {
+        $esOperador = false;
+        foreach ($usuario->getUsuarioRoles() as $rol) {
+            if ('ROLE_OPERADORPROTECCION' === $rol->getRol()) {
+                $esOperador = true;
+                break;
+            }
+        }
+
+        if ($esOperador) {
+            $centroPobladoTodos = $this->em->getRepository(\App\Entity\CentroPoblado::class)->findOneBy(['nombre' => 'TODOS']);
+            if ($centroPobladoTodos) {
+                $usuario->setCentroPoblado($centroPobladoTodos);
+            }
+        }
+    }
     #[Route(path: '/{id}', name: 'usuario_delete', methods: ['POST'])]
     public function delete(Request $request, Usuario $usuario, UsuarioManager $manager): Response
     {

@@ -161,7 +161,7 @@ class UsuarioType extends AbstractType
         ]);
 
         $form->add('centroPoblado', EntityType::class, [
-            'required' => true,
+            'required' => false,
             'class' => CentroPoblado::class,
             'placeholder' => 'Seleccionar',
             'query_builder' => function (EntityRepository $er) use ($distrito) {
@@ -183,29 +183,32 @@ class UsuarioType extends AbstractType
             },
             'constraints' => [
                 new Assert\Callback(function ($value, ExecutionContextInterface $context) {
-                    if ($this->isAutoridadComunitaria($context) && null === $value) {
+                    if ($this->isAutoridadComunitaria($context) && !$this->isOperadorProteccion($context) && null === $value) {
                         $context->buildViolation('Este campo es obligatorio para la Autoridad Comunitaria.')->addViolation();
                     }
 
                     if ($this->isAutoridadComunitaria($context) && null !== $value && method_exists($value, 'getNombre') && 'TODOS' === $value->getNombre()) {
                         $context->buildViolation('La Autoridad Comunitaria no puede seleccionar "TODOS" como Centro Poblado.')->addViolation();
                     }
-
-                    if ($this->isOperadorProteccion($context) && (null !== $value && (method_exists($value, 'getNombre') && 'TODOS' !== $value->getNombre()))) {
-                        $context->buildViolation('El Operador de Protección solo puede seleccionar "TODOS".')->addViolation();
-                    }
                 }),
             ],
         ]);
 
         $form->add('institucion', EntityType::class, [
-            'required' => true,
+            'required' => false,
             'data' => $institucion,
             'placeholder' => 'Seleccionar',
             'attr' => [
                 'class' => 'class_select_institucion',
             ],
             'class' => Institucion::class,
+            'constraints' => [
+                new Assert\Callback(function ($value, ExecutionContextInterface $context) {
+                    if ($this->isOperadorProteccion($context) && null === $value) {
+                        $context->buildViolation('Este campo es obligatorio para el Operador de Protección.')->addViolation();
+                    }
+                }),
+            ],
         ]);
     }
 
