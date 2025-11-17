@@ -69,11 +69,11 @@ class CasoDesproteccionController extends BaseController
         if (null === $request->query->get('situacion')) {
             $request->query->set('situacion', 0);
         }
-
+/*
         if (null === $request->query->get('estado')) {
             $request->query->set('estado', 'Notificado');
         }
-
+*/
         if ((null !== $fechaInicio && null !== $fechaFinal) || (null !== $oprovincia && null !== $odistrito)) {
             $paginator = $manager->listIndex($request->query->all(), $page, $user);
             $cantidad = count($paginator);
@@ -197,7 +197,7 @@ class CasoDesproteccionController extends BaseController
         if (null !== $odistrito) {
             $request->query->set('odistrito', $odistrito);
         }
-
+/*
         if (null === $request->query->get('situacion')) {
             $request->query->set('situacion', 0);
         }
@@ -205,15 +205,15 @@ class CasoDesproteccionController extends BaseController
         if (null === $request->query->get('estado')) {
             $request->query->set('estado', 'Notificado');
         }
-
-        if (null !== $oprovincia && null !== $odistrito) {
+*/
+        //if (null !== $oprovincia && null !== $odistrito) {
             $casoscv = $manager->graficoCasos($request->query->all());
             $dataMeses = self::dataMeses($casoscv);
             $dataAnios = self::dataAnios($casoscv);
-        } else {
-            $dataMeses = self::dataMeses([]);
-            $dataAnios = self::dataAnios([]);
-        }
+        //} else {
+        //    $dataMeses = self::dataMeses([]);
+        //    $dataAnios = self::dataAnios([]);
+        //}
 
         return $this->render(
             'agraficos/grafico_desproteccion_index.html.twig',

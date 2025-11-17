@@ -78,17 +78,17 @@ final class CasoTrataManager extends BaseManager
             [
                 'finicial' => (isset($queryValues['finicial']) && '' !== $queryValues['finicial']) ? $queryValues['finicial'] : null,
                 'ffinal' => (isset($queryValues['ffinal']) && '' !== $queryValues['ffinal']) ? $queryValues['ffinal'] : null,
-                'centroPoblado' => (isset($queryValues['centroPoblado']) && '' !== $queryValues['centroPoblado']) ? (int) $queryValues['centroPoblado'] : null,
-                'tipoExplotacion' => (isset($queryValues['tipoExplotacion']) && '' !== $queryValues['tipoExplotacion']) ? self::findExplotacion($queryValues['tipoExplotacion'], $this->entityManager) : null,
+                'centroPoblado' => (!empty($queryValues['centroPoblado'])) ? (int) $queryValues['centroPoblado'] : null,
+                'tipoExplotacion' => (!empty($queryValues['tipoExplotacion'])) ? self::findExplotacion($queryValues['tipoExplotacion'], $this->entityManager) : null,
                 'estado' => (isset($queryValues['estado']) && '' !== $queryValues['estado']) ? $queryValues['estado'] : null,
-                'provincia' => $queryValues['oprovincia'] ?? null,
-                'distrito' => $queryValues['odistrito'] ?? null,
+                'provincia' => !empty($queryValues['oprovincia']) ? $queryValues['oprovincia'] : null,
+                'distrito' => !empty($queryValues['odistrito']) ? $queryValues['odistrito'] : null,
                 'anioInicio' => $queryValues['anioInicio'] ?? null,
                 'anioFinal' => $queryValues['anioFinal'] ?? null,
                 'usuario' => $queryValues['usuario'] ?? null,
             ]
         );
-
+//dd($params);
         return $this->repository()->filterChartFechas($params);
     }
 }

@@ -57,11 +57,11 @@ class CasoTrataController extends BaseController
         $rteniente = self::validarRoles($user->getRoles());
         $provincias = self::listProvinciasByRol($rteniente, $user, $em);
         $tipos = $em->getRepository(TipoExplotacion::class)->findBy(['isActive' => true]);
-
+/*
         if (null === $request->query->get('centroPoblado') && false === $rteniente) {
             $request->query->set('centroPoblado', 182);
         }
-
+*/
         if (null !== $oprovincia) {
             $request->query->set('oprovincia', $oprovincia);
             $distritos = $em->getRepository(Distrito::class)->findBy(['provincia' => $oprovincia, 'isActive' => true], ['nombre' => 'ASC']);
@@ -76,9 +76,11 @@ class CasoTrataController extends BaseController
         if (null === $request->query->get('tipoExplotacion')) {
             $request->query->set('tipoExplotacion', 0);
         }
+        /*
         if (null === $request->query->get('estado')) {
             $request->query->set('estado', 'Notificado');
         }
+            */
 //dd($request->query->all());
         if ((null !== $fechaInicio && null !== $fechaFinal) || (null !== $oprovincia && null !== $odistrito)) {
             $paginator = $manager->listIndex($request->query->all(), $page, $user);
@@ -124,9 +126,12 @@ class CasoTrataController extends BaseController
         $provincias = self::listProvinciasByRol($rteniente, $user, $em);
         $tipos = $em->getRepository(TipoExplotacion::class)->findBy(['isActive' => true]);
 
+        /*
+
         if (null === $request->query->get('centroPoblado') && false === $rteniente) {
             $request->query->set('centroPoblado', 182);
         }
+            */
 
         if (null !== $oprovincia) {
             $request->query->set('oprovincia', $oprovincia);
@@ -190,11 +195,11 @@ class CasoTrataController extends BaseController
         if ($this->isSuperAdmin()) {
             $usuarios = $em->getRepository(Usuario::class)->allNombres();
         }
-
+/*
         if (null === $request->query->get('centroPoblado') && false === $rteniente) {
             $request->query->set('centroPoblado', 182);
         }
-
+*/
         if (null !== $oprovincia) {
             $request->query->set('oprovincia', $oprovincia);
         }
@@ -203,21 +208,20 @@ class CasoTrataController extends BaseController
             $request->query->set('odistrito', $odistrito);
         }
 
-        if (null === $request->query->get('tipoExplotacion')) {
-            $request->query->set('tipoExplotacion', 0);
-        }
+        /*
         if (null === $request->query->get('estado')) {
             $request->query->set('estado', 'Notificado');
         }
+            */
 
-        if (null !== $oprovincia && null !== $odistrito) {
+        //if (null !== $oprovincia && null !== $odistrito) {
             $casoscv = $manager->graficoCasos($request->query->all());
             $dataMeses = self::dataMeses($casoscv);
             $dataAnios = self::dataAnios($casoscv);
-        } else {
-            $dataMeses = self::dataMeses([]);
-            $dataAnios = self::dataAnios([]);
-        }
+        //} else {
+        //    $dataMeses = self::dataMeses([]);
+        //    $dataAnios = self::dataAnios([]);
+        //}
 
         return $this->render(
             'agraficos/grafico_trata_index.html.twig',

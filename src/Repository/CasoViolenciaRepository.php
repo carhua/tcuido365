@@ -51,7 +51,7 @@ class CasoViolenciaRepository extends BaseRepository
 
         if (null !== $provincia && 'TODOS' !== $provincia->getNombre()) {
             if (null !== $distrito && 'TODOS' !== $distrito->getNombre()) {
-                if (182 !== $params['centroPoblado']) {
+                if (182 !== $params['centroPoblado'] && null !== $params['centroPoblado']) {
                     $queryBuilder->andwhere('centroPoblado.id = :idcentro')
                         ->setParameter('idcentro', $params['centroPoblado']);
                 } else {
@@ -103,7 +103,7 @@ class CasoViolenciaRepository extends BaseRepository
         // if($provincia != null && $distrito != null){
         if (null !== $provincia && 'TODOS' !== $provincia->getNombre()) {
             if (null !== $distrito && 'TODOS' !== $distrito->getNombre()) {
-                if (182 !== $params['centroPoblado']) {
+                if (182 !== $params['centroPoblado'] && null !== $params['centroPoblado']) {
                     $queryBuilder->andwhere('centroPoblado.id = :idcentro')
                                 ->setParameter('idcentro', $params['centroPoblado']);
                 } else {
@@ -117,7 +117,7 @@ class CasoViolenciaRepository extends BaseRepository
                             ->andWhere('provincia.id =:provinciaId')
                             ->setParameter('provinciaId', $provincia->getId());
             }
-        } elseif (182 !== $params['centroPoblado']) {
+        } elseif (182 !== $params['centroPoblado'] && null !== $params['centroPoblado']) {
             $queryBuilder->andwhere('centroPoblado.id = :idcentro')
                         ->setParameter('idcentro', $params['centroPoblado']);
         }
@@ -155,7 +155,7 @@ class CasoViolenciaRepository extends BaseRepository
             ->addSelect('MONTH(casoViolencia.fechaReporte) as mes')
             ->where('YEAR(casoViolencia.fechaReporte) = :anio')
             ->andWhere('casoViolencia.estadoCaso = :ecaso')
-            ->setParameter('ecaso', 'Notificado')
+            //->setParameter('ecaso', 'Notificado')
             ->setParameter('anio', $anioActual);
 
         if (null !== $centro) {
@@ -187,8 +187,8 @@ class CasoViolenciaRepository extends BaseRepository
         $queryBuilder = $this->createQueryBuilder('casoViolencia')
             ->select('YEAR(casoViolencia.fechaReporte) as anio')
             ->addSelect('COUNT(casoViolencia.id) as cantidad')
-            ->where('casoViolencia.estadoCaso = :ecaso')
-            ->setParameter('ecaso', 'Notificado');
+            ->where('casoViolencia.estadoCaso = :ecaso');
+            //->setParameter('ecaso', 'Notificado');
 
         if (null !== $centro) {
             $queryBuilder->andwhere('casoViolencia.centroPoblado = :idcentro')
@@ -251,7 +251,7 @@ class CasoViolenciaRepository extends BaseRepository
         
         if (null !== $provincia && 'TODOS' !== $provincia->getNombre()) {
             if (null !== $distrito && 'TODOS' !== $distrito->getNombre()) {
-                if (182 !== $params['centroPoblado']) {
+                if (182 !== $params['centroPoblado'] && null !== $params['centroPoblado']) {
                     $queryBuilder->andwhere('centroPoblado.id = :idcentro')
                         ->setParameter('idcentro', $params['centroPoblado']);
                 } else {
@@ -265,7 +265,7 @@ class CasoViolenciaRepository extends BaseRepository
                     ->andWhere('provincia.id =:provinciaId')
                     ->setParameter('provinciaId', $provincia->getId());
             }
-        } elseif (182 !== $params['centroPoblado']) {
+        } elseif (182 !== $params['centroPoblado'] && null !== $params['centroPoblado']) {
             $queryBuilder->andwhere('centroPoblado.id = :idcentro')
                 ->setParameter('idcentro', $params['centroPoblado']);
         }
@@ -314,7 +314,7 @@ class CasoViolenciaRepository extends BaseRepository
 
         if (null !== $provincia && 'TODOS' !== $provincia->getNombre()) {
             if (null !== $distrito && 'TODOS' !== $distrito->getNombre()) {
-                if (182 !== $params['centroPoblado']) {
+                if (182 !== $params['centroPoblado'] && null !== $params['centroPoblado']) {
                     $queryBuilder->andwhere('casoViolencia.centroPoblado = :idcentro')
                         ->setParameter('idcentro', $params['centroPoblado']);
                 } else {
@@ -360,7 +360,7 @@ class CasoViolenciaRepository extends BaseRepository
 
         if (null !== $provincia && 'TODOS' !== $provincia->getNombre()) {
             if (null !== $distrito && 'TODOS' !== $distrito->getNombre()) {
-                if (182 !== $params['centroPoblado']) {
+                if (182 !== $params['centroPoblado'] && null !== $params['centroPoblado']) {
                     $queryBuilder->andwhere('centroPoblado.id = :idcentro')
                         ->setParameter('idcentro', $params['centroPoblado']);
                 } else {
@@ -374,7 +374,7 @@ class CasoViolenciaRepository extends BaseRepository
                     ->andWhere('provincia.id =:provinciaId')
                     ->setParameter('provinciaId', $provincia->getId());
             }
-        } elseif (182 !== $params['centroPoblado']) {
+        } elseif (182 !== $params['centroPoblado'] && null !== $params['centroPoblado']) {
             $queryBuilder->andwhere('centroPoblado.id = :idcentro')
                 ->setParameter('idcentro', $params['centroPoblado']);
         }

@@ -170,11 +170,11 @@ class CasoDesaparecidoController extends BaseController
         if ($this->isSuperAdmin()) {
             $usuarios = $em->getRepository(Usuario::class)->allNombres();
         }
-
+/*
         if (null === $request->query->get('centroPoblado') && false === $rteniente) {
             $request->query->set('centroPoblado', 182);
         }
-
+*/
         if (null !== $oprovincia) {
             $request->query->set('oprovincia', $oprovincia);
         }
@@ -182,20 +182,20 @@ class CasoDesaparecidoController extends BaseController
         if (null !== $odistrito) {
             $request->query->set('odistrito', $odistrito);
         }
-
+/*
         if (null === $request->query->get('estado')) {
             $request->query->set('estado', 'Notificado');
         }
-
-        if (null !== $oprovincia && null !== $odistrito) {
+*/
+        //if (null !== $oprovincia && null !== $odistrito) {
             $casoscv = $manager->graficoCasos($request->query->all());
             $dataMeses = self::dataMeses($casoscv);
             $dataAnios = self::dataAnios($casoscv);
-        } else {
-            $casoscv = [];
-            $dataMeses = self::dataMeses([]);
-            $dataAnios = self::dataAnios([]);
-        }
+        //} else {
+        //    $casoscv = [];
+        //    $dataMeses = self::dataMeses([]);
+        //    $dataAnios = self::dataAnios([]);
+        //}
 
         return $this->render(
             'agraficos/grafico_desaparecido_index.html.twig',
