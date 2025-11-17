@@ -183,19 +183,19 @@ class ParametroApiController extends ApiController
             [
                 'name' => 'numero_documento',
                 'type' => 'text-document',
-                'required' => true,
+                'required' => false,
                 'title' => 'Número Documento (*)',
             ],
             [
                 'name' => 'nombres',
                 'type' => 'text',
-                'required' => true,
+                'required' => false,
                 'title' => 'Nombres (*)',
             ],
             [
                 'name' => 'apellidos',
                 'type' => 'text',
-                'required' => true,
+                'required' => false,
                 'title' => 'Apellidos (*)',
             ],
             [
@@ -214,7 +214,7 @@ class ParametroApiController extends ApiController
             [
                 'name' => 'estado_civil_id',
                 'type' => 'select',
-                'required' => true,
+                'required' => false,
                 'title' => 'Estado Civil (*)',
                 'options' => $this->listEstados($em),
             ],
@@ -228,26 +228,26 @@ class ParametroApiController extends ApiController
             [
                 'name' => 'vinculo_familiar_id',
                 'type' => 'select',
-                'required' => true,
+                'required' => false,
                 'title' => 'Vínculo Familiar Presunto Agraviado (*)',
                 'options' => $this->listVinculos($em),
             ],
             [
                 'name' => 'direccion',
                 'type' => 'text',
-                'required' => true,
+                'required' => false,
                 'title' => 'Dirección (*)',
             ],
             [
                 'name' => 'referencia_domicilio',
                 'type' => 'text',
-                'required' => true,
+                'required' => false,
                 'title' => 'Referencia Domicilio (*)',
             ],
             [
                 'name' => 'discapacidad',
                 'type' => 'radio',
-                'required' => true,
+                'required' => false,
                 'title' => 'Discapacidad (*)',
                 'options' => [
                     ['key' => 'Si', 'label' => 'Si'],
@@ -257,7 +257,7 @@ class ParametroApiController extends ApiController
             [
                 'name' => 'gestacion',
                 'type' => 'radio',
-                'required' => true,
+                'required' => false,
                 'title' => 'Gestación (*)',
                 'options' => [
                     ['key' => 'Si', 'label' => 'Si'],

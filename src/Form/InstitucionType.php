@@ -102,6 +102,7 @@ class InstitucionType extends AbstractType
 
         $form->add('centroPoblado', EntityType::class, [
         'class' => CentroPoblado::class,
+        'required' => false,
         'placeholder' => 'Seleccionar',
         'query_builder' => function (EntityRepository $er) use ($distrito) {
             if ($distrito instanceof Distrito) {
@@ -127,6 +128,11 @@ class InstitucionType extends AbstractType
     {
         $form = $event->getForm();
         $data = $event->getData();
+
+        if (empty($data['centroPoblado'])) {
+            $data['centroPoblado'] = '182';
+            $event->setData($data);
+        }
 
         $provincia = $this->em->getRepository(Provincia::class)->find($data['provincia']);
         $distrito = $this->em->getRepository(Distrito::class)->find($data['distrito']);

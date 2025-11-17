@@ -154,7 +154,6 @@ class CasoDesaparecidoRepository extends BaseRepository
             ->addSelect('MONTH(casoDesaparecido.fechaReporte) as mes')
             ->where('YEAR(casoDesaparecido.fechaReporte) = :anio')
             ->andWhere('casoDesaparecido.estadoCaso = :ecaso')
-            ->setParameter('ecaso', 'Notificado')
             ->setParameter('anio', $anioActual);
 
         if (null !== $centro) {
@@ -187,7 +186,7 @@ class CasoDesaparecidoRepository extends BaseRepository
             ->select('YEAR(casoDesaparecido.fechaReporte) as anio')
             ->addSelect('COUNT(casoDesaparecido.id) as cantidad')
             ->where('casoDesaparecido.estadoCaso = :ecaso')
-            ->setParameter('ecaso', 'Notificado');
+            ->addSelect('COUNT(casoDesaparecido.id) as cantidad');
 
         if (null !== $centro) {
             $queryBuilder->andwhere('casoDesaparecido.centroPoblado = :idcentro')
