@@ -47,6 +47,7 @@ class CasoTrataController extends BaseController
         $oprovincia = null === $provinciaId ? null : $em->getRepository(Provincia::class)->findOneBy(['isActive' => true, 'id' => $provinciaId]);
         $ocentro = null === $centroId ? null : $em->getRepository(CentroPoblado::class)->findOneBy(['isActive' => true, 'id' => $centroId]);
         $cantidad = "-";
+        $distritos = [];
 
         $user = $this->getUser();
         $userIdProvincia = $user->getProvincia()->getId();
@@ -63,6 +64,9 @@ class CasoTrataController extends BaseController
 
         if (null !== $oprovincia) {
             $request->query->set('oprovincia', $oprovincia);
+            $distritos = $em->getRepository(Distrito::class)->findBy(['provincia' => $oprovincia, 'isActive' => true], ['nombre' => 'ASC']);
+        } else {
+            $distritos = $em->getRepository(Distrito::class)->findBy(['provincia' => $user->getProvincia(), 'isActive' => true], ['nombre' => 'ASC']);
         }
 
         if (null !== $odistrito) {
@@ -92,6 +96,7 @@ class CasoTrataController extends BaseController
                 'tipos' => $tipos,
                 'provincias' => $provincias,
                 'provinciaId' => $provinciaId,
+                'distritos' => $distritos,
                 'odistrito' => $odistrito,
                 'ocentro' => $ocentro,
                 'cantidad' => $cantidad,
@@ -255,6 +260,34 @@ class CasoTrataController extends BaseController
 
         $accion = $query->getResult();
 
+        // Lógica para acción automática de "Recibido"
+        $estadoActual = $casoTrata->getEstadoCaso();
+        if (in_array($estadoActual, ['Pendiente', 'Notificado'])) {
+            $accionRecibidoExistente = $em->getRepository(Accion::class)->findOneBy(['codigo' => $cod, 'estado' => 1]); // Asumiendo que ID 1 es "Recibido"
+
+            if (!$accionRecibidoExistente) {
+                $estadoRecibido = $em->getRepository(Estado::class)->find(1); // ID 1 = Recibido
+                if ($estadoRecibido) {
+                    $nuevaAccion = new Accion();
+                    $nuevaAccion->setCodigo($cod);
+                    $nuevaAccion->setFecha(new \DateTime());
+                    $nuevaAccion->setOwner($this->getUser());
+                    $nuevaAccion->setDescripcion('Caso recibido por el operador.');
+                    $nuevaAccion->setEstado($estadoRecibido);
+                    $em->persist($nuevaAccion);
+
+                    $casoTrata->setEstadoCaso($estadoRecibido->getEstado());
+                    $em->persist($casoTrata);
+
+                    $em->flush();
+                    $this->addFlash('info', 'Se ha registrado automáticamente la acción: Caso Recido.');
+
+                    // Recargar las acciones para mostrar la nueva
+                    $accion = $query->getResult();
+                }
+            }
+        }
+
         $query = $em->createQuery(
             'SELECT p
             FROM App\Entity\Institucion p
@@ -265,13 +298,41 @@ class CasoTrataController extends BaseController
 
         $institucion = $query->getResult();
 
-        return $this->render('caso_trata/show.html.twig', ['caso_trata' => $casoTrata, 'accion' => $accion, 'institucion' => $institucion]);
+        $estadosSiguientes = [];
+        $estadoActualCaso = $casoTrata->getEstadoCaso();
+        if ('Recibido' === $estadoActualCaso) {
+            // IDs para Atendido y Derivado
+            $estadosSiguientes = $em->getRepository(Estado::class)->findBy(['id' => [2, 3]]);
+        } elseif ('Atendido' === $estadoActualCaso) {
+            // IDs para Derivado, Observado y Cerrado.
+            // Asumiendo IDs: Derivado=2, Observado=4, Cerrado=5
+            $estadosSiguientes = $em->getRepository(Estado::class)->findBy(['id' => [2, 4, 5]]);
+        } elseif ('Derivado' === $estadoActualCaso) {
+            // IDs para Atendido, Observado y Cerrado.
+            // Asumiendo IDs: Atendido=3, Observado=4, Cerrado=5
+            $estadosSiguientes = $em->getRepository(Estado::class)->findBy(['id' => [3, 4, 5]]);
+        } elseif ('Observado' === $estadoActualCaso) {
+            // IDs para Recibido y Atendido.
+            // Asumiendo IDs: Recibido=1, Atendido=3
+            $estadosSiguientes = $em->getRepository(Estado::class)->findBy(['id' => [1, 3]]);
+        }
+
+        return $this->render('caso_trata/show.html.twig', [
+            'caso_trata' => $casoTrata, 'accion' => $accion, 'institucion' => $institucion, 'estados_siguientes' => $estadosSiguientes
+        ]);
+
     }
 
     #[Route(path: '/{id}', name: 'accion_trata_new', methods: ['POST'])]
     public function accion(Request $request, CasoTrata $casotrata, EntityManagerInterface $em): Response
     {
-        $this->denyAccess(Security::NEW, 'caso_violenciac_index');
+        $this->denyAccess(Security::NEW, 'caso_trata_index');
+
+        if (in_array($casotrata->getEstadoCaso(), ['Cerrado', 'Archivado'])) {
+            $this->addFlash('error', 'No se pueden registrar nuevas acciones en un caso cerrado o archivado.');
+
+            return $this->redirectToRoute('caso_trata_show', ['id' => $casotrata->getId()]);
+        }
 
         try{
             $data = $request->request->all();
@@ -280,7 +341,7 @@ class CasoTrataController extends BaseController
             $estado = $em->getRepository(Estado::class)->findOneBy(['id' => $data['estado']]);
 
             $caso->setEstadoCaso($estado->getEstado());
-            if($data['institucion']){
+            if('Derivado' === $estado->getEstado() && !empty($data['institucion'])){
                 $caso->setInstitucion(self::findInstitucion($data['institucion'], $em));
             }
             $em->persist($caso);
@@ -290,7 +351,7 @@ class CasoTrataController extends BaseController
             $form->setCodigo($data['codigo']);
             $form->setFecha(new \DateTime($data['fecha']));
             $form->setOwner($this->getUser());
-            if($data['institucion']){
+            if('Derivado' === $estado->getEstado() && !empty($data['institucion'])){
                 //$form->setInstitucionId($data['institucion']);
                 $form->setInstitucion(self::findInstitucion($data['institucion'], $em));
             }        
@@ -328,5 +389,40 @@ class CasoTrataController extends BaseController
     public static function findInstitucion($id, ObjectManager $em): ?Institucion
     {
         return $em->getRepository(Institucion::class)->find($id);
+    }
+
+    #[Route(path: '/{id}/reopen', name: 'caso_trata_reopen', methods: ['POST'])]
+    public function reopen(Request $request, CasoTrata $casotrata, EntityManagerInterface $em): Response
+    {
+        $this->denyAccess(Security::MASTER, 'caso_trata_index');
+
+        if ('Cerrado' !== $casotrata->getEstadoCaso()) {
+            $this->addFlash('error', 'Solo se pueden reaperturar casos que se encuentran cerrados.');
+
+            return $this->redirectToRoute('caso_trata_show', ['id' => $casotrata->getId()]);
+        }
+
+        if ($this->isCsrfTokenValid('reopen'.$casotrata->getId(), $request->request->get('_token'))) {
+            $estadoRecibido = $em->getRepository(Estado::class)->find(1); // ID 1 = Recibido
+            if ($estadoRecibido) {
+                // Actualizar estado del caso
+                $casotrata->setEstadoCaso($estadoRecibido->getEstado());
+                $em->persist($casotrata);
+
+                // Crear la acción de reapertura
+                $nuevaAccion = new Accion();
+                $nuevaAccion->setCodigo($casotrata->getCodigo());
+                $nuevaAccion->setFecha(new \DateTime());
+                $nuevaAccion->setOwner($this->getUser());
+                $nuevaAccion->setDescripcion('Caso reaperturado por administrador.');
+                $nuevaAccion->setEstado($estadoRecibido);
+                $em->persist($nuevaAccion);
+
+                $em->flush();
+                $this->addFlash('success', 'El caso ha sido reaperturado y su estado es "Recibido".');
+            }
+        }
+
+        return $this->redirectToRoute('caso_trata_show', ['id' => $casotrata->getId()]);
     }
 }

@@ -2,31 +2,32 @@
 {% import 'macro/breadcrumb.html.twig' as breadcrumb %}
 {% import 'macro/action.html.twig' as action %}
 
-{% set _title = 'Region' %}
+{% set _title = 'Institución' %}
 {% set _main_title = 'Mostrar' %}
-{% set _section =  'region_index'%}
+{% set _section =  'institucion_index'%}
 
 {% block _breadcrumb %}
-    {{ breadcrumb.show2(_title,_section,'Mostrar') }}
+    {{ breadcrumb.show2(_title, _section, 'Mostrar') }}
 {% endblock %}
 
 {% block _main %}
     {{ action.tbl_start() }}
-    {{ action.tbl_tr('Nombre',region.nombre) }}
-    {{ action.tbl_tr('Activo',region.isActive | yesno) }}
+    {{ action.tbl_tr('Nombre', institucion.name) }}
+    {{ action.tbl_tr('Provincia', institucion.provincia.nombre) }}
+    {{ action.tbl_tr('Activo', institucion.isActive | yesno) }}
     {{ action.tbl_end() }}
 {% endblock %}
 
 {% block _main_tools %}
-    {% include 'crud/_options_ico.html.twig' %}
+    {% include 'crud/_options_ico.html.twig' with {'route_base':'institucion','entity': institucion} %}
 {% endblock %}
 
 {% block _main_footer %}
-    {% include 'crud/_show_links.html.twig' with {'route_base':'region','entity': region} %}
+    {% include 'crud/_show_links.html.twig' with {'route_base':'institucion','entity': institucion} %}
 {% endblock %}
 
 {% block _main_actions %}
-    {% include 'crud/_show_links_ico.html.twig' with {'route_base':'region','entity': region} %}
+    {% include 'crud/_show_links_ico.html.twig' with {'route_base':'institucion','entity': institucion} %}
 {% endblock %}
 
 {% block _javascripts %}

@@ -108,19 +108,22 @@
                     <div class="col-md-3 my-2 my-md-0">
                         <div class="form-group">
                             <label for="distrito">Distrito</label>
-                            <select name="distrito" id="select_distritos" class="form-control m-select2">
-                                {% if odistrito is not null %}
-                                    <option value="{{ odistrito.id }}" >
-                                        {{ odistrito.nombre }}
+                            <select name="distrito" id="distrito" class="form-control m-select2">
+                                <option value="">Seleccione</option>
+                                {% for distrito in distritos %}
+                                    <option value="{{ distrito.id }}" {% if odistrito and distrito.id == odistrito.id %}selected{% endif %}>
+                                        {{ distrito.nombre }}
                                     </option>
-                                {% endif %}
+                                {% else %}
+                                    <option value="">Seleccione una provincia</option>
+                                {% endfor %}
                             </select>
                         </div>
                     </div>
                     <div class="col-md-3 my-2 my-md-0">
                         <div class="form-group">
                             <label for="centroPoblado">Centro Poblado</label>
-                            <select name="centroPoblado" id="select_centros" class="form-control m-select2">
+                            <select name="centroPoblado" id="centroPoblado" class="form-control m-select2">
                                 {% if ocentro is not null %}
                                     <option value="{{ ocentro.id }}" >
                                         {{ ocentro.nombre }}
@@ -244,17 +247,17 @@
                     url: "{{ path('distrito_ajax') }}",
                     data: data,
                     success: function (data) {
-                        var $selector = $('#select_distritos');
+                        var $selector = $('#distrito');
                         //alert(data);
-                        $selector.html('<option>Seleccione Distrito</option>');
+                        $selector.html('<option value="">Seleccione Distrito</option>');
                         for (var i = 0, total = data.length; i < total; i++) {
                             $selector.append('<option value="' + data[i].id + '">' + data[i].name + '</option>');
                         }
-                    }
+                        $('#centroPoblado').html('<option value="">Seleccione Centro Poblado</option>').val(null).trigger('change');                    }
                 });
             });
 
-            $("#select_distritos").change(function () {
+            $("#distrito").change(function () {
                 var data = {
                     distrito_id: $(this).val()
                 };
@@ -263,9 +266,9 @@
                     url: "{{ path('centros_ajax') }}",
                     data: data,
                     success: function (data) {
-                        var $selector = $('#select_centros');
+                        var $selector = $('#centroPoblado');
                         //alert(data);
-                        $selector.html('<option>Seleccione Centro Poblado</option>');
+                        $selector.html('<option value="">Seleccione Centro Poblado</option>');
                         for (var i = 0, total = data.length; i < total; i++) {
                             $selector.append('<option value="' + data[i].id + '">' + data[i].name + '</option>');
                         }

@@ -256,6 +256,34 @@ class CasoDesproteccionController extends BaseController
 
         $accion = $query->getResult();
 
+        // Lógica para acción automática de "Recibido"
+        $estadoActual = $casoDesproteccion->getEstadoCaso();
+        if (in_array($estadoActual, ['Pendiente', 'Notificado'])) {
+            $accionRecibidoExistente = $em->getRepository(Accion::class)->findOneBy(['codigo' => $cod, 'estado' => 1]); // Asumiendo que ID 1 es "Recibido"
+
+            if (!$accionRecibidoExistente) {
+                $estadoRecibido = $em->getRepository(Estado::class)->find(1); // ID 1 = Recibido
+                if ($estadoRecibido) {
+                    $nuevaAccion = new Accion();
+                    $nuevaAccion->setCodigo($cod);
+                    $nuevaAccion->setFecha(new \DateTime());
+                    $nuevaAccion->setOwner($this->getUser());
+                    $nuevaAccion->setDescripcion('Caso recibido por el operador.');
+                    $nuevaAccion->setEstado($estadoRecibido);
+                    $em->persist($nuevaAccion);
+
+                    $casoDesproteccion->setEstadoCaso($estadoRecibido->getEstado());
+                    $em->persist($casoDesproteccion);
+
+                    $em->flush();
+                    $this->addFlash('info', 'Se ha registrado automáticamente la acción: Caso Recibido.');
+
+                    // Recargar las acciones para mostrar la nueva
+                    $accion = $query->getResult();
+                }
+            }
+        }
+
         $query = $em->createQuery(
             'SELECT p
             FROM App\Entity\Institucion p
@@ -266,7 +294,28 @@ class CasoDesproteccionController extends BaseController
 
         $institucion = $query->getResult();
 
-        return $this->render('caso_desproteccion/show.html.twig', ['caso_desproteccion' => $casoDesproteccion, 'accion' => $accion, 'institucion' => $institucion]);
+        $estadosSiguientes = [];
+        $estadoActualCaso = $casoDesproteccion->getEstadoCaso();
+        if ('Recibido' === $estadoActualCaso) {
+            // IDs para Atendido y Derivado
+            $estadosSiguientes = $em->getRepository(Estado::class)->findBy(['id' => [2, 3]]);
+        } elseif ('Atendido' === $estadoActualCaso) {
+            // IDs para Derivado, Observado y Cerrado.
+            // Asumiendo IDs: Derivado=2, Observado=4, Cerrado=5
+            $estadosSiguientes = $em->getRepository(Estado::class)->findBy(['id' => [2, 4, 5]]);
+        } elseif ('Derivado' === $estadoActualCaso) {
+            // IDs para Atendido, Observado y Cerrado.
+            // Asumiendo IDs: Atendido=3, Observado=4, Cerrado=5
+            $estadosSiguientes = $em->getRepository(Estado::class)->findBy(['id' => [3, 4, 5]]);
+        } elseif ('Observado' === $estadoActualCaso) {
+            // IDs para Recibido y Atendido.
+            // Asumiendo IDs: Recibido=1, Atendido=3
+            $estadosSiguientes = $em->getRepository(Estado::class)->findBy(['id' => [1, 3]]);
+        }
+
+        return $this->render('caso_desproteccion/show.html.twig', [
+            'caso_desproteccion' => $casoDesproteccion, 'accion' => $accion, 'institucion' => $institucion, 'estados_siguientes' => $estadosSiguientes
+        ]);
     }
 
     #[Route(path: '/control/{id}', name: 'caso_desproteccionc_show', methods: ['GET'])]
@@ -282,6 +331,12 @@ class CasoDesproteccionController extends BaseController
     {
         $this->denyAccess(Security::NEW, 'caso_desproteccion_index');
 
+        if (in_array($casoDesproteccion->getEstadoCaso(), ['Cerrado', 'Archivado'])) {
+            $this->addFlash('error', 'No se pueden registrar nuevas acciones en un caso cerrado o archivado.');
+
+            return $this->redirectToRoute('caso_desproteccion_show', ['id' => $casoDesproteccion->getId()]);
+        }
+
         try{
             $data = $request->request->all();
 
@@ -289,7 +344,7 @@ class CasoDesproteccionController extends BaseController
             $estado = $em->getRepository(Estado::class)->findOneBy(['id' => $data['estado']]);
 
             $caso->setEstadoCaso($estado->getEstado());
-            if($data['institucion']){
+            if('Derivado' === $estado->getEstado() && !empty($data['institucion'])){
                 $caso->setInstitucion(self::findInstitucion($data['institucion'], $em));
             }
             $em->persist($caso);
@@ -299,7 +354,7 @@ class CasoDesproteccionController extends BaseController
             $form->setCodigo($data['codigo']);
             $form->setFecha(new \DateTime($data['fecha']));
             $form->setOwner($this->getUser());
-            if($data['institucion']){
+            if('Derivado' === $estado->getEstado() && !empty($data['institucion'])){
                 //$form->setInstitucionId($data['institucion']);
                 $form->setInstitucion(self::findInstitucion($data['institucion'], $em));
             }        
@@ -329,5 +384,40 @@ class CasoDesproteccionController extends BaseController
     public static function findInstitucion($id, ObjectManager $em): ?Institucion
     {
         return $em->getRepository(Institucion::class)->find($id);
+    }
+
+    #[Route(path: '/{id}/reopen', name: 'caso_desproteccion_reopen', methods: ['POST'])]
+    public function reopen(Request $request, CasoDesproteccion $casoDesproteccion, EntityManagerInterface $em): Response
+    {
+        $this->denyAccess(Security::MASTER, 'caso_desproteccion_index');
+
+        if ('Cerrado' !== $casoDesproteccion->getEstadoCaso()) {
+            $this->addFlash('error', 'Solo se pueden reaperturar casos que se encuentran cerrados.');
+
+            return $this->redirectToRoute('caso_desproteccion_show', ['id' => $casoDesproteccion->getId()]);
+        }
+
+        if ($this->isCsrfTokenValid('reopen'.$casoDesproteccion->getId(), $request->request->get('_token'))) {
+            $estadoRecibido = $em->getRepository(Estado::class)->find(1); // ID 1 = Recibido
+            if ($estadoRecibido) {
+                // Actualizar estado del caso
+                $casoDesproteccion->setEstadoCaso($estadoRecibido->getEstado());
+                $em->persist($casoDesproteccion);
+
+                // Crear la acción de reapertura
+                $nuevaAccion = new Accion();
+                $nuevaAccion->setCodigo($casoDesproteccion->getCodigo());
+                $nuevaAccion->setFecha(new \DateTime());
+                $nuevaAccion->setOwner($this->getUser());
+                $nuevaAccion->setDescripcion('Caso reaperturado por administrador.');
+                $nuevaAccion->setEstado($estadoRecibido);
+                $em->persist($nuevaAccion);
+
+                $em->flush();
+                $this->addFlash('success', 'El caso ha sido reaperturado y su estado es "Recibido".');
+            }
+        }
+
+        return $this->redirectToRoute('caso_desproteccion_show', ['id' => $casoDesproteccion->getId()]);
     }
 }

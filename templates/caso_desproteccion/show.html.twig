@@ -84,7 +84,16 @@
         </tbody>
     </table>
 
-    <div class="card">
+    {% if caso_desproteccion.EstadoCaso == 'Cerrado' and access.isSuperAdmin() %}
+        <div class="card">
+            <div class="card-body text-center">
+                <form method="post" action="{{ path('caso_desproteccion_reopen', {'id': caso_desproteccion.id}) }}" onsubmit="return confirm('¿Está seguro que desea reaperturar este caso?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('reopen' ~ caso_desproteccion.id) }}">
+                    <button class="btn btn-success"><i class="fas fa-folder-open"></i> Aperturar Caso</button>
+                </form>
+            </div>
+        </div>
+    {% elseif caso_desproteccion.EstadoCaso not in ['Cerrado', 'Archivado'] %}
         <div class="card-header flex-column flex-lg-row  d-flex align-items-lg-center gap-2 justify-content-between">
             <h6>Nueva acción</h6>
                                         </div>
@@ -108,13 +117,11 @@
                         <div class="form-group  row p-1 ">
                             <div class="col-sm-4">Estado</div>
                             <div class="col-sm-8">
-                                <select class="form-control" id="estado" name="estado" style="max-width:265px;">
-                                    <option></option>
-                                    <option value="1">Recibido</option>
-                                    <option value="2">Derivado</option>
-                                    <option value="3">Atendido</option>
-                                    <option value="4">Observado</option>
-                                    <option value="5">Cerrado</option>
+                                <select class="form-control" id="estado" name="estado" style="max-width:265px;" required>
+                                    <option value="">Seleccionar...</option>
+                                    {% for estado_item in estados_siguientes %}
+                                        <option value="{{ estado_item.id }}">{{ estado_item.estado }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                         </div>
@@ -124,7 +131,7 @@
                 </div>
                 <div class="row">
                     <div class="col-sm p-0">
-                        <div class="form-group  row p-1 ">
+                        <div class="form-group  row p-1 " id="fila-institucion" style="display: none;">
                             <div class="col-sm-4">Institución</div>
                             <div class="col-sm-8">
                                 <select class="form-control" id="institucion" name="institucion" style="max-width:265px;">
@@ -170,7 +177,7 @@
                 
             </div>
         </form>
-    </div>
+    {% endif %}
 
 {% endblock %}
 
@@ -193,6 +200,19 @@
         function imprimir() {
             window.print();
         }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const estadoSelect = document.getElementById('estado');
+            const institucionFila = document.getElementById('fila-institucion');
+
+            estadoSelect.addEventListener('change', function () {
+                if (this.options[this.selectedIndex].text === 'Derivado') {
+                    institucionFila.style.display = '';
+                } else {
+                    institucionFila.style.display = 'none';
+                }
+            });
+        });
     </script>
 {% endblock %}
 
