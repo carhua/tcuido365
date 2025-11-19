@@ -144,7 +144,6 @@ class CasoDesproteccionRepository extends BaseRepository
             ->select('COUNT(casoDesproteccion.id) as cantidad')
             ->addSelect('MONTH(casoDesproteccion.fechaReporte) as mes')
             ->where('YEAR(casoDesproteccion.fechaReporte) = :anio')
-            ->andWhere('casoDesproteccion.estadoCaso = :ecaso')
             ->setParameter('anio', $anioActual);
 
         if (null !== $centro) {
@@ -176,8 +175,6 @@ class CasoDesproteccionRepository extends BaseRepository
     {
         $queryBuilder = $this->createQueryBuilder('casoDesproteccion')
             ->select('YEAR(casoDesproteccion.fechaReporte) as anio')
-            ->addSelect('COUNT(casoDesproteccion.id) as cantidad')
-            ->where('casoDesproteccion.estadoCaso = :ecaso')
             ->addSelect('COUNT(casoDesproteccion.id) as cantidad');
 
         if (null !== $centro) {
