@@ -30,6 +30,12 @@ class CasoViolenciaApiController extends ApiController
     ) {
     }
 
+    /**
+     * Pre-registra un caso de violencia con estado 'Pendiente'.
+     * Este endpoint guarda los datos iniciales del caso, incluyendo denunciantes, agraviados y agresores.
+     * @param Request $request La solicitud HTTP con los datos del caso en formato JSON.
+     * @return Response Una respuesta JSON indicando el resultado de la operación.
+     */
     #[Route(path: '/pre-register/casoviolencia', name: 'api_registerauditoria_data', methods: ['POST'])]
     public function preRegisterCasoViolencia(Request $request): Response
     {
@@ -166,6 +172,12 @@ class CasoViolenciaApiController extends ApiController
         }
     }
 
+    /**
+     * Registra o actualiza un caso de violencia, marcándolo como 'Notificado'.
+     * Procesa los datos completos del caso, incluyendo sub-formularios, para finalizar el registro.
+     * @param Request $request La solicitud HTTP con los datos del caso y sub-formularios en formato JSON.
+     * @return Response Una respuesta JSON indicando el resultado de la operación.
+     */
     #[Route(path: '/register/casoviolencia', name: 'api_register_data', methods: ['POST'])]
     public function registerCasoViolencia(Request $request): Response
     {
@@ -348,6 +360,12 @@ class CasoViolenciaApiController extends ApiController
         }
     }
 
+    /**
+     * Busca una persona por su número de documento en diferentes roles (Denunciante, Agraviado, etc.)
+     * o consulta una API externa si no se encuentra localmente.
+     * @param Request $request La solicitud HTTP con el número de documento en formato JSON.
+     * @return Response Una respuesta JSON con los datos de la persona encontrada.
+     */
     #[Route(path: '/find/persona', name: 'api_find_persona', methods: ['POST'])]
     public function findPersona(Request $request): Response
     {

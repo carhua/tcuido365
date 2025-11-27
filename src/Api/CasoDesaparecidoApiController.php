@@ -24,6 +24,12 @@ class CasoDesaparecidoApiController extends ApiController
     ) {
     }
 
+    /**
+     * Pre-registra un caso de persona desaparecida con estado 'Pendiente'.
+     * Este endpoint guarda los datos iniciales del caso enviados desde la aplicación móvil.
+     * @param Request $request La solicitud HTTP con los datos del caso en formato JSON.
+     * @return Response Una respuesta JSON indicando el resultado de la operación.
+     */
     #[Route(path: '/pre-register/casodesaparecido', name: 'api_preregisterdesaparecido_data', methods: ['POST'])]
     public function preregisterCasoTrata(Request $request): Response
     {
@@ -103,6 +109,12 @@ class CasoDesaparecidoApiController extends ApiController
         }
     }
 
+    /**
+     * Registra o actualiza un caso de persona desaparecida, marcándolo como 'Notificado'.
+     * Este endpoint procesa los datos completos del caso, incluyendo sub-formularios, para finalizar el registro.
+     * @param Request $request La solicitud HTTP con los datos del caso y sub-formularios en formato JSON.
+     * @return Response Una respuesta JSON indicando el resultado de la operación.
+     */
     #[Route(path: '/register/casodesaparecido', name: 'api_registerdesaparecido_data', methods: ['POST'])]
     public function registerCasoTrata(Request $request): Response
     {

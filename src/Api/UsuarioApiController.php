@@ -32,7 +32,10 @@ final class UsuarioApiController extends ApiController
     }
 
     /**
+     * Obtiene un listado de todos los usuarios de la aplicación.
      * @Route("/usuario/list", name="api_usuario_data", methods={"GET"})
+     * @deprecated La ruta usa la anotación @Route en lugar del atributo #[Route].
+     * @return Response JSON con los datos de los usuarios.
      */
     public function data(): Response
     {
@@ -56,7 +59,11 @@ final class UsuarioApiController extends ApiController
     }
 
     /**
+     * Busca un usuario por su 'username' y valida sus roles.
      * @Route("/usuario/find", name="api_usuario_find_data", methods={"POST"})
+     * @deprecated La ruta usa la anotación @Route en lugar del atributo #[Route].
+     * @param Request $request La solicitud HTTP con el 'username' en formato JSON.
+     * @return Response JSON con los datos del usuario si se encuentra y es válido.
      */
     public function userFind(Request $request): Response
     {
@@ -85,7 +92,11 @@ final class UsuarioApiController extends ApiController
     }
 
     /**
+     * Encuentra todos los casos reportados por un usuario específico.
      * @Route("/data/find", name="api_data_find_data", methods={"POST"})
+     * @deprecated La ruta usa la anotación @Route en lugar del atributo #[Route].
+     * @param Request $request La solicitud HTTP con el 'username' en formato JSON.
+     * @return Response JSON con un listado de todos los casos asociados al usuario.
      */
     public function dataFind(Request $request): Response
     {

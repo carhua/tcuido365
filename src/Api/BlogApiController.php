@@ -28,6 +28,11 @@ final class BlogApiController extends ApiController
         $this->entityManager = $entityManager;
     }
 
+    /**
+     * Obtiene un listado de noticias de tipo 'Normal'.
+     * Espera un cuerpo JSON con información del usuario para filtrar las noticias por su ubicación.
+     * @return Response JSON con el listado de noticias.
+     */
     #[Route(path: '/noticias/listado', name: 'api_noticia_data', methods: ['POST'])]
     public function dataNoticiaNormal(Request $request, RequestStack $requestStack): Response
     {
@@ -61,6 +66,11 @@ final class BlogApiController extends ApiController
         return $this->response(['data' => $data]);
     }
 
+    /**
+     * Obtiene un listado de noticias de tipo 'Alerta'.
+     * Espera un cuerpo JSON con información del usuario para filtrar las noticias por su ubicación.
+     * @return Response JSON con el listado de noticias de alerta.
+     */
     #[Route(path: '/noticias/alertas', name: 'api_noticia_data_alertas', methods: ['POST'])]
     public function dataNoticiaEmergente(Request $request, RequestStack $requestStack): Response
     {

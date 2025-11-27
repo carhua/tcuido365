@@ -25,6 +25,12 @@ class CasoTrataApiController extends ApiController
         $this->entityManager = $entityManager;
     }
 
+    /**
+     * Pre-registra un caso de trata de personas con estado 'Pendiente'.
+     * Guarda los datos iniciales del caso, incluyendo detenidos y víctimas.
+     * @param Request $request La solicitud HTTP con los datos del caso en formato JSON.
+     * @return Response Una respuesta JSON indicando el resultado de la operación.
+     */
     #[Route(path: '/pre-register/casotrata', name: 'api_preregistertrata_data', methods: ['POST'])]
     public function preregisterCasoTrata(Request $request): Response
     {
@@ -116,6 +122,12 @@ class CasoTrataApiController extends ApiController
         }
     }
 
+    /**
+     * Registra o actualiza un caso de trata de personas, marcándolo como 'Notificado'.
+     * Procesa los datos completos del caso, incluyendo sub-formularios de detenidos y víctimas.
+     * @param Request $request La solicitud HTTP con los datos del caso y sub-formularios en formato JSON.
+     * @return Response Una respuesta JSON indicando el resultado de la operación.
+     */
     #[Route(path: '/register/casotrata', name: 'api_registertrata_data', methods: ['POST'])]
     public function registerCasoTrata(Request $request): Response
     {

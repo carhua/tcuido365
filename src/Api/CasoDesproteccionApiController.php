@@ -25,6 +25,12 @@ class CasoDesproteccionApiController extends ApiController
     {
     }
 
+    /**
+     * Pre-registra un caso de desprotección familiar con estado 'Pendiente'.
+     * Este endpoint recibe los datos iniciales del caso desde la aplicación móvil.
+     * @param Request $request La solicitud HTTP con los datos del caso en formato JSON.
+     * @return Response Una respuesta JSON indicando el resultado de la operación.
+     */
     #[Route(path: '/pre-register/casodesproteccion', name: 'api_registeraudi2_data', methods: ['POST'])]
     public function preregisterCasoDesproteccion(Request $request): Response
     {
@@ -121,6 +127,12 @@ class CasoDesproteccionApiController extends ApiController
         }
     }
 
+    /**
+     * Registra o actualiza un caso de desprotección familiar, marcándolo como 'Notificado'.
+     * Procesa los datos completos del caso, incluyendo sub-formularios de menores y tutores.
+     * @param Request $request La solicitud HTTP con los datos del caso y sub-formularios en formato JSON.
+     * @return Response Una respuesta JSON indicando el resultado de la operación.
+     */
     #[Route(path: '/register/casodesproteccion', name: 'api_register2_data', methods: ['POST'])]
     public function registerCasoDesproteccion(Request $request): Response
     {

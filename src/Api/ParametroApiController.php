@@ -14,6 +14,11 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class ParametroApiController extends ApiController
 {
+    /**
+     * Define la estructura del formulario principal para reportar casos de maltrato (violencia).
+     * @param Request $request
+     * @return Response JSON con la configuración del formulario.
+     */
     #[Route(path: '/formmaltrato/v1/form', methods: ['GET'], name: 'api_parameter_v1_list')]
     public function dataFormMaltrato(Request $request): Response
     {
@@ -92,6 +97,12 @@ class ParametroApiController extends ApiController
         return $this->response(['data' => $data]);
     }
 
+    /**
+     * Define la estructura del sub-formulario para los datos del denunciante en un caso de violencia.
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @return Response JSON con la configuración del sub-formulario.
+     */
     #[Route(path: '/sub-form-denunciante/v1/form', methods: ['GET'], name: 'api_form2_v1_list')]
     public function dataFormDenunciante(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -157,6 +168,12 @@ class ParametroApiController extends ApiController
         return $this->response(['data' => $data]);
     }
 
+    /**
+     * Define la estructura del sub-formulario para los datos del agraviado en un caso de violencia.
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @return Response JSON con la configuración del sub-formulario.
+     */
     #[Route(path: '/sub-form-agraviado/v1/form', methods: ['GET'], name: 'api_form3_v1_list')]
     public function dataFormAgraviado(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -286,6 +303,12 @@ class ParametroApiController extends ApiController
         return $this->response(['data' => $data]);
     }
 
+    /**
+     * Define la estructura del sub-formulario para los datos del agresor en un caso de violencia.
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @return Response JSON con la configuración del sub-formulario.
+     */
     #[Route(path: '/sub-form-agresor/v1/form', methods: ['GET'], name: 'api_form4_v1_list')]
     public function dataFormAgresor(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -310,13 +333,13 @@ class ParametroApiController extends ApiController
             [
                 'name' => 'nombres',
                 'type' => 'text',
-                'required' => true,
+                'required' => false,
                 'title' => 'Nombres (*)',
             ],
             [
                 'name' => 'apellidos',
                 'type' => 'text',
-                'required' => true,
+                'required' => false,
                 'title' => 'Apellidos (*)',
             ],
             [
@@ -356,7 +379,7 @@ class ParametroApiController extends ApiController
             [
                 'name' => 'direccion',
                 'type' => 'text',
-                'required' => true,
+                'required' => false,
                 'title' => 'Dirección (*)',
             ],
 
@@ -381,6 +404,11 @@ class ParametroApiController extends ApiController
         return $this->response(['data' => $data]);
     }
 
+    /**
+     * Define la estructura del formulario principal para reportar casos de desprotección familiar.
+     * @param Request $request
+     * @return Response JSON con la configuración del formulario.
+     */
     #[Route(path: '/formdesproteccion/v1/form', methods: ['GET'], name: 'api_form5_v1_form')]
     public function dataFormDesproteccion(Request $request): Response
     {
@@ -453,6 +481,12 @@ class ParametroApiController extends ApiController
         return $this->response(['data' => $data]);
     }
 
+    /**
+     * Define la estructura del sub-formulario para los datos del menor de edad en un caso de desprotección.
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @return Response JSON con la configuración del sub-formulario.
+     */
     #[Route(path: '/sub-form-menoredad/v1/form', methods: ['GET'], name: 'api_form6_v1_list')]
     public function dataFormMenorEdad(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -471,19 +505,19 @@ class ParametroApiController extends ApiController
             [
                 'name' => 'numero_documento',
                 'type' => 'text-document',
-                'required' => true,
+                'required' => false,
                 'title' => 'Número Documento (*)',
             ],
             [
                 'name' => 'nombres',
                 'type' => 'text',
-                'required' => true,
+                'required' => false,
                 'title' => 'Nombres (*)',
             ],
             [
                 'name' => 'apellidos',
                 'type' => 'text',
-                'required' => true,
+                'required' => false,
                 'title' => 'Apellidos (*)',
             ],
             [
@@ -528,6 +562,12 @@ class ParametroApiController extends ApiController
         return $this->response(['data' => $data]);
     }
 
+    /**
+     * Define la estructura del sub-formulario para los datos del tutor en un caso de desprotección.
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @return Response JSON con la configuración del sub-formulario.
+     */
     #[Route(path: '/sub-form-tutor/v1/form', methods: ['GET'], name: 'api_form7_v1_list')]
     public function dataFormTutor(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -546,19 +586,19 @@ class ParametroApiController extends ApiController
             [
                 'name' => 'numero_documento',
                 'type' => 'text-document',
-                'required' => true,
+                'required' => false,
                 'title' => 'Número Documento (*)',
             ],
             [
                 'name' => 'nombres',
                 'type' => 'text',
-                'required' => true,
+                'required' => false,
                 'title' => 'Nombres (*)',
             ],
             [
                 'name' => 'apellidos',
                 'type' => 'text',
-                'required' => true,
+                'required' => false,
                 'title' => 'Apellidos (*)',
             ],
             [
@@ -598,6 +638,11 @@ class ParametroApiController extends ApiController
     }
 
     // PARAMETROS PARA EL MODULO DE CASO DE TRATA DE PERSONAS
+    /**
+     * Define la estructura del formulario principal para reportar casos de trata de personas.
+     * @param Request $request
+     * @return Response JSON con la configuración del formulario.
+     */
     #[Route(path: '/formtrata/v1/form', methods: ['GET'], name: 'api_formtrata_v1_form')]
     public function dataFormTrata(Request $request): Response
     {
@@ -656,6 +701,12 @@ class ParametroApiController extends ApiController
         return $this->response(['data' => $data]);
     }
 
+    /**
+     * Define la estructura del sub-formulario para los datos del detenido en un caso de trata de personas.
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @return Response JSON con la configuración del sub-formulario.
+     */
     #[Route(path: '/sub-form-detenido/v1/form', methods: ['GET'], name: 'api_formdetenido_v1_list')]
     public function dataFormDetenido(Request $request, EntityManagerInterface $em): Response
     {
@@ -672,19 +723,19 @@ class ParametroApiController extends ApiController
             [
                 'name' => 'numero_documento',
                 'type' => 'text-document',
-                'required' => true,
+                'required' => false,
                 'title' => 'Numero Documento (*)',
             ],
             [
                 'name' => 'nombres',
                 'type' => 'text',
-                'required' => true,
+                'required' => false,
                 'title' => 'Nombres (*)',
             ],
             [
                 'name' => 'apellidos',
                 'type' => 'text',
-                'required' => true,
+                'required' => false,
                 'title' => 'Apellidos (*)',
             ],
             [
@@ -723,6 +774,12 @@ class ParametroApiController extends ApiController
         return $this->response(['data' => $data]);
     }
 
+    /**
+     * Define la estructura del sub-formulario para los datos de la víctima en un caso de trata de personas.
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @return Response JSON con la configuración del sub-formulario.
+     */
     #[Route(path: '/sub-form-victima/v1/form', methods: ['GET'], name: 'api_formvictima_v1_list')]
     public function dataFormVictima(Request $request, EntityManagerInterface $em): Response
     {
@@ -739,19 +796,19 @@ class ParametroApiController extends ApiController
             [
                 'name' => 'numero_documento',
                 'type' => 'text-document',
-                'required' => true,
+                'required' => false,
                 'title' => 'Número Documento (*)',
             ],
             [
                 'name' => 'nombres',
                 'type' => 'text',
-                'required' => true,
+                'required' => false,
                 'title' => 'Nombres (*)',
             ],
             [
                 'name' => 'apellidos',
                 'type' => 'text',
-                'required' => true,
+                'required' => false,
                 'title' => 'Apellidos (*)',
             ],
             [
@@ -797,6 +854,11 @@ class ParametroApiController extends ApiController
     }
 
     // PARAMETROS PARA EL MODULO DE CASO DE PERSONAS DESAPARECIDAS
+    /**
+     * Define la estructura del formulario principal para reportar casos de personas desaparecidas.
+     * @param Request $request
+     * @return Response JSON con la configuración del formulario.
+     */
     #[Route(path: '/formdesaparecido/v1/form', methods: ['GET'], name: 'api_formdesaparecido_v1_form')]
     public function dataFormDesaparecido(Request $request): Response
     {
@@ -849,6 +911,12 @@ class ParametroApiController extends ApiController
     }
 
     // denunciante-des
+    /**
+     * Define la estructura del sub-formulario para los datos del denunciante en un caso de persona desaparecida.
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @return Response JSON con la configuración del sub-formulario.
+     */
     #[Route(path: '/sub-form-denunciante-des/v1/form', methods: ['GET'], name: 'api_formdenunciantedes_v1_list')]
     public function dataFormDenuncianteDes(Request $request, EntityManagerInterface $em): Response
     {
@@ -914,6 +982,12 @@ class ParametroApiController extends ApiController
         return $this->response(['data' => $data]);
     }
 
+    /**
+     * Define la estructura del sub-formulario para los datos de la persona desaparecida.
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @return Response JSON con la configuración del sub-formulario.
+     */
     #[Route(path: '/sub-form-desaparecido/v1/form', methods: ['GET'], name: 'api_formdesaparecido_v1_list')]
     public function dataSubFormDesaparecido(Request $request, EntityManagerInterface $em): Response
     {
@@ -930,7 +1004,7 @@ class ParametroApiController extends ApiController
             [
                 'name' => 'numero_documento',
                 'type' => 'text-document',
-                'required' => true,
+                'required' => false,
                 'title' => 'Número Documento (*)',
             ],
             [

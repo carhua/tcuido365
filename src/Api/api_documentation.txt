@@ -1,0 +1,156 @@
+sDocumentación de Endpoints de la API - TCuido365
+=================================================
+
+Este documento resume los endpoints disponibles en la API del proyecto, su propósito y cómo interactuar con ellos.
+
+---
+
+### Archivo: src/Api/BlogApiController.php
+
+**Propósito:** Gestiona la obtención de noticias y alertas.
+
+*   **Endpoint:** `/noticias/listado`
+    *   **Método:** `POST`
+    *   **Descripción:** Obtiene un listado de noticias de tipo 'Normal'. Espera un cuerpo JSON con información del usuario para filtrar las noticias por su ubicación.
+
+*   **Endpoint:** `/noticias/alertas`
+    *   **Método:** `POST`
+    *   **Descripción:** Obtiene un listado de noticias de tipo 'Alerta'. Espera un cuerpo JSON con información del usuario para filtrar las noticias por su ubicación.
+
+---
+
+### Archivo: src/Api/CasoDesaparecidoApiController.php
+
+**Propósito:** Gestiona el registro de casos de personas desaparecidas.
+
+*   **Endpoint:** `/pre-register/casodesaparecido`
+    *   **Método:** `POST`
+    *   **Descripción:** Pre-registra un caso de persona desaparecida con estado 'Pendiente'. Este endpoint guarda los datos iniciales del caso enviados desde la aplicación móvil.
+
+*   **Endpoint:** `/register/casodesaparecido`
+    *   **Método:** `POST`
+    *   **Descripción:** Registra o actualiza un caso de persona desaparecida, marcándolo como 'Notificado'. Este endpoint procesa los datos completos del caso, incluyendo sub-formularios, para finalizar el registro.
+
+---
+
+### Archivo: src/Api/CasoDesproteccionApiController.php
+
+**Propósito:** Gestiona el registro de casos de desprotección familiar.
+
+*   **Endpoint:** `/pre-register/casodesproteccion`
+    *   **Método:** `POST`
+    *   **Descripción:** Pre-registra un caso de desprotección familiar con estado 'Pendiente'. Este endpoint recibe los datos iniciales del caso desde la aplicación móvil.
+
+*   **Endpoint:** `/register/casodesproteccion`
+    *   **Método:** `POST`
+    *   **Descripción:** Registra o actualiza un caso de desprotección familiar, marcándolo como 'Notificado'. Procesa los datos completos del caso, incluyendo sub-formularios de menores y tutores.
+
+---
+
+### Archivo: src/Api/CasoTrataApiController.php
+
+**Propósito:** Gestiona el registro de casos de trata de personas.
+
+*   **Endpoint:** `/pre-register/casotrata`
+    *   **Método:** `POST`
+    *   **Descripción:** Pre-registra un caso de trata de personas con estado 'Pendiente'. Guarda los datos iniciales del caso, incluyendo detenidos y víctimas.
+
+*   **Endpoint:** `/register/casotrata`
+    *   **Método:** `POST`
+    *   **Descripción:** Registra o actualiza un caso de trata de personas, marcándolo como 'Notificado'. Procesa los datos completos del caso, incluyendo sub-formularios de detenidos y víctimas.
+
+---
+
+### Archivo: src/Api/CasoViolenciaApiController.php
+
+**Propósito:** Gestiona el registro de casos de violencia y búsqueda de personas.
+
+*   **Endpoint:** `/pre-register/casoviolencia`
+    *   **Método:** `POST`
+    *   **Descripción:** Pre-registra un caso de violencia con estado 'Pendiente'. Este endpoint guarda los datos iniciales del caso, incluyendo denunciantes, agraviados y agresores.
+
+*   **Endpoint:** `/register/casoviolencia`
+    *   **Método:** `POST`
+    *   **Descripción:** Registra o actualiza un caso de violencia, marcándolo como 'Notificado'. Procesa los datos completos del caso, incluyendo sub-formularios, para finalizar el registro.
+
+*   **Endpoint:** `/find/persona`
+    *   **Método:** `POST`
+    *   **Descripción:** Busca una persona por su número de documento en diferentes roles (Denunciante, Agraviado, etc.) o consulta una API externa si no se encuentra localmente.
+
+---
+
+### Archivo: src/Api/ParametroApiController.php
+
+**Propósito:** Define la estructura de los formularios dinámicos para la aplicación móvil.
+
+*   **Endpoint:** `/formmaltrato/v1/form`
+    *   **Método:** `GET`
+    *   **Descripción:** Define la estructura del formulario principal para reportar casos de maltrato (violencia).
+
+*   **Endpoint:** `/sub-form-denunciante/v1/form`
+    *   **Método:** `GET`
+    *   **Descripción:** Define la estructura del sub-formulario para los datos del denunciante en un caso de violencia.
+
+*   **Endpoint:** `/sub-form-agraviado/v1/form`
+    *   **Método:** `GET`
+    *   **Descripción:** Define la estructura del sub-formulario para los datos del agraviado en un caso de violencia.
+
+*   **Endpoint:** `/sub-form-agresor/v1/form`
+    *   **Método:** `GET`
+    *   **Descripción:** Define la estructura del sub-formulario para los datos del agresor en un caso de violencia.
+
+*   **Endpoint:** `/formdesproteccion/v1/form`
+    *   **Método:** `GET`
+    *   **Descripción:** Define la estructura del formulario principal para reportar casos de desprotección familiar.
+
+*   **Endpoint:** `/sub-form-menoredad/v1/form`
+    *   **Método:** `GET`
+    *   **Descripción:** Define la estructura del sub-formulario para los datos del menor de edad en un caso de desprotección.
+
+*   **Endpoint:** `/sub-form-tutor/v1/form`
+    *   **Método:** `GET`
+    *   **Descripción:** Define la estructura del sub-formulario para los datos del tutor en un caso de desprotección.
+
+*   **Endpoint:** `/formtrata/v1/form`
+    *   **Método:** `GET`
+    *   **Descripción:** Define la estructura del formulario principal para reportar casos de trata de personas.
+
+*   **Endpoint:** `/sub-form-detenido/v1/form`
+    *   **Método:** `GET`
+    *   **Descripción:** Define la estructura del sub-formulario para los datos del detenido en un caso de trata de personas.
+
+*   **Endpoint:** `/sub-form-victima/v1/form`
+    *   **Método:** `GET`
+    *   **Descripción:** Define la estructura del sub-formulario para los datos de la víctima en un caso de trata de personas.
+
+*   **Endpoint:** `/formdesaparecido/v1/form`
+    *   **Método:** `GET`
+    *   **Descripción:** Define la estructura del formulario principal para reportar casos de personas desaparecidas.
+
+*   **Endpoint:** `/sub-form-denunciante-des/v1/form`
+    *   **Método:** `GET`
+    *   **Descripción:** Define la estructura del sub-formulario para los datos del denunciante en un caso de persona desaparecida.
+
+*   **Endpoint:** `/sub-form-desaparecido/v1/form`
+    *   **Método:** `GET`
+    *   **Descripción:** Define la estructura del sub-formulario para los datos de la persona desaparecida.
+
+---
+
+### Archivo: src/Api/UsuarioApiController.php
+
+**Propósito:** Gestiona la información de los usuarios de la aplicación y sus casos reportados.
+
+*   **Endpoint:** `/usuario/list`
+    *   **Método:** `GET`
+    *   **Descripción:** Obtiene un listado de todos los usuarios de la aplicación.
+
+*   **Endpoint:** `/usuario/find`
+    *   **Método:** `POST`
+    *   **Descripción:** Busca un usuario por su 'username' y valida sus roles.
+
+*   **Endpoint:** `/data/find`
+    *   **Método:** `POST`
+    *   **Descripción:** Encuentra todos los casos reportados por un usuario específico.
+
+---
