@@ -112,33 +112,59 @@ class ParametroApiController extends ApiController
             [
                 'name' => 'tipo_documento_id',
                 'type' => 'select',
-                'required' => true,
+                'required' => true, // Este campo es siempre requerido para determinar la lógica condicional
                 'title' => 'Tipo Documento (*)',
                 'options' => $this->listTipoDocumento($entityManager),
             ],
             [
                 'name' => 'numero_documento',
                 'type' => 'text-document',
-                'required' => false,
-                'title' => 'Número Documento',
+                'required' => true, // Por defecto es requerido
+                'title' => 'Número Documento (*)',
+                // Si tipo_documento_id es 'Anónimo' (asumiendo ID 0), este campo se vuelve opcional.
+                // La lógica en el cliente deberá interpretar esta propiedad.
+                'conditionalRequired' => [
+                    'dependsOnField' => 'tipo_documento_id',
+                    'condition' => [
+                        'operator' => 'equals',
+                        'value' => 3,
+                    ],
+                    'becomesRequired' => false,
+                ],
             ],
             [
                 'name' => 'nombres',
                 'type' => 'text',
-                'required' => false,
-                'title' => 'Nombres',
+                'required' => true, // Por defecto es requerido
+                'title' => 'Nombres (*)',
+                'conditionalRequired' => [
+                    'dependsOnField' => 'tipo_documento_id',
+                    'condition' => [
+                        'operator' => 'equals',
+                        'value' => 3,
+                    ],
+                    'becomesRequired' => false,
+                ],
             ],
             [
                 'name' => 'apellidos',
                 'type' => 'text',
-                'required' => false,
-                'title' => 'Apellidos',
+                'required' => true, // Por defecto es requerido
+                'title' => 'Apellidos (*)',
+                'conditionalRequired' => [
+                    'dependsOnField' => 'tipo_documento_id',
+                    'condition' => [
+                        'operator' => 'equals',
+                        'value' => 3,
+                    ],
+                    'becomesRequired' => false,
+                ],
             ],
             [
                 'name' => 'edad',
-                'type' => 'text',
-                'required' => false,
-                'title' => 'Edad',
+                'type' => 'number', // Cambiado de 'text' a 'number' para consistencia
+                'required' => true, // Por defecto es requerido
+                'title' => 'Edad (*)',
             ],
             [
                 'name' => 'sexo',
@@ -200,20 +226,44 @@ class ParametroApiController extends ApiController
             [
                 'name' => 'numero_documento',
                 'type' => 'text-document',
-                'required' => false,
+                'required' => true,
                 'title' => 'Número Documento (*)',
+                'conditionalRequired' => [
+                    'dependsOnField' => 'tipo_documento_id',
+                    'condition' => [
+                        'operator' => 'equals',
+                        'value' => 3,
+                    ],
+                    'becomesRequired' => false,
+                ],
             ],
             [
                 'name' => 'nombres',
                 'type' => 'text',
-                'required' => false,
+                'required' => true,
                 'title' => 'Nombres (*)',
+                'conditionalRequired' => [
+                    'dependsOnField' => 'tipo_documento_id',
+                    'condition' => [
+                        'operator' => 'equals',
+                        'value' => 3,
+                    ],
+                    'becomesRequired' => false,
+                ],
             ],
             [
                 'name' => 'apellidos',
                 'type' => 'text',
-                'required' => false,
+                'required' => true,
                 'title' => 'Apellidos (*)',
+                'conditionalRequired' => [
+                    'dependsOnField' => 'tipo_documento_id',
+                    'condition' => [
+                        'operator' => 'equals',
+                        'value' => 3,
+                    ],
+                    'becomesRequired' => false,
+                ],
             ],
             [
                 'name' => 'edad',
@@ -327,20 +377,44 @@ class ParametroApiController extends ApiController
             [
                 'name' => 'numero_documento',
                 'type' => 'text-document',
-                'required' => false,
+                'required' => true,
                 'title' => 'Número Documento',
+                'conditionalRequired' => [
+                    'dependsOnField' => 'tipo_documento_id',
+                    'condition' => [
+                        'operator' => 'equals',
+                        'value' => 3,
+                    ],
+                    'becomesRequired' => false,
+                ],
             ],
             [
                 'name' => 'nombres',
                 'type' => 'text',
-                'required' => false,
+                'required' => true,
                 'title' => 'Nombres (*)',
+                'conditionalRequired' => [
+                    'dependsOnField' => 'tipo_documento_id',
+                    'condition' => [
+                        'operator' => 'equals',
+                        'value' => 3,
+                    ],
+                    'becomesRequired' => false,
+                ],
             ],
             [
                 'name' => 'apellidos',
                 'type' => 'text',
-                'required' => false,
+                'required' => true,
                 'title' => 'Apellidos (*)',
+                'conditionalRequired' => [
+                    'dependsOnField' => 'tipo_documento_id',
+                    'condition' => [
+                        'operator' => 'equals',
+                        'value' => 3,
+                    ],
+                    'becomesRequired' => false,
+                ],
             ],
             [
                 'name' => 'edad',
@@ -505,20 +579,44 @@ class ParametroApiController extends ApiController
             [
                 'name' => 'numero_documento',
                 'type' => 'text-document',
-                'required' => false,
+                'required' => true,
                 'title' => 'Número Documento (*)',
+                'conditionalRequired' => [
+                    'dependsOnField' => 'tipo_documento_id',
+                    'condition' => [
+                        'operator' => 'equals',
+                        'value' => 3,
+                    ],
+                    'becomesRequired' => false,
+                ],
             ],
             [
                 'name' => 'nombres',
                 'type' => 'text',
-                'required' => false,
+                'required' => true,
                 'title' => 'Nombres (*)',
+                'conditionalRequired' => [
+                    'dependsOnField' => 'tipo_documento_id',
+                    'condition' => [
+                        'operator' => 'equals',
+                        'value' => 3,
+                    ],
+                    'becomesRequired' => false,
+                ],
             ],
             [
                 'name' => 'apellidos',
                 'type' => 'text',
-                'required' => false,
+                'required' => true,
                 'title' => 'Apellidos (*)',
+                'conditionalRequired' => [
+                    'dependsOnField' => 'tipo_documento_id',
+                    'condition' => [
+                        'operator' => 'equals',
+                        'value' => 3,
+                    ],
+                    'becomesRequired' => false,
+                ],
             ],
             [
                 'name' => 'edad',
@@ -586,20 +684,44 @@ class ParametroApiController extends ApiController
             [
                 'name' => 'numero_documento',
                 'type' => 'text-document',
-                'required' => false,
+                'required' => true,
                 'title' => 'Número Documento (*)',
+                'conditionalRequired' => [
+                    'dependsOnField' => 'tipo_documento_id',
+                    'condition' => [
+                        'operator' => 'equals',
+                        'value' => 3,
+                    ],
+                    'becomesRequired' => false,
+                ],
             ],
             [
                 'name' => 'nombres',
                 'type' => 'text',
-                'required' => false,
+                'required' => true,
                 'title' => 'Nombres (*)',
+                'conditionalRequired' => [
+                    'dependsOnField' => 'tipo_documento_id',
+                    'condition' => [
+                        'operator' => 'equals',
+                        'value' => 3,
+                    ],
+                    'becomesRequired' => false,
+                ],
             ],
             [
                 'name' => 'apellidos',
                 'type' => 'text',
-                'required' => false,
+                'required' => true,
                 'title' => 'Apellidos (*)',
+                'conditionalRequired' => [
+                    'dependsOnField' => 'tipo_documento_id',
+                    'condition' => [
+                        'operator' => 'equals',
+                        'value' => 3,
+                    ],
+                    'becomesRequired' => false,
+                ],
             ],
             [
                 'name' => 'edad',
@@ -723,20 +845,44 @@ class ParametroApiController extends ApiController
             [
                 'name' => 'numero_documento',
                 'type' => 'text-document',
-                'required' => false,
+                'required' => true,
                 'title' => 'Numero Documento (*)',
+                'conditionalRequired' => [
+                    'dependsOnField' => 'tipo_documento_id',
+                    'condition' => [
+                        'operator' => 'equals',
+                        'value' => 3,
+                    ],
+                    'becomesRequired' => false,
+                ],
             ],
             [
                 'name' => 'nombres',
                 'type' => 'text',
-                'required' => false,
+                'required' => true,
                 'title' => 'Nombres (*)',
+                'conditionalRequired' => [
+                    'dependsOnField' => 'tipo_documento_id',
+                    'condition' => [
+                        'operator' => 'equals',
+                        'value' => 3,
+                    ],
+                    'becomesRequired' => false,
+                ],
             ],
             [
                 'name' => 'apellidos',
                 'type' => 'text',
-                'required' => false,
+                'required' => true,
                 'title' => 'Apellidos (*)',
+                'conditionalRequired' => [
+                    'dependsOnField' => 'tipo_documento_id',
+                    'condition' => [
+                        'operator' => 'equals',
+                        'value' => 3,
+                    ],
+                    'becomesRequired' => false,
+                ],
             ],
             [
                 'name' => 'edad',
@@ -796,20 +942,44 @@ class ParametroApiController extends ApiController
             [
                 'name' => 'numero_documento',
                 'type' => 'text-document',
-                'required' => false,
+                'required' => true,
                 'title' => 'Número Documento (*)',
+                'conditionalRequired' => [
+                    'dependsOnField' => 'tipo_documento_id',
+                    'condition' => [
+                        'operator' => 'equals',
+                        'value' => 3,
+                    ],
+                    'becomesRequired' => false,
+                ],
             ],
             [
                 'name' => 'nombres',
                 'type' => 'text',
-                'required' => false,
+                'required' => true,
                 'title' => 'Nombres (*)',
+                'conditionalRequired' => [
+                    'dependsOnField' => 'tipo_documento_id',
+                    'condition' => [
+                        'operator' => 'equals',
+                        'value' => 3,
+                    ],
+                    'becomesRequired' => false,
+                ],
             ],
             [
                 'name' => 'apellidos',
                 'type' => 'text',
-                'required' => false,
+                'required' => true,
                 'title' => 'Apellidos (*)',
+                'conditionalRequired' => [
+                    'dependsOnField' => 'tipo_documento_id',
+                    'condition' => [
+                        'operator' => 'equals',
+                        'value' => 3,
+                    ],
+                    'becomesRequired' => false,
+                ],
             ],
             [
                 'name' => 'edad',
@@ -933,20 +1103,44 @@ class ParametroApiController extends ApiController
             [
                 'name' => 'numero_documento',
                 'type' => 'text-document',
-                'required' => false,
+                'required' => true,
                 'title' => 'Número Documento',
+                'conditionalRequired' => [
+                    'dependsOnField' => 'tipo_documento_id',
+                    'condition' => [
+                        'operator' => 'equals',
+                        'value' => 3,
+                    ],
+                    'becomesRequired' => false,
+                ],
             ],
             [
                 'name' => 'nombres',
                 'type' => 'text',
-                'required' => false,
+                'required' => true,
                 'title' => 'Nombres',
+                'conditionalRequired' => [
+                    'dependsOnField' => 'tipo_documento_id',
+                    'condition' => [
+                        'operator' => 'equals',
+                        'value' => 3,
+                    ],
+                    'becomesRequired' => false,
+                ],
             ],
             [
                 'name' => 'apellidos',
                 'type' => 'text',
-                'required' => false,
+                'required' => true,
                 'title' => 'Apellidos',
+                'conditionalRequired' => [
+                    'dependsOnField' => 'tipo_documento_id',
+                    'condition' => [
+                        'operator' => 'equals',
+                        'value' => 3,
+                    ],
+                    'becomesRequired' => false,
+                ],
             ],
             [
                 'name' => 'edad',
@@ -1004,20 +1198,44 @@ class ParametroApiController extends ApiController
             [
                 'name' => 'numero_documento',
                 'type' => 'text-document',
-                'required' => false,
+                'required' => true,
                 'title' => 'Número Documento (*)',
+                'conditionalRequired' => [
+                    'dependsOnField' => 'tipo_documento_id',
+                    'condition' => [
+                        'operator' => 'equals',
+                        'value' => 3,
+                    ],
+                    'becomesRequired' => false,
+                ],
             ],
             [
                 'name' => 'nombres',
                 'type' => 'text',
                 'required' => true,
                 'title' => 'Nombres (*)',
+                'conditionalRequired' => [
+                    'dependsOnField' => 'tipo_documento_id',
+                    'condition' => [
+                        'operator' => 'equals',
+                        'value' => 3,
+                    ],
+                    'becomesRequired' => false,
+                ],
             ],
             [
                 'name' => 'apellidos',
                 'type' => 'text',
                 'required' => true,
                 'title' => 'Apellidos (*)',
+                'conditionalRequired' => [
+                    'dependsOnField' => 'tipo_documento_id',
+                    'condition' => [
+                        'operator' => 'equals',
+                        'value' => 3,
+                    ],
+                    'becomesRequired' => false,
+                ],
             ],
             [
                 'name' => 'edad',
