@@ -43,21 +43,27 @@ trait TraitParameter
 
     public static function findSituacion($obj, ObjectManager $em): ?SituacionEncontrada
     {
-        $id = $obj['key'];
+        if (is_array($obj) && isset($obj['key'])) {
+            $id = $obj['key'];
 
-        return $em->getRepository(SituacionEncontrada::class)->find($id);
+            return $em->getRepository(SituacionEncontrada::class)->find($id);
+        }
+        return null;
     }
 
     public static function findTipoDocumento($obj, ObjectManager $em): ?TipoDocumento
     {
-        $id = $obj['key'];
+        if (is_array($obj) && isset($obj['key'])) {
+            $id = $obj['key'];
 
-        return $em->getRepository(TipoDocumento::class)->find($id);
+            return $em->getRepository(TipoDocumento::class)->find($id);
+        }
+        return null;
     }
 
     public static function findSexo($obj, ObjectManager $em): ?Sexo
     {
-        if (null !== $obj) {
+        if (is_array($obj) && isset($obj['key'])) {
             $id = $obj['key'];
 
             return $em->getRepository(Sexo::class)->find($id);
@@ -68,34 +74,45 @@ trait TraitParameter
 
     public static function findNacionalidad($obj, ObjectManager $em): ?Nacionalidad
     {
-        $id = $obj['key'];
+        if (is_array($obj) && isset($obj['key'])) {
+            $id = $obj['key'];
 
-        return $em->getRepository(Nacionalidad::class)->find($id);
+            return $em->getRepository(Nacionalidad::class)->find($id);
+        }
+        return null;
     }
 
     public static function findVinculo($obj, ObjectManager $em): ?VinculoFamiliar
     {
-        $cp = null;
-        $id = $obj['key'];
-        if (null !== $id) {
-            $cp = $em->getRepository(VinculoFamiliar::class)->find($id);
+        if (is_array($obj) && isset($obj['key'])) {
+            $id = $obj['key'];
+            if (null !== $id) {
+                return $em->getRepository(VinculoFamiliar::class)->find($id);
+            }
         }
 
-        return $cp;
+        return null;
     }
 
     public static function findTipoMaltrato($obj, ObjectManager $em): ?TipoMaltrato
     {
-        $id = $obj['key'];
+        if (is_array($obj) && isset($obj['key'])) {
+            $id = $obj['key'];
 
-        return $em->getRepository(TipoMaltrato::class)->find($id);
+            return $em->getRepository(TipoMaltrato::class)->find($id);
+        }
+        return null;
     }
 
     public static function findEstadoCivil($obj, ObjectManager $em): ?EstadoCivil
     {
-        $id = $obj['key'];
+        if (is_array($obj) && isset($obj['key'])) {
+            $id = $obj['key'];
 
-        return $em->getRepository(EstadoCivil::class)->find($id);
+            return $em->getRepository(EstadoCivil::class)->find($id);
+        }
+
+        return null;
     }
 
     public static function findDistrito($id, ObjectManager $em): ?Distrito
@@ -170,9 +187,12 @@ trait TraitParameter
 
     public static function findFormaCaptacion($obj, ObjectManager $em): ?FormaCaptacion
     {
-        $id = $obj['key'];
+        if (is_array($obj) && isset($obj['key'])) {
+            $id = $obj['key'];
 
-        return $em->getRepository(FormaCaptacion::class)->find($id);
+            return $em->getRepository(FormaCaptacion::class)->find($id);
+        }
+        return null;
     }
 
     public static function findPerson($data, ObjectManager $em): ?Persona

@@ -25,10 +25,10 @@
             <td class="text-left">
                 <span class="font-weight-bold">Nombres: </span> {{ tipo.denunciante.nombres|upper }} <br>
                 <span class="font-weight-bold">Apellidos :</span> {{ tipo.denunciante.apellidos|upper  }} <br>
-                <span class="font-weight-bold">Tipo Documento: </span>    {{ tipo.denunciante.tipoDocumento.nombre |upper }} <br>
+                <span class="font-weight-bold">Tipo Documento: </span>    {{ tipo.denunciante.tipoDocumento ? tipo.denunciante.tipoDocumento.nombre |upper : '' }} <br>
                 <span class="font-weight-bold">Numero Documento: </span> {{ tipo.denunciante.numeroDocumento }}<br>
                 <span class="font-weight-bold">Edad: </span>  {{ tipo.denunciante.edad }}<br>
-                <span class="font-weight-bold">Sexo: </span> {{ tipo.denunciante.sexo.nombre |upper }}<br>
+                <span class="font-weight-bold">Sexo: </span> {{ tipo.denunciante.sexo ? tipo.denunciante.sexo.nombre |upper : '' }}<br>
                 <span class="font-weight-bold">Teléfono: </span> {{ tipo.denunciante.telefono}}<br>
                 <span class="font-weight-bold">Email: </span> {{ tipo.denunciante.email}}<br>
             </td>
@@ -41,17 +41,17 @@
             <td class="text-left">
                 <span class="font-weight-bold">Nombres: </span> {{ tipo.agraviado.nombres |upper }} <br>
                 <span class="font-weight-bold">Apellidos: </span> {{ tipo.agraviado.apellidos |upper }} <br>
-                <span class="font-weight-bold">Tipo Documento: </span>    {{ tipo.agraviado.tipoDocumento.nombre |upper }} <br>
+                <span class="font-weight-bold">Tipo Documento: </span>    {{ tipo.agraviado.tipoDocumento ? tipo.agraviado.tipoDocumento.nombre |upper : '' }} <br>
                 <span class="font-weight-bold">Número Documento: </span> {{ tipo.agraviado.numeroDocumento }}<br>
                 <span class="font-weight-bold">Edad: </span> {{ tipo.agraviado.edad }}<br>
-                <span class="font-weight-bold">Sexo: </span> {{ tipo.agraviado.sexo.nombre |upper }}<br>
-                <span class="font-weight-bold">Estado Civil: </span> {{ tipo.agraviado.estadoCivil.nombre |upper }}<br>
+                <span class="font-weight-bold">Sexo: </span> {{ tipo.agraviado.sexo ? tipo.agraviado.sexo.nombre |upper : '' }}<br>
+                <span class="font-weight-bold">Estado Civil: </span> {{ tipo.agraviado.estadoCivil ? tipo.agraviado.estadoCivil.nombre |upper : '' }}<br>
                 <span class="font-weight-bold">Dirección: </span> {{ tipo.agraviado.direccion |upper }}<br>
                 <span class="font-weight-bold">Referencia Domicilio: </span> {{ tipo.agraviado.referenciaDomicilio |upper }}<br>
                 <span class="font-weight-bold">Gestación: </span> {{ tipo.agraviado.gestacion |upper }}<br>
                 <span class="font-weight-bold">Discapacidad: </span> {{ tipo.agraviado.discapacidad |upper }}<br>
-                <span class="font-weight-bold">Nacionalidad: </span>  {{ tipo.agraviado.nacionalidad.nombre|upper  }} <br>
-                <span class="font-weight-bold">Vínculo Familiar: </span>  {{ tipo.agraviado.vinculoFamiliar.nombre|upper }}<br>
+                <span class="font-weight-bold">Nacionalidad: </span>  {{ tipo.agraviado.nacionalidad ? tipo.agraviado.nacionalidad.nombre|upper : '' }} <br>
+                <span class="font-weight-bold">Vínculo Familiar: </span>  {{ tipo.agraviado.vinculoFamiliar ? tipo.agraviado.vinculoFamiliar.nombre|upper : '' }}<br>
                 <span class="font-weight-bold">Teléfono: </span> {{ tipo.agraviado.telefono}}<br>
                 <span class="font-weight-bold">Email: </span> {{ tipo.agraviado.email}}<br>
                 <span class="font-weight-bold">Tipo de Maltrato Recibido: </span> {{ tipo.tipoMaltratos}}<br>
@@ -65,14 +65,14 @@
             <td class="text-left">
                 <span class="font-weight-bold">Nombres: </span> {{ tipo.agresor.nombres |upper }} <br>
                 <span class="font-weight-bold">Apellidos: </span> {{ tipo.agresor.apellidos |upper }} <br>
-                <span class="font-weight-bold">Tipo Documento: </span>    {{ tipo.agresor.tipoDocumento.nombre |upper }} <br>
+                <span class="font-weight-bold">Tipo Documento: </span>    {{ tipo.agresor.tipoDocumento ? tipo.agresor.tipoDocumento.nombre |upper : '' }} <br>
                 <span class="font-weight-bold">Número Documento: </span> {{ tipo.agresor.numeroDocumento }}<br>
-                <span class="font-weight-bold">Sexo: </span> {{ tipo.agresor.sexo.nombre |upper }}<br>
+                <span class="font-weight-bold">Sexo: </span> {{ tipo.agresor.sexo ? tipo.agresor.sexo.nombre |upper : '' }}<br>
                 <span class="font-weight-bold">Edad: </span> {{ tipo.agresor.edad  }}<br>
-                <span class="font-weight-bold">Estado Civil: </span> {{ tipo.agresor.estadoCivil.nombre |upper }}<br>
+                <span class="font-weight-bold">Estado Civil: </span> {{ tipo.agresor.estadoCivil ? tipo.agresor.estadoCivil.nombre |upper : '' }}<br>
                 <span class="font-weight-bold">Dirección: </span> {{ tipo.agresor.direccion |upper }}<br>
-                <span class="font-weight-bold">Nacionalidad: </span>  {{ tipo.agresor.nacionalidad.nombre|upper  }}<br>
-                <span class="font-weight-bold">Vínculo Familiar: </span>  {{ tipo.agresor.vinculoFamiliar.nombre|upper }}<br>
+                <span class="font-weight-bold">Nacionalidad: </span>  {{ tipo.agresor.nacionalidad ? tipo.agresor.nacionalidad.nombre|upper : '' }}<br>
+                <span class="font-weight-bold">Vínculo Familiar: </span>  {{ tipo.agresor.vinculoFamiliar ? tipo.agresor.vinculoFamiliar.nombre|upper : '' }}<br>
                 <span class="font-weight-bold">Teléfono: </span> {{ tipo.agresor.telefono}}<br>
                 <span class="font-weight-bold">Email: </span> {{ tipo.agresor.email}}<br>
             </td>

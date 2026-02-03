@@ -432,7 +432,7 @@ class ParametroApiController extends ApiController
             [
                 'name' => 'estado_civil_id',
                 'type' => 'select',
-                'required' => true,
+                'required' => false,
                 'title' => 'Estado Civil (*)',
                 'options' => $this->listEstados($em),
             ],
@@ -446,7 +446,7 @@ class ParametroApiController extends ApiController
             [
                 'name' => 'vinculo_familiar_id',
                 'type' => 'select',
-                'required' => true,
+                'required' => false,
                 'title' => 'Vínculo Familiar Presunto Agresor (*)',
                 'options' => $this->listVinculos($em),
             ],
@@ -739,7 +739,7 @@ class ParametroApiController extends ApiController
             [
                 'name' => 'vinculo_familiar_id',
                 'type' => 'select',
-                'required' => true,
+                'required' => false,
                 'title' => 'Vínculo Familiar (*)',
                 'options' => $this->listVinculos($em),
             ],
