@@ -44,14 +44,32 @@ class CasoDesproteccionController extends BaseController
         $provinciaId = $request->query->get('provincia');
         $centroId = $request->query->get('centroPoblado');
         $cantidad = "-";
-        $odistrito = null === $distritoId ? null : $em->getRepository(Distrito::class)->findOneBy(['isActive' => true, 'id' => $distritoId]);
-        $oprovincia = null === $provinciaId ? null : $em->getRepository(Provincia::class)->findOneBy(['isActive' => true, 'id' => $provinciaId]);
-        $ocentro = null === $centroId ? null : $em->getRepository(CentroPoblado::class)->findOneBy(['isActive' => true, 'id' => $centroId]);
 
         $user = $this->getUser();
         $rteniente = self::validarRoles($user->getRoles());
         $provincias = self::listProvinciasByRol($rteniente, $user, $em);
-        //  $centros = self::listCentrosByRol($rteniente, $user, $em);
+        $distritos = self::listDistritosByRol($rteniente, $user, $em);
+       //  $centros = self::listCentrosByRol($rteniente, $user, $em);
+
+
+        if($provinciaId=='' && $provincias[0]->getId()){
+            $provinciaId = $provincias[0]->getId();
+            $oprovincia = $em->getRepository(Provincia::class)->findOneBy(['isActive' => true, 'id' => $provinciaId]);
+        }else{
+            $oprovincia = null === $provinciaId ? null : $em->getRepository(Provincia::class)->findOneBy(['isActive' => true, 'id' => $provinciaId]);
+        }
+
+        if($distritoId=='' && $distritos[0]->getId()){
+            $distritoId = $distritos[0]->getId();
+            $odistrito = $em->getRepository(Distrito::class)->findOneBy(['isActive' => true, 'id' => $distritoId]);
+        }else{
+            $odistrito = null === $distritoId ? null : $em->getRepository(Distrito::class)->findOneBy(['isActive' => true, 'id' => $distritoId]);
+        }
+
+        //$odistrito = null === $distritoId ? null : $em->getRepository(Distrito::class)->findOneBy(['isActive' => true, 'id' => $distritoId]);
+        //$oprovincia = null === $provinciaId ? null : $em->getRepository(Provincia::class)->findOneBy(['isActive' => true, 'id' => $provinciaId]);
+        $ocentro = null === $centroId ? null : $em->getRepository(CentroPoblado::class)->findOneBy(['isActive' => true, 'id' => $centroId]);
+
         $tipos = $em->getRepository(SituacionEncontrada::class)->findBy(['isActive' => true]);
 
         if (null === $request->query->get('centroPoblado') && false === $rteniente) {

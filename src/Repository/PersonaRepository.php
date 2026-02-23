@@ -105,8 +105,11 @@ class PersonaRepository extends BaseRepository
             ->orderBy('persona.casoDesproteccionTotal', 'DESC')
             ->addOrderBy('persona.nombres', 'ASC');
 
-        if (null !== $provincia && 'TODOS' !== $provincia->getNombre()) {
-            if (null !== $distrito && 'TODOS' !== $distrito->getNombre()) {
+        $provinciaNombre = is_object($provincia) ? $provincia->getNombre() : null;
+        $distritoNombre = is_object($distrito) ? $distrito->getNombre() : null;
+
+        if (null !== $provincia && 'TODOS' !== $provinciaNombre) {
+            if (null !== $distrito && 'TODOS' !== $distritoNombre) {
                 if (182 !== $params['centroPoblado']) {
                     $queryBuilder->andwhere('centroPoblado.id = :idcentro')
                         ->setParameter('idcentro', $params['centroPoblado']);
@@ -175,8 +178,11 @@ class PersonaRepository extends BaseRepository
         ->join('centroPoblado.distrito', 'distrito')
         ->add('orderBy', 'tipoPsicologico DESC, tipoFisico DESC, tipoSexual DESC, tipoEconomico DESC');
 
-        if (null !== $provincia && 'TODOS' !== $provincia->getNombre()) {
-            if (null !== $distrito && 'TODOS' !== $distrito->getNombre()) {
+        $provinciaNombre = is_object($provincia) ? $provincia->getNombre() : null;
+        $distritoNombre = is_object($distrito) ? $distrito->getNombre() : null;
+
+        if (null !== $provincia && 'TODOS' !== $provinciaNombre) {
+            if (null !== $distrito && 'TODOS' !== $distritoNombre) {
                 if (182 !== $params['centroPoblado']) {
                     $queryBuilder->andwhere('centroPoblado.id = :idcentro')
                         ->setParameter('idcentro', $params['centroPoblado']);
@@ -219,8 +225,11 @@ class PersonaRepository extends BaseRepository
             ->orderBy('persona.casoTrataTotal', 'DESC')
             ->addOrderBy('persona.nombres', 'ASC');
 
-        if (null !== $provincia && 'TODOS' !== $provincia->getNombre()) { // Assuming "3" means "TODOS" or similar
-            if (null !== $distrito && 'TODOS' !== $distrito->getNombre()) { // Assuming "4" means "TODOS" or similar
+        $provinciaNombre = is_object($provincia) ? $provincia->getNombre() : null;
+        $distritoNombre = is_object($distrito) ? $distrito->getNombre() : null;
+
+        if (null !== $provincia && 'TODOS' !== $provinciaNombre) {
+            if (null !== $distrito && 'TODOS' !== $distritoNombre) {
                 if ("182" !== $params['centroPoblado']) {
                     $queryBuilder->innerJoin('centroPoblado.distrito', 'distrito')
                         ->andWhere('distrito.id =:distritoId')
@@ -262,8 +271,11 @@ class PersonaRepository extends BaseRepository
             ->orderBy('persona.casoDesaparecidoTotal', 'DESC')
             ->addOrderBy('persona.nombres', 'ASC');
 
-        if (null !== $provincia && 'TODOS' !== $provincia->getNombre()) {
-            if (null !== $distrito && 'TODOS' !== $distrito->getNombre()) {
+        $provinciaNombre = is_object($provincia) ? $provincia->getNombre() : null;
+        $distritoNombre = is_object($distrito) ? $distrito->getNombre() : null;
+
+        if (null !== $provincia && 'TODOS' !== $provinciaNombre) {
+            if (null !== $distrito && 'TODOS' !== $distritoNombre) {
                 if (182 !== $params['centroPoblado']) {
                     $queryBuilder->andwhere('centroPoblado.id = :idcentro')
                         ->setParameter('idcentro', $params['centroPoblado']);

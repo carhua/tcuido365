@@ -46,10 +46,11 @@ final class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         if (!$captchaIsValid) {
             throw new CustomUserMessageAuthenticationException('Invalid credentials.');
         }
-*/
+
         if ($captcha=='') {
             throw new CustomUserMessageAuthenticationException('Error recaptcha.');
         }
+*/
         $request->getSession()->set(Security::LAST_USERNAME, $username);
 
         return new Passport(

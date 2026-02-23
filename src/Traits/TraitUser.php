@@ -8,6 +8,7 @@
 namespace App\Traits;
 
 use App\Entity\CentroPoblado;
+use App\Entity\Distrito;
 use App\Entity\Provincia;
 
 trait TraitUser
@@ -47,6 +48,24 @@ trait TraitUser
         }
 
         return $provincias;
+    }
+
+    public static function listDistritosByRol($rt, $user, $em)
+    {
+        $distrito = $user->getDistrito() ?: null;
+        $provincia = $user->getProvincia() ?: null;
+
+        if ($rt || ($distrito && 'TODOS' !== $distrito->getNombre())) {
+            $distritos = $em->getRepository(Distrito::class)->findBy(['isActive' => true, 'id' => $distrito->getId()]);
+        } elseif ($provincia && 'TODOS' !== $provincia->getNombre()) {
+            $distritos = $em->getRepository(Distrito::class)->findBy(['isActive' => true, 'provincia' => $provincia->getId()]);
+        } elseif ($provincia) {
+            $distritos = $em->getRepository(Distrito::class)->findBy(['isActive' => true]);
+        } else {
+            $distritos = [];
+        }
+
+        return $distritos;
     }
 
     public static function findCentro($id, $em): CentroPoblado
