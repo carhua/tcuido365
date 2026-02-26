@@ -11,6 +11,7 @@ use App\Entity\CasoViolencia;
 use App\Entity\CentroPoblado;
 use App\Entity\Distrito;
 use App\Entity\Provincia;
+use App\Service\UbigeoFilterService;
 use App\Utils\Paginator;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -91,6 +92,9 @@ class CasoViolenciaRepository extends BaseRepository
         $provincia = $params['provincia'];
         $distrito = $params['distrito'];
         $usuario = $params['usuario'];
+        
+        // Verificar si se pasó el servicio de filtrado
+        $ubigeoFilter = $params['ubigeoFilter'] ?? null;
 
         $queryBuilder = $this->createQueryBuilder('casoViolencia')
             ->select(['casoViolencia', 'centroPoblado'])
@@ -100,28 +104,39 @@ class CasoViolenciaRepository extends BaseRepository
             ->setParameter('inicio', $fi->format('Y-m-d'))
             ->setParameter('final', $ff->format('Y-m-d').' 23:59:59');
 
-        // if($provincia != null && $distrito != null){
-        if (null !== $provincia && 'TODOS' !== $provincia->getNombre()) {
-            if (null !== $distrito && 'TODOS' !== $distrito->getNombre()) {
-                if (182 !== $params['centroPoblado'] && null !== $params['centroPoblado']) {
-                    $queryBuilder->andwhere('centroPoblado.id = :idcentro')
-                                ->setParameter('idcentro', $params['centroPoblado']);
+        // Aplicar filtros manuales si no hay servicio de ubigeo
+        if (!$ubigeoFilter) {
+            if (null !== $provincia && 'TODOS' !== $provincia->getNombre()) {
+                if (null !== $distrito && 'TODOS' !== $distrito->getNombre()) {
+                    if (182 !== $params['centroPoblado'] && null !== $params['centroPoblado']) {
+                        $queryBuilder->andwhere('centroPoblado.id = :idcentro')
+                                    ->setParameter('idcentro', $params['centroPoblado']);
+                    } else {
+                        $queryBuilder->innerJoin('centroPoblado.distrito', 'distrito')
+                                    ->andWhere('distrito.id =:distritoId')
+                                    ->setParameter('distritoId', $distrito->getId());
+                    }
                 } else {
                     $queryBuilder->innerJoin('centroPoblado.distrito', 'distrito')
-                                ->andWhere('distrito.id =:distritoId')
-                                ->setParameter('distritoId', $distrito->getId());
+                                ->innerJoin('distrito.provincia', 'provincia')
+                                ->andWhere('provincia.id =:provinciaId')
+                                ->setParameter('provinciaId', $provincia->getId());
                 }
-            } else {
-                $queryBuilder->innerJoin('centroPoblado.distrito', 'distrito')
-                            ->innerJoin('distrito.provincia', 'provincia')
-                            ->andWhere('provincia.id =:provinciaId')
-                            ->setParameter('provinciaId', $provincia->getId());
+            } elseif (182 !== $params['centroPoblado'] && null !== $params['centroPoblado']) {
+                $queryBuilder->andwhere('centroPoblado.id = :idcentro')
+                            ->setParameter('idcentro', $params['centroPoblado']);
             }
-        } elseif (182 !== $params['centroPoblado'] && null !== $params['centroPoblado']) {
-            $queryBuilder->andwhere('centroPoblado.id = :idcentro')
-                        ->setParameter('idcentro', $params['centroPoblado']);
+        } else {
+            // Aplicar filtro automático por ubigeo
+            $ubigeoFilter->applyFilters($queryBuilder, 'casoViolencia');
+            
+            // Aplicar filtros adicionales si se especificaron
+            if ($params['centroPoblado'] && $params['centroPoblado'] !== 182) {
+                $queryBuilder
+                    ->andWhere('centroPoblado.id = :centroPobladoId')
+                    ->setParameter('centroPobladoId', $params['centroPoblado']);
+            }
         }
-        //  }
 
         if (null !== $params['tipoMaltrato']) {
             $queryBuilder->andwhere('casoViolencia.tipoMaltratos LIKE :tipo')
@@ -226,6 +241,9 @@ class CasoViolenciaRepository extends BaseRepository
         $provincia = $params['provincia'];
         $distrito = $params['distrito'];
         $usuario = $params['usuario'] ?? null;
+        
+        // Verificar si se pasó el servicio de filtrado
+        $ubigeoFilter = $params['ubigeoFilter'] ?? null;
 
         $queryBuilder = $this->createQueryBuilder('casoViolencia')
             ->select('COUNT(casoViolencia.id) as cantidad')
@@ -245,25 +263,38 @@ class CasoViolenciaRepository extends BaseRepository
                 ->setParameter('anioFinal', $anioFinal);
         }
         
-        if (null !== $provincia && 'TODOS' !== $provincia->getNombre()) {
-            if (null !== $distrito && 'TODOS' !== $distrito->getNombre()) {
-                if (182 !== $params['centroPoblado'] && null !== $params['centroPoblado']) {
-                    $queryBuilder->andwhere('centroPoblado.id = :idcentro')
-                        ->setParameter('idcentro', $params['centroPoblado']);
+        // Aplicar filtros manuales si no hay servicio de ubigeo
+        if (!$ubigeoFilter) {
+            if (null !== $provincia && 'TODOS' !== $provincia->getNombre()) {
+                if (null !== $distrito && 'TODOS' !== $distrito->getNombre()) {
+                    if (182 !== $params['centroPoblado'] && null !== $params['centroPoblado']) {
+                        $queryBuilder->andwhere('centroPoblado.id = :idcentro')
+                            ->setParameter('idcentro', $params['centroPoblado']);
+                    } else {
+                        $queryBuilder->innerJoin('centroPoblado.distrito', 'distrito')
+                            ->andWhere('distrito.id =:distritoId')
+                            ->setParameter('distritoId', $distrito->getId());
+                    }
                 } else {
                     $queryBuilder->innerJoin('centroPoblado.distrito', 'distrito')
-                        ->andWhere('distrito.id =:distritoId')
-                        ->setParameter('distritoId', $distrito->getId());
+                        ->innerJoin('distrito.provincia', 'provincia')
+                        ->andWhere('provincia.id =:provinciaId')
+                        ->setParameter('provinciaId', $provincia->getId());
                 }
-            } else {
-                $queryBuilder->innerJoin('centroPoblado.distrito', 'distrito')
-                    ->innerJoin('distrito.provincia', 'provincia')
-                    ->andWhere('provincia.id =:provinciaId')
-                    ->setParameter('provinciaId', $provincia->getId());
+            } elseif (182 !== $params['centroPoblado'] && null !== $params['centroPoblado']) {
+                $queryBuilder->andwhere('centroPoblado.id = :idcentro')
+                    ->setParameter('idcentro', $params['centroPoblado']);
             }
-        } elseif (182 !== $params['centroPoblado'] && null !== $params['centroPoblado']) {
-            $queryBuilder->andwhere('centroPoblado.id = :idcentro')
-                ->setParameter('idcentro', $params['centroPoblado']);
+        } else {
+            // Aplicar filtro automático por ubigeo
+            $ubigeoFilter->applyFilters($queryBuilder, 'casoViolencia');
+            
+            // Aplicar filtros adicionales si se especificaron
+            if ($params['centroPoblado'] && $params['centroPoblado'] !== 182) {
+                $queryBuilder
+                    ->andWhere('centroPoblado.id = :centroPobladoId')
+                    ->setParameter('centroPobladoId', $params['centroPoblado']);
+            }
         }
 
         if (null !== $params['tipoMaltrato']) {

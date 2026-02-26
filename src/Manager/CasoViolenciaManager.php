@@ -12,6 +12,7 @@ namespace App\Manager;
 use App\Api\TraitParameter;
 use App\Repository\BaseRepository;
 use App\Repository\CasoViolenciaRepository;
+use App\Service\UbigeoFilterService;
 use App\Utils\Paginator;
 use Doctrine\ORM\EntityManagerInterface;
 use Pagerfanta\Pagerfanta;
@@ -23,6 +24,7 @@ final class CasoViolenciaManager extends BaseManager
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly CasoViolenciaRepository $repository,
+        private readonly UbigeoFilterService $ubigeoFilter,
     ) {
     }
 
@@ -33,6 +35,9 @@ final class CasoViolenciaManager extends BaseManager
 
     public function listIndex(array $queryValues, int $page, $user): Pagerfanta
     {
+        // Configurar el usuario en el servicio de filtrado
+        $this->ubigeoFilter->setUsuario($user);
+        
         $params = Paginator::params($queryValues, $page);
 
         $params = array_merge(
@@ -48,6 +53,7 @@ final class CasoViolenciaManager extends BaseManager
                 'provincia' => $queryValues['oprovincia'] ?? null,
                 'distrito' => $queryValues['odistrito'] ?? null,
                 'usuario' => $queryValues['usuario'] ?? null,
+                'ubigeoFilter' => $this->ubigeoFilter, // Pasar el servicio al repositorio
             ]
         );
 
@@ -56,6 +62,9 @@ final class CasoViolenciaManager extends BaseManager
 
     public function listExcel(array $queryValues, $user): array
     {
+        // Configurar el usuario en el servicio de filtrado
+        $this->ubigeoFilter->setUsuario($user);
+        
         $params =
             [
             'finicial' => (isset($queryValues['finicial']) && '' !== $queryValues['finicial']) ? $queryValues['finicial'] : null,
@@ -65,6 +74,7 @@ final class CasoViolenciaManager extends BaseManager
             'estado' => (isset($queryValues['estado']) && '' !== $queryValues['estado']) ? $queryValues['estado'] : null,
             'provincia' => $queryValues['oprovincia'] ?? null,
             'distrito' => $queryValues['odistrito'] ?? null,
+            'ubigeoFilter' => $this->ubigeoFilter, // Pasar el servicio al repositorio
             ];
 
         return $this->repository->filterExcelFechas($params);
@@ -87,6 +97,7 @@ final class CasoViolenciaManager extends BaseManager
                 'anioInicio' => $queryValues['anioInicio'] ?? null,
                 'anioFinal' => $queryValues['anioFinal'] ?? null,
                 'usuario' => $queryValues['usuario'] ?? null,
+                'ubigeoFilter' => $this->ubigeoFilter, // Pasar el servicio al repositorio
             ]
         );
 

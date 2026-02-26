@@ -1,0 +1,252 @@
+{% extends 'base.html.twig' %}
+{% import 'macro/breadcrumb.html.twig' as breadcrumb %}
+
+{% set _title = 'Búsqueda de Casos de Trata de Personas' %}
+{% set _main_title = 'Búsqueda' %}
+{% set _section =  'caso_trata_search'%}
+
+{% block _breadcrumb %}
+    {{ breadcrumb.show('Búsqueda de Casos de Trata') }}
+{% endblock %}
+
+{% block _main %}
+
+    <div class="card-body">
+        <form id="searchForm" class="form">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="fechaInicio">Fecha Inicio</label>
+                        <input type="date" class="form-control" id="fechaInicio" name="fechaInicio">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="fechaFin">Fecha Fin</label>
+                        <input type="date" class="form-control" id="fechaFin" name="fechaFin">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="provincia">Provincia</label>
+                        <select class="form-control" id="provincia" name="provincia">
+                            <option value="">Todas</option>
+                            {% for provincia in provincias %}
+                                <option value="{{ provincia.id }}">{{ provincia.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="distrito">Distrito</label>
+                        <select class="form-control" id="distrito" name="distrito">
+                            <option value="">Todos</option>
+                            {% for distrito in distritos %}
+                                <option value="{{ distrito.id }}">{{ distrito.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="centroPoblado">Centro Poblado</label>
+                        <select class="form-control" id="centroPoblado" name="centroPoblado">
+                            <option value="">Todos</option>
+                            {% for centro in centrosPoblados %}
+                                <option value="{{ centro.id }}">{{ centro.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="estado">Estado</label>
+                        <select class="form-control" id="estado" name="estado">
+                            <option value="">Todos</option>
+                            <option value="Notificado">Notificado</option>
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="Recibido">Recibido</option>
+                            <option value="Derivado">Derivado</option>
+                            <option value="Atendido">Atendido</option>
+                            <option value="Observado">Observado</option>
+                            <option value="Cerrado">Cerrado</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>&nbsp;</label>
+                        <div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search"></i> Buscar
+                            </button>
+                            <button type="button" id="btnLimpiar" class="btn btn-secondary ml-2">
+                                <i class="fas fa-eraser"></i> Limpiar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="card card-custom mt-4">
+        <div class="card-header">
+            <div class="card-title">
+                <h3 class="card-label">Resultados</h3>
+                <span id="totalResultados" class="badge badge-primary ml-2">0 resultados</span>
+            </div>
+        </div>
+        <div class="card-body">
+            <div id="loadingSpinner" class="text-center" style="display: none;">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="sr-only">Cargando...</span>
+                </div>
+            </div>
+            
+            <div id="resultadosContainer">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> Realice una búsqueda para ver los resultados.
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block _javascripts_end %}
+<script>
+$(document).ready(function() {
+    $("#provincia").change(function() {
+        var provinciaId = $(this).val();
+        
+        if (provinciaId === "") {
+            $("#distrito").html('<option value="">Todos</option>');
+            $("#centroPoblado").html('<option value="">Todos</option>');
+            return;
+        }
+        
+        $.ajax({
+            url: "{{ path('ubigeo_distritos_ajax', {'provinciaId': 'ID'}) }}".replace('ID', provinciaId),
+            type: 'GET',
+            success: function(data) {
+                var $distrito = $("#distrito");
+                $distrito.html('<option value="">Todos</option>');
+                
+                for (var i = 0; i < data.length; i++) {
+                    $distrito.append('<option value="' + data[i].id + '">' + data[i].name + '</option>');
+                }
+                
+                $("#centroPoblado").html('<option value="">Todos</option>');
+            }
+        });
+    });
+    
+    $("#distrito").change(function() {
+        var distritoId = $(this).val();
+        
+        if (distritoId === "") {
+            $("#centroPoblado").html('<option value="">Todos</option>');
+            return;
+        }
+        
+        $.ajax({
+            url: "{{ path('ubigeo_centros_ajax', {'distritoId': 'ID'}) }}".replace('ID', distritoId),
+            type: 'GET',
+            success: function(data) {
+                var $centro = $("#centroPoblado");
+                $centro.html('<option value="">Todos</option>');
+                
+                for (var i = 0; i < data.length; i++) {
+                    $centro.append('<option value="' + data[i].id + '">' + data[i].name + '</option>');
+                }
+            }
+        });
+    });
+    
+    $("#searchForm").on("submit", function(e) {
+        e.preventDefault();
+        realizarBusqueda();
+    });
+    
+    $("#btnLimpiar").on("click", function() {
+        $("#searchForm")[0].reset();
+        $("#distrito").html('<option value="">Todos</option>');
+        $("#centroPoblado").html('<option value="">Todos</option>');
+        $("#resultadosContainer").html('<div class="alert alert-info"><i class="fas fa-info-circle"></i> Realice una búsqueda para ver los resultados.</div>');
+        $("#totalResultados").text('0 resultados');
+    });
+    
+    function realizarBusqueda() {
+        var formData = $("#searchForm").serialize();
+        
+        $("#loadingSpinner").show();
+        $("#resultadosContainer").hide();
+        
+        $.ajax({
+            url: "{{ path('caso_trata_search_ajax') }}",
+            type: 'POST',
+            data: formData,
+            success: function(response) {
+                $("#loadingSpinner").hide();
+                $("#totalResultados").text(response.total + ' resultados');
+                
+                if (response.data.length === 0) {
+                    $("#resultadosContainer").html('<div class="alert alert-warning"><i class="fas fa-exclamation-triangle"></i> No se encontraron resultados.</div>');
+                } else {
+                    var html = '<div class="table-responsive">';
+                    html += '<table class="table table-striped table-hover">';
+                    html += '<thead><tr>';
+                    html += '<th>Código</th>';
+                    html += '<th>Fecha Reporte</th>';
+                    html += '<th>Centro Poblado</th>';
+                    html += '<th>Distrito</th>';
+                    html += '<th>Estado</th>';
+                    html += '<th>Descripción</th>';
+                    html += '<th>Acciones</th>';
+                    html += '</tr></thead><tbody>';
+                    
+                    for (var i = 0; i < response.data.length; i++) {
+                        var item = response.data[i];
+                        html += '<tr>';
+                        html += '<td>' + item.codigo + '</td>';
+                        html += '<td>' + item.fechaReporte + '</td>';
+                        html += '<td>' + item.centroPoblado + '</td>';
+                        html += '<td>' + item.distrito + '</td>';
+                        html += '<td><span class="badge badge-' + getEstadoClass(item.estadoCaso) + '">' + item.estadoCaso + '</span></td>';
+                        html += '<td>' + item.descripcion + '</td>';
+                        html += '<td><a href="{{ path('caso_trata_show', {'id': '__ID__'}) }}".replace('__ID__', item.id) + '" class="btn btn-sm btn-primary" title="Ver"><i class="fas fa-eye"></i></a></td>';
+                        html += '</tr>';
+                    }
+                    
+                    html += '</tbody></table></div>';
+                    $("#resultadosContainer").html(html);
+                }
+                
+                $("#resultadosContainer").show();
+            },
+            error: function() {
+                $("#loadingSpinner").hide();
+                $("#resultadosContainer").html('<div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> Error al realizar la búsqueda.</div>');
+                $("#resultadosContainer").show();
+            }
+        });
+    }
+    
+    function getEstadoClass(estado) {
+        switch(estado) {
+            case 'Notificado': return 'info';
+            case 'Pendiente': return 'warning';
+            case 'Recibido': return 'primary';
+            case 'Derivado': return 'secondary';
+            case 'Atendido': return 'success';
+            case 'Observado': return 'warning';
+            case 'Cerrado': return 'dark';
+            default: return 'secondary';
+        }
+    }
+});
+</script>
+{% endblock %}

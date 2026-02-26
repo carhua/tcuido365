@@ -34,11 +34,13 @@ services:
     App\Service\FileUploader:
         arguments:
             $targetDirectory: '%adjunto_directory%'
+
     App\EventListener\AdjuntoUploadListener:
         tags:
             - { name: doctrine.event_listener, event: prePersist }
             - { name: doctrine.event_listener, event: preUpdate }
             - { name: doctrine.event_listener, event: preRemove }
+
     pagerfanta.view.low_proximity_and_spanish_messages:
         class: Pagerfanta\View\OptionableView
         arguments:
@@ -47,3 +49,7 @@ services:
         public: false
         tags:
             - { name: pagerfanta.view, alias: low_proximity_and_spanish_messages }
+
+    App\Service\UbigeoFilterService:
+        arguments:
+            - '@doctrine.orm.entity_manager'
