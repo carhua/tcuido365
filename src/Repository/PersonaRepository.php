@@ -45,14 +45,6 @@ class PersonaRepository extends BaseRepository
 
     public function filterQueryViolencia(array $params): QueryBuilder
     {
-        if (null !== $params['provincia'] && null !== $params['distrito']) {
-            $provincia = $params['provincia'];
-            $distrito = $params['distrito'];
-        } else {
-            $provincia = $params['provinciaUser'];
-            $distrito = $params['distritoUser'];
-        }
-
         $queryBuilder = $this->createQueryBuilder('persona')
             ->select(['persona', 'centroPoblado'])
             ->join('persona.centroPoblado', 'centroPoblado')
@@ -61,25 +53,19 @@ class PersonaRepository extends BaseRepository
             ->orderBy('persona.casoViolenciaTotal', 'DESC')
             ->addOrderBy('persona.nombres', 'ASC');
 
-        if (null !== $provincia && 'TODOS' !== $provincia->getNombre()) {
-            if (null !== $distrito && 'TODOS' !== $distrito->getNombre()) {
-                if (182 !== $params['centroPoblado']) {
-                    $queryBuilder->andwhere('centroPoblado.id = :idcentro')
-                        ->setParameter('idcentro', $params['centroPoblado']);
-                } else {
-                    $queryBuilder->innerJoin('centroPoblado.distrito', 'distrito')
-                        ->andWhere('distrito.id =:distritoId')
-                        ->setParameter('distritoId', $distrito->getId());
-                }
-            } else {
-                $queryBuilder->innerJoin('centroPoblado.distrito', 'distrito')
-                    ->innerJoin('distrito.provincia', 'provincia')
-                    ->andWhere('provincia.id =:provinciaId')
-                    ->setParameter('provinciaId', $provincia->getId());
-            }
-        } elseif (182 !== $params['centroPoblado']) {
-            $queryBuilder->andwhere('centroPoblado.id = :idcentro')
-                ->setParameter('idcentro', $params['centroPoblado']);
+        // Aplicar filtros adicionales por provincia, distrito o centro poblado si se proporcionan
+        if (!empty($params['centroPoblado'])) {
+            $queryBuilder->andWhere('centroPoblado.id = :centroPoblado')
+                ->setParameter('centroPoblado', $params['centroPoblado']);
+        } elseif (!empty($params['distrito'])) {
+            $queryBuilder->innerJoin('centroPoblado.distrito', 'distrito')
+                ->andWhere('distrito.id = :distrito')
+                ->setParameter('distrito', $params['distrito']);
+        } elseif (!empty($params['provincia'])) {
+            $queryBuilder->innerJoin('centroPoblado.distrito', 'distrito')
+                ->innerJoin('distrito.provincia', 'provincia')
+                ->andWhere('provincia.id = :provincia')
+                ->setParameter('provincia', $params['provincia']);
         }
 
         Paginator::queryTexts($queryBuilder, $params, ['persona.nombres', 'persona.edad', 'persona.sexo']);
@@ -119,13 +105,6 @@ class PersonaRepository extends BaseRepository
 
     public function filterQueryTipoViolencia(array $params, $tipo): QueryBuilder
     {
-        if (null !== $params['provincia'] && null !== $params['distrito']) {
-            $provincia = $params['provincia'];
-            $distrito = $params['distrito'];
-        } else {
-            $provincia = $params['provinciaUser'];
-            $distrito = $params['distritoUser'];
-        }
 
         $queryBuilder = $this->createQueryBuilder('persona')
             ->select(['persona', 'centroPoblado', 'distrito'])
@@ -162,28 +141,17 @@ class PersonaRepository extends BaseRepository
         ->join('centroPoblado.distrito', 'distrito')
         ->add('orderBy', 'tipoPsicologico DESC, tipoFisico DESC, tipoSexual DESC, tipoEconomico DESC');
 
-        $provinciaNombre = is_object($provincia) ? $provincia->getNombre() : null;
-        $distritoNombre = is_object($distrito) ? $distrito->getNombre() : null;
-
-        if (null !== $provincia && 'TODOS' !== $provinciaNombre) {
-            if (null !== $distrito && 'TODOS' !== $distritoNombre) {
-                if (182 !== $params['centroPoblado']) {
-                    $queryBuilder->andwhere('centroPoblado.id = :idcentro')
-                        ->setParameter('idcentro', $params['centroPoblado']);
-                } else {
-                    $queryBuilder // ->innerJoin('centroPoblado.distrito', 'distrito')
-                        ->andWhere('distrito.id =:distritoId')
-                        ->setParameter('distritoId', $distrito->getId());
-                }
-            } else {
-                $queryBuilder // ->innerJoin('centroPoblado.distrito', 'distrito')
-                    ->innerJoin('distrito.provincia', 'provincia')
-                    ->andWhere('provincia.id =:provinciaId')
-                    ->setParameter('provinciaId', $provincia->getId());
-            }
-        } elseif (182 !== $params['centroPoblado']) {
-            $queryBuilder->andwhere('centroPoblado.id = :idcentro')
-                ->setParameter('idcentro', $params['centroPoblado']);
+        // Aplicar filtros adicionales por provincia, distrito o centro poblado si se proporcionan
+        if (!empty($params['centroPoblado'])) {
+            $queryBuilder->andWhere('centroPoblado.id = :centroPoblado')
+                ->setParameter('centroPoblado', $params['centroPoblado']);
+        } elseif (!empty($params['distrito'])) {
+            $queryBuilder->andWhere('distrito.id = :distrito')
+                ->setParameter('distrito', $params['distrito']);
+        } elseif (!empty($params['provincia'])) {
+            $queryBuilder->innerJoin('distrito.provincia', 'provincia')
+                ->andWhere('provincia.id = :provincia')
+                ->setParameter('provincia', $params['provincia']);
         }
 
         Paginator::queryTexts($queryBuilder, $params, ['persona.nombres', 'persona.apellidos', 'persona.edad', 'persona.sexo']);
@@ -193,14 +161,6 @@ class PersonaRepository extends BaseRepository
 
     public function filterQueryTrata(array $params): QueryBuilder
     {
-        if (null !== $params['provincia'] && null !== $params['distrito']) {
-            $provincia = $params['provincia'];
-            $distrito = $params['distrito'];
-        } else {
-            $provincia = $params['provinciaUser'];
-            $distrito = $params['distritoUser'];
-        }
-
         $queryBuilder = $this->createQueryBuilder('persona')
             ->select(['persona', 'centroPoblado'])
             ->join('persona.centroPoblado', 'centroPoblado')
@@ -209,25 +169,19 @@ class PersonaRepository extends BaseRepository
             ->orderBy('persona.casoTrataTotal', 'DESC')
             ->addOrderBy('persona.nombres', 'ASC');
 
-        $provinciaNombre = is_object($provincia) ? $provincia->getNombre() : null;
-        $distritoNombre = is_object($distrito) ? $distrito->getNombre() : null;
-
-        if (null !== $provincia && 'TODOS' !== $provinciaNombre) {
-            if (null !== $distrito && 'TODOS' !== $distritoNombre) {
-                if ("182" !== $params['centroPoblado']) {
-                    $queryBuilder->innerJoin('centroPoblado.distrito', 'distrito')
-                        ->andWhere('distrito.id =:distritoId')
-                        ->setParameter('distritoId', $distrito);
-                }else{
-                    $queryBuilder->andwhere('centroPoblado.id = :idcentro')
-                        ->setParameter('idcentro', $params['centroPoblado']);
-                }
-            } else {
-                $queryBuilder->innerJoin('centroPoblado.distrito', 'distrito')
-                    ->innerJoin('distrito.provincia', 'provincia')
-                    ->andWhere('provincia.id =:provinciaId')
-                    ->setParameter('provinciaId', $provincia);
-            }
+        // Aplicar filtros adicionales por provincia, distrito o centro poblado si se proporcionan
+        if (!empty($params['centroPoblado'])) {
+            $queryBuilder->andWhere('centroPoblado.id = :centroPoblado')
+                ->setParameter('centroPoblado', $params['centroPoblado']);
+        } elseif (!empty($params['distrito'])) {
+            $queryBuilder->innerJoin('centroPoblado.distrito', 'distrito')
+                ->andWhere('distrito.id = :distrito')
+                ->setParameter('distrito', $params['distrito']);
+        } elseif (!empty($params['provincia'])) {
+            $queryBuilder->innerJoin('centroPoblado.distrito', 'distrito')
+                ->innerJoin('distrito.provincia', 'provincia')
+                ->andWhere('provincia.id = :provincia')
+                ->setParameter('provincia', $params['provincia']);
         }
 
         Paginator::queryTexts($queryBuilder, $params, ['persona.nombres', 'persona.edad', 'persona.sexo']);
@@ -237,14 +191,6 @@ class PersonaRepository extends BaseRepository
 
     public function filterQueryDesaparecido(array $params): QueryBuilder
     {
-        if (null !== $params['provincia'] && null !== $params['distrito']) {
-            $provincia = $params['provincia'];
-            $distrito = $params['distrito'];
-        } else {
-            $provincia = $params['provinciaUser'];
-            $distrito = $params['distritoUser'];
-        }
-
         $queryBuilder = $this->createQueryBuilder('persona')
             ->select(['persona', 'centroPoblado', 'desaparecidos', 'denuncianteDesaparecidos'])
             ->join('persona.centroPoblado', 'centroPoblado')
@@ -255,28 +201,19 @@ class PersonaRepository extends BaseRepository
             ->orderBy('persona.casoDesaparecidoTotal', 'DESC')
             ->addOrderBy('persona.nombres', 'ASC');
 
-        $provinciaNombre = is_object($provincia) ? $provincia->getNombre() : null;
-        $distritoNombre = is_object($distrito) ? $distrito->getNombre() : null;
-
-        if (null !== $provincia && 'TODOS' !== $provinciaNombre) {
-            if (null !== $distrito && 'TODOS' !== $distritoNombre) {
-                if (182 !== $params['centroPoblado']) {
-                    $queryBuilder->andwhere('centroPoblado.id = :idcentro')
-                        ->setParameter('idcentro', $params['centroPoblado']);
-                } else {
-                    $queryBuilder->innerJoin('centroPoblado.distrito', 'distrito')
-                        ->andWhere('distrito.id =:distritoId')
-                        ->setParameter('distritoId', $distrito->getId());
-                }
-            } else {
-                $queryBuilder->innerJoin('centroPoblado.distrito', 'distrito')
-                    ->innerJoin('distrito.provincia', 'provincia')
-                    ->andWhere('provincia.id =:provinciaId')
-                    ->setParameter('provinciaId', $provincia->getId());
-            }
-        } elseif (182 !== $params['centroPoblado']) {
-            $queryBuilder->andwhere('centroPoblado.id = :idcentro')
-                ->setParameter('idcentro', $params['centroPoblado']);
+        // Aplicar filtros adicionales por provincia, distrito o centro poblado si se proporcionan
+        if (!empty($params['centroPoblado'])) {
+            $queryBuilder->andWhere('centroPoblado.id = :centroPoblado')
+                ->setParameter('centroPoblado', $params['centroPoblado']);
+        } elseif (!empty($params['distrito'])) {
+            $queryBuilder->innerJoin('centroPoblado.distrito', 'distrito')
+                ->andWhere('distrito.id = :distrito')
+                ->setParameter('distrito', $params['distrito']);
+        } elseif (!empty($params['provincia'])) {
+            $queryBuilder->innerJoin('centroPoblado.distrito', 'distrito')
+                ->innerJoin('distrito.provincia', 'provincia')
+                ->andWhere('provincia.id = :provincia')
+                ->setParameter('provincia', $params['provincia']);
         }
 
         Paginator::queryTexts($queryBuilder, $params, ['persona.nombres', 'persona.edad', 'persona.sexo']);

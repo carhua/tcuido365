@@ -36,7 +36,7 @@ class CasoDesaparecidoSearchController extends BaseController
     #[Route(path: '/', name: 'caso_desaparecido_search')]
     public function search(EntityManagerInterface $em): Response
     {
-        $this->denyAccess(\App\Security\Security::LIST, 'caso_desaparecido_index');
+        $this->denyAccess(\App\Security\Security::LIST, 'caso_desaparecido_search');
 
         $user = $this->getUser();
         

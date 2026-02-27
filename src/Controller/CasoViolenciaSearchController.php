@@ -37,7 +37,7 @@ class CasoViolenciaSearchController extends BaseController
     #[Route(path: '/', name: 'caso_violencia_search')]
     public function search(EntityManagerInterface $em): Response
     {
-        $this->denyAccess(\App\Security\Security::LIST, 'caso_violencia_index');
+        $this->denyAccess(\App\Security\Security::LIST, 'caso_violencia_search');
 
         $user = $this->getUser();
         
