@@ -32,6 +32,7 @@ use App\Manager\PersonaManager;
 use App\Manager\TutorManager;
 use App\Manager\VictimaManager;
 use App\Security\Security;
+use App\Service\UbigeoFilterService;
 use App\Traits\TraitUser;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -321,23 +322,16 @@ class PersonaController extends BaseController
 
     #[Route(path: '/historialviolencia', name: 'historial_violencia_index', defaults: ['page' => '1'], methods: ['GET'])]
     #[Route(path: '/historialviolencia/page/{page<[1-9]\d*>}', name: 'historial_violencia_index_paginated', methods: ['GET'])]
-    public function listHistorialViolencia(Request $request, int $page, PersonaManager $manager, EntityManagerInterface $em): Response
+    public function listHistorialViolencia(Request $request, int $page, PersonaManager $manager, UbigeoFilterService $ubigeoFilter): Response
     {
         $this->denyAccess(Security::LIST, 'historial_violencia_index');
 
-        $distritoId = $request->query->get('distrito');
-        $provinciaId = $request->query->get('provincia');
-        $centroId = $request->query->get('centroPoblado');
-        $odistrito = null === $distritoId ? null : $em->getRepository(Distrito::class)->findOneBy(['isActive' => true, 'id' => $distritoId]);
-        $ocentro = null === $centroId ? null : $em->getRepository(CentroPoblado::class)->findOneBy(['isActive' => true, 'id' => $centroId]);
-
         $user = $this->getUser();
-        $rteniente = self::validarRoles($user->getRoles());
-        $provincias = self::listProvinciasByRol($rteniente, $user, $em);
+        $ubigeoFilter->setUsuario($user);
 
-        if (null === $request->query->get('centroPoblado') && false === $rteniente) {
-            $request->query->set('centroPoblado', $user->getCentroPoblado()->getId());
-        }
+        $provincias = $ubigeoFilter->getProvinciasDisponibles();
+        $distritos = $ubigeoFilter->getDistritosDisponibles();
+        $centrosPoblados = $ubigeoFilter->getCentrosPobladosDisponibles();
 
         $paginator = $manager->listHistorialViolencia($request->query->all(), $page, $user);
 
@@ -346,33 +340,25 @@ class PersonaController extends BaseController
             [
                 'paginator' => $paginator,
                 'provincias' => $provincias,
-                'provinciaId' => $provinciaId,
-                'odistrito' => $odistrito,
-                'ocentro' => $ocentro,
+                'distritos' => $distritos,
+                'centrosPoblados' => $centrosPoblados,
+                'provinciaId' => $request->query->get('provincia'),
             ]
         );
     }
 
     #[Route(path: '/historialdesproteccion', name: 'historial_desproteccion_index', defaults: ['page' => '1'], methods: ['GET'])]
     #[Route(path: '/historialdesproteccion/page/{page<[1-9]\d*>}', name: 'historial_desproteccion_index_paginated', methods: ['GET'])]
-    public function listHistorialDesproteccion(Request $request, int $page, PersonaManager $manager, EntityManagerInterface $em): Response
+    public function listHistorialDesproteccion(Request $request, int $page, PersonaManager $manager, UbigeoFilterService $ubigeoFilter): Response
     {
         $this->denyAccess(Security::LIST, 'historial_desproteccion_index');
 
-        $distritoId = $request->query->get('distrito');
-        $provinciaId = $request->query->get('provincia');
-        $centroId = $request->query->get('centroPoblado');
-        $odistrito = null === $distritoId ? null : $em->getRepository(Distrito::class)->findOneBy(['isActive' => true, 'id' => $distritoId]);
-        $ocentro = null === $centroId ? null : $em->getRepository(CentroPoblado::class)->findOneBy(['isActive' => true, 'id' => $centroId]);
-
-        /** @var Usuario $user */
         $user = $this->getUser();
-        $rteniente = self::validarRoles($user->getRoles());
-        $provincias = self::listProvinciasByRol($rteniente, $user, $em);
+        $ubigeoFilter->setUsuario($user);
 
-        if (null === $request->query->get('centroPoblado') && false === $rteniente) {
-            $request->query->set('centroPoblado', $user->getCentroPoblado()?->getId());
-        }
+        $provincias = $ubigeoFilter->getProvinciasDisponibles();
+        $distritos = $ubigeoFilter->getDistritosDisponibles();
+        $centrosPoblados = $ubigeoFilter->getCentrosPobladosDisponibles();
 
         $paginator = $manager->listHistorialDesproteccion($request->query->all(), $page, $user);
 
@@ -381,9 +367,9 @@ class PersonaController extends BaseController
             [
                 'paginator' => $paginator,
                 'provincias' => $provincias,
-                'provinciaId' => $provinciaId,
-                'odistrito' => $odistrito,
-                'ocentro' => $ocentro,
+                'distritos' => $distritos,
+                'centrosPoblados' => $centrosPoblados,
+                'provinciaId' => $request->query->get('provincia'),
             ]
         );
     }
@@ -619,23 +605,16 @@ class PersonaController extends BaseController
 
     #[Route(path: '/historialtrata', name: 'historial_trata_index', defaults: ['page' => '1'], methods: ['GET'])]
     #[Route(path: '/historialtrata/page/{page<[1-9]\d*>}', name: 'historial_trata_index_paginated', methods: ['GET'])]
-    public function listHistorialTrata(Request $request, int $page, PersonaManager $manager, EntityManagerInterface $em): Response
+    public function listHistorialTrata(Request $request, int $page, PersonaManager $manager, UbigeoFilterService $ubigeoFilter): Response
     {
         $this->denyAccess(Security::LIST, 'historial_trata_index');
 
-        $distritoId = $request->query->get('distrito');
-        $provinciaId = $request->query->get('provincia');
-        $centroId = $request->query->get('centroPoblado');
-        $odistrito = null === $distritoId ? null : $em->getRepository(Distrito::class)->findOneBy(['isActive' => true, 'id' => $distritoId]);
-        $ocentro = null === $centroId ? null : $em->getRepository(CentroPoblado::class)->findOneBy(['isActive' => true, 'id' => $centroId]);
-
         $user = $this->getUser();
-        $rteniente = self::validarRoles($user->getRoles());
-        $provincias = self::listProvinciasByRol($rteniente, $user, $em);
+        $ubigeoFilter->setUsuario($user);
 
-        if (null === $request->query->get('centroPoblado') && false === $rteniente) {
-            $request->query->set('centroPoblado', $user->getCentroPoblado()->getId());
-        }
+        $provincias = $ubigeoFilter->getProvinciasDisponibles();
+        $distritos = $ubigeoFilter->getDistritosDisponibles();
+        $centrosPoblados = $ubigeoFilter->getCentrosPobladosDisponibles();
 
         $paginator = $manager->listHistorialTrata($request->query->all(), $page, $user);
 
@@ -644,9 +623,9 @@ class PersonaController extends BaseController
             [
                 'paginator' => $paginator,
                 'provincias' => $provincias,
-                'provinciaId' => $provinciaId,
-                'odistrito' => $odistrito,
-                'ocentro' => $ocentro,
+                'distritos' => $distritos,
+                'centrosPoblados' => $centrosPoblados,
+                'provinciaId' => $request->query->get('provincia'),
             ]
         );
     }
@@ -703,24 +682,17 @@ class PersonaController extends BaseController
 
     #[Route(path: '/historialdesaparecido', name: 'historial_desaparecido_index', defaults: ['page' => '1'], methods: ['GET'])]
     #[Route(path: '/historialdesaparecido/page/{page<[1-9]\d*>}', name: 'historial_desaparecido_index_paginated', methods: ['GET'])]
-    public function listHistorialDesaparecido(Request $request, int $page, PersonaManager $manager, EntityManagerInterface $em): Response
+    public function listHistorialDesaparecido(Request $request, int $page, PersonaManager $manager, UbigeoFilterService $ubigeoFilter): Response
     {
         $this->denyAccess(Security::LIST, 'historial_desaparecido_index');
 
-        $distritoId = $request->query->get('distrito');
-        $provinciaId = $request->query->get('provincia');
-        $centroId = $request->query->get('centroPoblado');
-        $odistrito = null === $distritoId ? null : $em->getRepository(Distrito::class)->findOneBy(['isActive' => true, 'id' => $distritoId]);
-        $ocentro = null === $centroId ? null : $em->getRepository(CentroPoblado::class)->findOneBy(['isActive' => true, 'id' => $centroId]);
-
-        /** @var Usuario $user */
         $user = $this->getUser();
-        $rteniente = self::validarRoles($user->getRoles());
-        $provincias = self::listProvinciasByRol($rteniente, $user, $em);
+        $ubigeoFilter->setUsuario($user);
 
-        if (null === $request->query->get('centroPoblado') && false === $rteniente) {
-            $request->query->set('centroPoblado', $user->getCentroPoblado()->getId());
-        }
+        $provincias = $ubigeoFilter->getProvinciasDisponibles();
+        $distritos = $ubigeoFilter->getDistritosDisponibles();
+        $centrosPoblados = $ubigeoFilter->getCentrosPobladosDisponibles();
+
         $paginator = $manager->listHistorialDesaparecido($request->query->all(), $page, $user);
 
         return $this->render(
@@ -728,9 +700,9 @@ class PersonaController extends BaseController
             [
                 'paginator' => $paginator,
                 'provincias' => $provincias,
-                'provinciaId' => $provinciaId,
-                'odistrito' => $odistrito,
-                'ocentro' => $ocentro,
+                'distritos' => $distritos,
+                'centrosPoblados' => $centrosPoblados,
+                'provinciaId' => $request->query->get('provincia'),
             ]
         );
     }

@@ -217,7 +217,8 @@ $(document).ready(function() {
                         html += '<td>' + item.distrito + '</td>';
                         html += '<td><span class="badge badge-' + getEstadoClass(item.estadoCaso) + '">' + item.estadoCaso + '</span></td>';
                         html += '<td>' + item.descripcion + '</td>';
-                        html += '<td><a href="{{ path('caso_trata_show', {'id': '__ID__'}) }}".replace('__ID__', item.id) + '" class="btn btn-sm btn-primary" title="Ver"><i class="fas fa-eye"></i></a></td>';
+                        var urlShow = '{{ path('caso_trata_show', {'id': '999999'}) }}'.replace('999999', item.id);
+                        html += '<td><a href="' + urlShow + '" class="btn btn-sm btn-primary" title="Ver"><i class="fas fa-eye"></i></a></td>';
                         html += '</tr>';
                     }
                     

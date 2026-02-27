@@ -10,9 +10,14 @@
 {% endblock %}
 
 {% block _main %}
-
-    <div class="card-body">
-        <form id="searchForm" class="form">
+    <div class="card card-custom">
+        <div class="card-header">
+            <div class="card-title">
+                <h3 class="card-label">Filtros de Búsqueda</h3>
+            </div>
+        </div>
+        <div class="card-body">
+            <form id="searchForm" class="form">
             <div class="row">
                 <div class="col-md-3">
                     <div class="form-group">
@@ -101,7 +106,8 @@
                     </div>
                 </div>
             </div>
-        </form>
+            </form>
+        </div>
     </div>
 
     <div class="card card-custom mt-4">
@@ -214,7 +220,6 @@ $(document).ready(function() {
                     html += '<th>Fecha Reporte</th>';
                     html += '<th>Centro Poblado</th>';
                     html += '<th>Distrito</th>';
-                    html += '<th>Tipo Maltrato</th>';
                     html += '<th>Estado</th>';
                     html += '<th>Descripción</th>';
                     html += '<th>Acciones</th>';
@@ -227,10 +232,10 @@ $(document).ready(function() {
                         html += '<td>' + item.fechaReporte + '</td>';
                         html += '<td>' + item.centroPoblado + '</td>';
                         html += '<td>' + item.distrito + '</td>';
-                        html += '<td>' + item.tipoMaltrato + '</td>';
                         html += '<td><span class="badge badge-' + getEstadoClass(item.estadoCaso) + '">' + item.estadoCaso + '</span></td>';
                         html += '<td>' + item.descripcion + '</td>';
-                        html += '<td><a href="{{ path('caso_violencia_show', {'id': '__ID__'}) }}".replace('__ID__', item.id) + '" class="btn btn-sm btn-primary" title="Ver"><i class="fas fa-eye"></i></a></td>';
+                        var urlShow = '{{ path('caso_violencia_show', {'id': '999999'}) }}'.replace('999999', item.id);
+                        html += '<td><a href="' + urlShow + '" class="btn btn-sm btn-primary" title="Ver"><i class="fas fa-eye"></i></a></td>';
                         html += '</tr>';
                     }
                     

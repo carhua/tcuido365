@@ -84,6 +84,45 @@ class UbigeoFilterService
     }
 
     /**
+     * Alias en español para applyFilters
+     * Aplica filtros de ubigeo a un QueryBuilder según los permisos del usuario
+     */
+    public function aplicarFiltroQueryBuilder(QueryBuilder $queryBuilder, string $alias = 'cp'): QueryBuilder
+    {
+        if (!$this->usuario) {
+            return $queryBuilder;
+        }
+
+        // Si es super admin, no aplicar filtros
+        if ($this->isSuperAdmin()) {
+            return $queryBuilder;
+        }
+
+        // Obtener la jerarquía de ubigeo del usuario
+        $provincia = $this->usuario->getProvincia();
+        $distrito = $this->usuario->getDistrito();
+        $centroPoblado = $this->usuario->getCentroPoblado();
+
+        // Aplicar filtros según el nivel más específico disponible
+        if ($centroPoblado && $centroPoblado->getId() !== 182) {
+            $queryBuilder
+                ->andWhere("{$alias}.id = :centroPoblado")
+                ->setParameter('centroPoblado', $centroPoblado->getId());
+        } elseif ($distrito && $distrito->getNombre() !== 'TODOS') {
+            $queryBuilder
+                ->andWhere("{$alias}.distrito = :distrito")
+                ->setParameter('distrito', $distrito->getId());
+        } elseif ($provincia && $provincia->getNombre() !== 'TODOS') {
+            $queryBuilder
+                ->innerJoin("{$alias}.distrito", 'd')
+                ->andWhere('d.provincia = :provincia')
+                ->setParameter('provincia', $provincia->getId());
+        }
+
+        return $queryBuilder;
+    }
+
+    /**
      * Obtiene las provincias disponibles para el usuario
      */
     public function getProvinciasDisponibles(): array

@@ -225,7 +225,6 @@ $(document).ready(function() {
                     html += '<th>Fecha Reporte</th>';
                     html += '<th>Centro Poblado</th>';
                     html += '<th>Lugar</th>';
-                    html += '<th>Situación</th>';
                     html += '<th>Estado</th>';
                     html += '<th>Descripción</th>';
                     html += '<th>Acciones</th>';
@@ -240,7 +239,6 @@ $(document).ready(function() {
                         html += '<td>' + item.fechaReporte + '</td>';
                         html += '<td>' + item.centroPoblado + '</td>';
                         html += '<td>' + item.lugarCaso + '</td>';
-                        html += '<td>' + item.situacionEncontrada + '</td>';
                         html += '<td><span class="badge badge-' + getEstadoClass(item.estadoCaso) + '">' + item.estadoCaso + '</span></td>';
                         html += '<td>' + item.descripcion + '</td>';
                         html += '<td>';
