@@ -82,21 +82,24 @@ final class PersonaManager extends BaseManager
         return $queryBuilder->getQuery()->getResult();
     }
 
-    public function listHistorialDesproteccion(array $queryValues, $page, $user)
+    public function listHistorialDesproteccion(array $queryValues, $page, $user, $ubigeoFilter = null)
     {
         $params = Paginator::params($queryValues, $page);
         $params = array_merge(
             $params,
             [
                 'centroPoblado' => (isset($queryValues['centroPoblado']) && '' !== $queryValues['centroPoblado']) ? (int) $queryValues['centroPoblado'] : null,
-                'provinciaUser' => $user->getProvincia(),
-                'distritoUser' => $user->getDistrito(),
-                'provincia' => isset($queryValues['oprovincia']) ? $queryValues['oprovincia'] : null,
-                'distrito' => isset($queryValues['odistrito']) ? $queryValues['odistrito'] : null,
-                ]
+                'provincia' => isset($queryValues['provincia']) ? $queryValues['provincia'] : null,
+                'distrito' => isset($queryValues['distrito']) ? $queryValues['distrito'] : null,
+            ]
         );
 
         $queryBuilder = $this->repository()->filterQueryDesproteccion($params);
+        
+        // Aplicar filtros de ubigeo si se proporciona el servicio
+        if ($ubigeoFilter) {
+            $queryBuilder = $ubigeoFilter->aplicarFiltroQueryBuilder($queryBuilder, 'centroPoblado');
+        }
 
         return Paginator::create($queryBuilder, $params);
     }
@@ -155,21 +158,24 @@ final class PersonaManager extends BaseManager
         return $queryBuilder->getQuery()->getResult();
     }
 
-    public function listHistorialTrata(array $queryValues, $page, $user)
+    public function listHistorialTrata(array $queryValues, $page, $user, $ubigeoFilter = null)
     {
         $params = Paginator::params($queryValues, $page);
         $params = array_merge(
             $params,
             [
                 'centroPoblado' => (isset($queryValues['centroPoblado']) && '' !== $queryValues['centroPoblado']) ? (int) $queryValues['centroPoblado'] : null,
-                'provinciaUser' => $user->getProvincia(),
-                'distritoUser' => $user->getDistrito(),
                 'provincia' => isset($queryValues['provincia']) ? $queryValues['provincia'] : null,
                 'distrito' => isset($queryValues['distrito']) ? $queryValues['distrito'] : null,
             ]
         );
 
         $queryBuilder = $this->repository()->filterQueryTrata($params);
+        
+        // Aplicar filtros de ubigeo si se proporciona el servicio
+        if ($ubigeoFilter) {
+            $queryBuilder = $ubigeoFilter->aplicarFiltroQueryBuilder($queryBuilder, 'centroPoblado');
+        }
 
         return Paginator::create($queryBuilder, $params);
     }
@@ -193,21 +199,24 @@ final class PersonaManager extends BaseManager
         return $queryBuilder->getQuery()->getResult();
     }
 
-    public function listHistorialDesaparecido(array $queryValues, $page, $user)
+    public function listHistorialDesaparecido(array $queryValues, $page, $user, $ubigeoFilter = null)
     {
         $params = Paginator::params($queryValues, $page);
         $params = array_merge(
             $params,
             [
                 'centroPoblado' => (isset($queryValues['centroPoblado']) && '' !== $queryValues['centroPoblado']) ? (int) $queryValues['centroPoblado'] : null,
-                'provinciaUser' => $user->getProvincia(),
-                'distritoUser' => $user->getDistrito(),
-                'provincia' => isset($queryValues['oprovincia']) ? $queryValues['oprovincia'] : null,
-                'distrito' => isset($queryValues['odistrito']) ? $queryValues['odistrito'] : null,
+                'provincia' => isset($queryValues['provincia']) ? $queryValues['provincia'] : null,
+                'distrito' => isset($queryValues['distrito']) ? $queryValues['distrito'] : null,
             ]
         );
 
         $queryBuilder = $this->repository()->filterQueryDesaparecido($params);
+        
+        // Aplicar filtros de ubigeo si se proporciona el servicio
+        if ($ubigeoFilter) {
+            $queryBuilder = $ubigeoFilter->aplicarFiltroQueryBuilder($queryBuilder, 'centroPoblado');
+        }
 
         return Paginator::create($queryBuilder, $params);
     }

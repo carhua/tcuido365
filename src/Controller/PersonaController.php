@@ -360,7 +360,7 @@ class PersonaController extends BaseController
         $distritos = $ubigeoFilter->getDistritosDisponibles();
         $centrosPoblados = $ubigeoFilter->getCentrosPobladosDisponibles();
 
-        $paginator = $manager->listHistorialDesproteccion($request->query->all(), $page, $user);
+        $paginator = $manager->listHistorialDesproteccion($request->query->all(), $page, $user, $ubigeoFilter);
 
         return $this->render(
             'historial/historial_caso_desproteccion.html.twig',
@@ -616,7 +616,7 @@ class PersonaController extends BaseController
         $distritos = $ubigeoFilter->getDistritosDisponibles();
         $centrosPoblados = $ubigeoFilter->getCentrosPobladosDisponibles();
 
-        $paginator = $manager->listHistorialTrata($request->query->all(), $page, $user);
+        $paginator = $manager->listHistorialTrata($request->query->all(), $page, $user, $ubigeoFilter);
 
         return $this->render(
             'historial/historial_caso_trata.html.twig',
@@ -693,7 +693,7 @@ class PersonaController extends BaseController
         $distritos = $ubigeoFilter->getDistritosDisponibles();
         $centrosPoblados = $ubigeoFilter->getCentrosPobladosDisponibles();
 
-        $paginator = $manager->listHistorialDesaparecido($request->query->all(), $page, $user);
+        $paginator = $manager->listHistorialDesaparecido($request->query->all(), $page, $user, $ubigeoFilter);
 
         return $this->render(
             'historial/historial_caso_desaparecido.html.twig',
