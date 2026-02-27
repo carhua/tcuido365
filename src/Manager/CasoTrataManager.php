@@ -69,7 +69,7 @@ final class CasoTrataManager extends BaseManager
         return $this->repository()->filterExcelFechas($params);
     }
 
-    public function graficoCasos(array $queryValues)
+    public function graficoCasos(array $queryValues, $user = null)
     {
         $params = [];
 

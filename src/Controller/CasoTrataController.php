@@ -215,7 +215,7 @@ class CasoTrataController extends BaseController
             */
 
         //if (null !== $oprovincia && null !== $odistrito) {
-            $casoscv = $manager->graficoCasos($request->query->all());
+            $casoscv = $manager->graficoCasos($request->query->all(), $user);
             $dataMeses = self::dataMeses($casoscv);
             $dataAnios = self::dataAnios($casoscv);
         //} else {
