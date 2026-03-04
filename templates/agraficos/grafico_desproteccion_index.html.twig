@@ -94,10 +94,11 @@
 
                         <div class="col-md-3 my-2 my-md-0">
                             <div class="form-group">
-                                <label for="distrito">Distrito</label>
+                                <label for="distrito">Distritos</label>
                                 <select name="distrito" id="select_distritos" class="form-control m-select2">
+                                    <option value="">Seleccione</option>
                                     {% if odistrito is not null %}
-                                        <option value="{{ odistrito.id }}" >
+                                        <option value="{{ odistrito.id }}" selected>
                                             {{ odistrito.nombre }}
                                         </option>
                                     {% endif %}
@@ -106,10 +107,11 @@
                         </div>
                         <div class="col-md-3 my-2 my-md-0">
                             <div class="form-group">
-                                <label for="centroPoblado">Centro Poblado</label>
+                                <label for="select_centros">Centros Poblados</label>
                                 <select name="centroPoblado" id="select_centros" class="form-control m-select2">
+                                    <option value="">Seleccione</option>
                                     {% if ocentro is not null %}
-                                        <option value="{{ ocentro.id }}" >
+                                        <option value="{{ ocentro.id }}" selected>
                                             {{ ocentro.nombre }}
                                         </option>
                                     {% endif %}
@@ -208,11 +210,40 @@
                 window.location = filter(route);
             });
 
-            $(document).on('click', '.btn-send', function(){
-                route = '{{ path('caso_desproteccion_index') }}';
-                window.location = filter(route);
-                $('.btn-excel').show();
-
+            $(document).on('click', '.btn-send', function(e){
+                e.preventDefault();
+                
+                // Obtener los datos del formulario
+                const formData = $('#frm_filters').serialize();
+                
+                // Mostrar indicador de carga
+                $('.btn-send').prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Cargando...');
+                
+                // Realizar petición AJAX
+                $.ajax({
+                    type: 'GET',
+                    url: '{{ path('grafico_desproteccion_index') }}',
+                    data: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            // Actualizar gráficos con los nuevos datos
+                            amChart.clusterColumn('chart_barra_anios', response.dataMeses.category, response.dataMeses.values, response.dataMeses.series, "Casos reportados", "Casos Reportados por Meses");
+                            amChart.simpleColumn('chart_barra_meses', response.dataAnios.categoryX, response.dataAnios.valueY, response.dataAnios.values, "Casos Reportados por Año");
+                            $('.btn-excel').show();
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error al cargar los datos:', error);
+                        alert('Error al cargar los datos del gráfico');
+                    },
+                    complete: function() {
+                        // Restaurar botón
+                        $('.btn-send').prop('disabled', false).html('<i class="fas fa-search"></i> Buscar');
+                    }
+                });
             });
 
 
@@ -222,41 +253,49 @@
             });
 
             $("#select_provincias").change(function () {
-                var data = {
-                    provincia_id: $(this).val()
-                };
-                $.ajax({
-                    type: 'POST',
-                    url: "{{ path('distrito_ajax') }}",
-                    data: data,
-                    success: function (data) {
-                        var $selector = $('#select_distritos');
-                        //alert(data);
-                        $selector.html('<option>Seleccione Distrito</option>');
-                        for (var i = 0, total = data.length; i < total; i++) {
-                            $selector.append('<option value="' + data[i].id + '">' + data[i].name + '</option>');
+                const provinciaId = $(this).val();
+                const $distritos = $('#select_distritos');
+                const $centros = $('#select_centros');
+                
+                // Limpiar distritos y centros poblados
+                $distritos.html('<option value="">Seleccione</option>').val('').trigger('change');
+                $centros.html('<option value="">Seleccione</option>').val('').trigger('change');
+                
+                // Si se seleccionó una provincia, cargar sus distritos
+                if (provinciaId) {
+                    $.ajax({
+                        type: 'POST',
+                        url: "{{ path('distrito_ajax') }}",
+                        data: { provincia_id: provinciaId },
+                        success: function (data) {
+                            for (let i = 0, total = data.length; i < total; i++) {
+                                $distritos.append('<option value="' + data[i].id + '">' + data[i].name + '</option>');
+                            }
                         }
-                    }
-                });
+                    });
+                }
             });
 
             $("#select_distritos").change(function () {
-                var data = {
-                    distrito_id: $(this).val()
-                };
-                $.ajax({
-                    type: 'POST',
-                    url: "{{ path('centros_ajax') }}",
-                    data: data,
-                    success: function (data) {
-                        var $selector = $('#select_centros');
-                        //alert(data);
-                        $selector.html('<option>Seleccione Centro Poblado</option>');
-                        for (var i = 0, total = data.length; i < total; i++) {
-                            $selector.append('<option value="' + data[i].id + '">' + data[i].name + '</option>');
+                const distritoId = $(this).val();
+                const $centros = $('#select_centros');
+                
+                // Limpiar centros poblados
+                $centros.html('<option value="">Seleccione</option>').val('').trigger('change');
+                
+                // Si se seleccionó un distrito, cargar sus centros poblados
+                if (distritoId) {
+                    $.ajax({
+                        type: 'POST',
+                        url: "{{ path('centros_ajax') }}",
+                        data: { distrito_id: distritoId },
+                        success: function (data) {
+                            for (let i = 0, total = data.length; i < total; i++) {
+                                $centros.append('<option value="' + data[i].id + '">' + data[i].name + '</option>');
+                            }
                         }
-                    }
-                });
+                    });
+                }
             });
 
             let data = {{ dataMeses | json_encode |raw }};

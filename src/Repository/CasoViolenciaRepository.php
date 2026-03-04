@@ -263,38 +263,27 @@ class CasoViolenciaRepository extends BaseRepository
                 ->setParameter('anioFinal', $anioFinal);
         }
         
-        // Aplicar filtros manuales si no hay servicio de ubigeo
-        if (!$ubigeoFilter) {
-            if (null !== $provincia && 'TODOS' !== $provincia->getNombre()) {
-                if (null !== $distrito && 'TODOS' !== $distrito->getNombre()) {
-                    if (182 !== $params['centroPoblado'] && null !== $params['centroPoblado']) {
-                        $queryBuilder->andwhere('centroPoblado.id = :idcentro')
-                            ->setParameter('idcentro', $params['centroPoblado']);
-                    } else {
-                        $queryBuilder->innerJoin('centroPoblado.distrito', 'distrito')
-                            ->andWhere('distrito.id =:distritoId')
-                            ->setParameter('distritoId', $distrito->getId());
-                    }
-                } else {
-                    $queryBuilder->innerJoin('centroPoblado.distrito', 'distrito')
-                        ->innerJoin('distrito.provincia', 'provincia')
-                        ->andWhere('provincia.id =:provinciaId')
-                        ->setParameter('provinciaId', $provincia->getId());
-                }
-            } elseif (182 !== $params['centroPoblado'] && null !== $params['centroPoblado']) {
-                $queryBuilder->andwhere('centroPoblado.id = :idcentro')
-                    ->setParameter('idcentro', $params['centroPoblado']);
-            }
-        } else {
-            // Aplicar filtro automático por ubigeo
-            $ubigeoFilter->applyFilters($queryBuilder, 'casoViolencia');
-            
-            // Aplicar filtros adicionales si se especificaron
-            if ($params['centroPoblado'] && $params['centroPoblado'] !== 182) {
-                $queryBuilder
-                    ->andWhere('centroPoblado.id = :centroPobladoId')
-                    ->setParameter('centroPobladoId', $params['centroPoblado']);
-            }
+        // Aplicar filtro automático por ubigeo del usuario si se proporcionó el servicio
+        if ($ubigeoFilter) {
+            $ubigeoFilter->aplicarFiltroQueryBuilder($queryBuilder, 'centroPoblado');
+        }
+        
+        // Aplicar filtros adicionales seleccionados por el usuario
+        if (!empty($params['centroPoblado']) && $params['centroPoblado'] !== 182) {
+            $queryBuilder
+                ->andWhere('centroPoblado.id = :centroPobladoId')
+                ->setParameter('centroPobladoId', $params['centroPoblado']);
+        } elseif (!empty($params['distrito'])) {
+            $queryBuilder
+                ->innerJoin('centroPoblado.distrito', 'distrito')
+                ->andWhere('distrito.id = :distritoId')
+                ->setParameter('distritoId', is_object($distrito) ? $distrito->getId() : $distrito);
+        } elseif (!empty($params['provincia'])) {
+            $queryBuilder
+                ->innerJoin('centroPoblado.distrito', 'distrito')
+                ->innerJoin('distrito.provincia', 'provincia')
+                ->andWhere('provincia.id = :provinciaId')
+                ->setParameter('provinciaId', is_object($provincia) ? $provincia->getId() : $provincia);
         }
 
         if (null !== $params['tipoMaltrato']) {

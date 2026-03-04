@@ -223,6 +223,15 @@ class CasoTrataController extends BaseController
         //    $dataAnios = self::dataAnios([]);
         //}
 
+        // Si es una petición AJAX, retornar solo los datos en JSON
+        if ($request->isXmlHttpRequest()) {
+            return $this->json([
+                'success' => true,
+                'dataMeses' => $dataMeses,
+                'dataAnios' => $dataAnios,
+            ]);
+        }
+
         return $this->render(
             'agraficos/grafico_trata_index.html.twig',
             [
