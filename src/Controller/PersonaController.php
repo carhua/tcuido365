@@ -335,6 +335,17 @@ class PersonaController extends BaseController
 
         $paginator = $manager->listHistorialViolencia($request->query->all(), $page, $user);
 
+        // Si es una petición AJAX, retornar solo la tabla
+        if ($request->isXmlHttpRequest()) {
+            return $this->render(
+                'historial/_table_violencia.html.twig',
+                [
+                    'paginator' => $paginator,
+                    '_section' => 'historial_violencia_index',
+                ]
+            );
+        }
+
         return $this->render(
             'historial/historial_casos_violencia.html.twig',
             [
@@ -361,6 +372,17 @@ class PersonaController extends BaseController
         $centrosPoblados = $ubigeoFilter->getCentrosPobladosDisponibles();
 
         $paginator = $manager->listHistorialDesproteccion($request->query->all(), $page, $user, $ubigeoFilter);
+
+        // Si es una petición AJAX, retornar solo la tabla
+        if ($request->isXmlHttpRequest()) {
+            return $this->render(
+                'historial/_table_desproteccion.html.twig',
+                [
+                    'paginator' => $paginator,
+                    '_section' => 'historial_desproteccion_index',
+                ]
+            );
+        }
 
         return $this->render(
             'historial/historial_caso_desproteccion.html.twig',
@@ -618,6 +640,17 @@ class PersonaController extends BaseController
 
         $paginator = $manager->listHistorialTrata($request->query->all(), $page, $user, $ubigeoFilter);
 
+        // Si es una petición AJAX, retornar solo la tabla
+        if ($request->isXmlHttpRequest()) {
+            return $this->render(
+                'historial/_table_trata.html.twig',
+                [
+                    'paginator' => $paginator,
+                    '_section' => 'historial_trata_index',
+                ]
+            );
+        }
+
         return $this->render(
             'historial/historial_caso_trata.html.twig',
             [
@@ -694,6 +727,17 @@ class PersonaController extends BaseController
         $centrosPoblados = $ubigeoFilter->getCentrosPobladosDisponibles();
 
         $paginator = $manager->listHistorialDesaparecido($request->query->all(), $page, $user, $ubigeoFilter);
+
+        // Si es una petición AJAX, retornar solo la tabla
+        if ($request->isXmlHttpRequest()) {
+            return $this->render(
+                'historial/_table_desaparecido.html.twig',
+                [
+                    'paginator' => $paginator,
+                    '_section' => 'historial_desaparecido_index',
+                ]
+            );
+        }
 
         return $this->render(
             'historial/historial_caso_desaparecido.html.twig',

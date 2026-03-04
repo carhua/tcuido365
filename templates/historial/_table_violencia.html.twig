@@ -1,0 +1,61 @@
+{% import 'macro/action.html.twig' as action %}
+{% import 'macro/pagination.html.twig' as pagination %}
+
+<div class="table-responsive">
+    {{ action.tbl_start('table-sm table-bordered') }}
+<thead class="table-primary">
+<tr>
+    <th class="text-center pb-10" rowspan="2">Nº</th>
+    <th class="text-center d-sm-table-cell pb-10" rowspan="2">Distrito.</th>
+    <th class="text-center d-sm-table-cell pb-10" rowspan="2">Centro Poblado.</th>
+    <th class="text-center d-sm-table-cell pb-10 " rowspan="2">Nombres</th>
+    <th class="text-center d-sm-table-cell pb-10" rowspan="2">Edad</th>
+    <th class="text-center d-sm-table-cell pb-10" rowspan="2">Sexo</th>
+    <th class="text-center d-sm-table-cell " colspan="3">Casos de Violencia Reportados</th>
+    <th class="text-center d-sm-table-cell pb-10" rowspan="2">Total</th>
+</tr>
+<tr>
+    <th>Denunciante</th>
+    <th>Agraviado</th>
+    <th>Agresor</th>
+</tr>
+</thead>
+<tbody class="font-weight-bold">
+{% for den in paginator %}
+    <tr>
+        <td class=" d-sm-table-cell">{{ loop.index}}</td>
+        <td class=" d-sm-table-cell">{{ den.centroPoblado.distrito.nombre}}</td>
+        <td class=" d-sm-table-cell">{{ den.centroPoblado.nombre |upper}}</td>
+        <td class=" d-sm-table-cell">{{ den.nombres |upper }}</td>
+        <td class=" d-sm-table-cell">{{ den.edad }} años</td>
+        <td class=" d-sm-table-cell">{{ den.sexo|upper }}</td>
+        <td class=" d-sm-table-cell">
+            {{  den.denunciantes |length }}
+            {{ action.btn_show_link2_ico(path('historial_denunciante_index',{'numeroDocumento': den.numeroDocumento,'personaid':den.id})) }}
+        </td>
+        <td class=" d-sm-table-cell {{ den.agraviados |length |semaforo }}">
+            {{  den.agraviados |length }}
+            {{ action.btn_show_link2_ico(path('historial_agraviado_index',{'numeroDocumento': den.numeroDocumento,'personaid':den.id})) }}
+        </td>
+        <td class=" d-sm-table-cell {{ den.agresors |length |semaforo }}">
+            {{  den.agresors|length }}
+            {{ action.btn_show_link2_ico(path('historial_agresor_index',{'numeroDocumento': den.numeroDocumento,'personaid':den.id})) }}
+        </td>
+        <td class=" d-sm-table-cell">
+            {% set c1 = den.denunciantes |length  %}
+            {% set c2 = den.agraviados |length %}
+            {% set c3 = den.agresors|length%}
+            {% set total = c1+c2+c3%}
+            {{ total}}
+            {{ action.btn_show_link2_ico(path('historial_totalviolencia_index',{'numeroDocumento': den.numeroDocumento,'personaid':den.id})) }}
+        </td>
+    </tr>
+{% else %}
+    <tr>
+        <td colspan="11">No hay registros</td>
+    </tr>
+{% endfor %}
+</tbody>
+    {{ action.tbl_end() }}
+</div>
+{{ pagination.pager(paginator, _section) }}
