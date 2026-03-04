@@ -11,6 +11,7 @@ use App\Entity\CasoDesaparecido;
 use App\Entity\CentroPoblado;
 use App\Entity\Distrito;
 use App\Entity\Provincia;
+use App\Service\UbigeoFilterService;
 use App\Utils\Paginator;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -23,9 +24,12 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class CasoDesaparecidoRepository extends BaseRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private UbigeoFilterService $ubigeoFilterService;
+
+    public function __construct(ManagerRegistry $registry, UbigeoFilterService $ubigeoFilterService)
     {
         parent::__construct($registry, CasoDesaparecido::class);
+        $this->ubigeoFilterService = $ubigeoFilterService;
     }
 
     protected function filterQuery(array $params): QueryBuilder
@@ -183,22 +187,25 @@ class CasoDesaparecidoRepository extends BaseRepository
     {
         $queryBuilder = $this->createQueryBuilder('casoDesaparecido')
             ->select('YEAR(casoDesaparecido.fechaReporte) as anio')
-            ->addSelect('COUNT(casoDesaparecido.id) as cantidad');
+            ->addSelect('COUNT(casoDesaparecido.id) as cantidad')
+            ->innerJoin('casoDesaparecido.centroPoblado', 'cp');
 
+        // Aplicar filtro automático por ubigeo del usuario
+        $this->ubigeoFilterService->aplicarFiltroQueryBuilder($queryBuilder, 'cp');
+
+        // Aplicar filtros manuales adicionales si se proporcionan
         if (null !== $centro) {
-            $queryBuilder->andwhere('casoDesaparecido.centroPoblado = :idcentro')
+            $queryBuilder->andwhere('cp.id = :idcentro')
                 ->setParameter('idcentro', $centro->getId());
         }
 
         if (null !== $provincia && 'TODOS' !== $provincia->getNombre()) {
             if (null !== $distrito && 'TODOS' !== $distrito->getNombre()) {
-                $queryBuilder->innerJoin('casoDesaparecido.centroPoblado', 'centroPoblado')
-                    ->innerJoin('centroPoblado.distrito', 'distrito')
+                $queryBuilder->innerJoin('cp.distrito', 'distrito')
                     ->andWhere('distrito.id =:distritoId')
                     ->setParameter('distritoId', $distrito->getId());
             } else {
-                $queryBuilder->innerJoin('casoDesaparecido.centroPoblado', 'centroPoblado')
-                    ->innerJoin('centroPoblado.distrito', 'distrito')
+                $queryBuilder->innerJoin('cp.distrito', 'distrito')
                     ->innerJoin('distrito.provincia', 'provincia')
                     ->andWhere('provincia.id =:provinciaId')
                     ->setParameter('provinciaId', $provincia->getId());
@@ -210,6 +217,7 @@ class CasoDesaparecidoRepository extends BaseRepository
                 ->andwhere('casoDesaparecido.usuarioApp = :usuario')
                 ->setParameter('usuario', $usuario);
         }
+
         $queryBuilder->addgroupBy('anio');
 
         return $queryBuilder->getQuery()->getResult();

@@ -14,15 +14,18 @@ use App\Entity\Provincia;
 use App\Entity\Region;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class UbigeoFilterService
 {
     private EntityManagerInterface $entityManager;
-    private ?Usuario $usuario;
+    private Security $security;
+    private ?Usuario $usuario = null;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(EntityManagerInterface $entityManager, Security $security)
     {
         $this->entityManager = $entityManager;
+        $this->security = $security;
     }
 
     public function setUsuario(Usuario $usuario): self
@@ -32,12 +35,27 @@ class UbigeoFilterService
         return $this;
     }
 
+    private function getUsuario(): ?Usuario
+    {
+        if ($this->usuario) {
+            return $this->usuario;
+        }
+
+        $user = $this->security->getUser();
+        if ($user instanceof Usuario) {
+            return $user;
+        }
+
+        return null;
+    }
+
     /**
      * Aplica filtros de ubigeo a un QueryBuilder según los permisos del usuario
      */
     public function applyFilters(QueryBuilder $queryBuilder, string $alias = 'caso'): QueryBuilder
     {
-        if (!$this->usuario) {
+        $usuario = $this->getUsuario();
+        if (!$usuario) {
             return $queryBuilder;
         }
 
@@ -47,10 +65,10 @@ class UbigeoFilterService
         }
 
         // Obtener la jerarquía de ubigeo del usuario
-        $region = $this->usuario->getRegion();
-        $provincia = $this->usuario->getProvincia();
-        $distrito = $this->usuario->getDistrito();
-        $centroPoblado = $this->usuario->getCentroPoblado();
+        $region = $usuario->getRegion();
+        $provincia = $usuario->getProvincia();
+        $distrito = $usuario->getDistrito();
+        $centroPoblado = $usuario->getCentroPoblado();
 
         // Aplicar filtros según el nivel más específico disponible
         if ($centroPoblado && $centroPoblado->getId() !== 182) { // 182 parece ser el valor para "TODOS"
@@ -89,7 +107,8 @@ class UbigeoFilterService
      */
     public function aplicarFiltroQueryBuilder(QueryBuilder $queryBuilder, string $alias = 'cp'): QueryBuilder
     {
-        if (!$this->usuario) {
+        $usuario = $this->getUsuario();
+        if (!$usuario) {
             return $queryBuilder;
         }
 
@@ -99,9 +118,9 @@ class UbigeoFilterService
         }
 
         // Obtener la jerarquía de ubigeo del usuario
-        $provincia = $this->usuario->getProvincia();
-        $distrito = $this->usuario->getDistrito();
-        $centroPoblado = $this->usuario->getCentroPoblado();
+        $provincia = $usuario->getProvincia();
+        $distrito = $usuario->getDistrito();
+        $centroPoblado = $usuario->getCentroPoblado();
 
         // Aplicar filtros según el nivel más específico disponible
         if ($centroPoblado && $centroPoblado->getId() !== 182) {
@@ -127,12 +146,13 @@ class UbigeoFilterService
      */
     public function getProvinciasDisponibles(): array
     {
-        if (!$this->usuario) {
+        $usuario = $this->getUsuario();
+        if (!$usuario) {
             return [];
         }
 
         // Primero verificar si el usuario tiene una provincia específica configurada
-        $provincia = $this->usuario->getProvincia();
+        $provincia = $usuario->getProvincia();
         if ($provincia && $provincia->getNombre() !== 'TODOS') {
             return [$provincia];
         }
@@ -152,18 +172,19 @@ class UbigeoFilterService
      */
     public function getDistritosDisponibles(): array
     {
-        if (!$this->usuario) {
+        $usuario = $this->getUsuario();
+        if (!$usuario) {
             return [];
         }
 
         // Primero verificar si el usuario tiene un distrito específico configurado
-        $distrito = $this->usuario->getDistrito();
+        $distrito = $usuario->getDistrito();
         if ($distrito && $distrito->getNombre() !== 'TODOS') {
             return [$distrito];
         }
 
         // Si tiene provincia configurada, obtener distritos de esa provincia
-        $provincia = $this->usuario->getProvincia();
+        $provincia = $usuario->getProvincia();
         if ($provincia && $provincia->getNombre() !== 'TODOS') {
             return $this->entityManager
                 ->getRepository(Distrito::class)
@@ -185,18 +206,19 @@ class UbigeoFilterService
      */
     public function getCentrosPobladosDisponibles(): array
     {
-        if (!$this->usuario) {
+        $usuario = $this->getUsuario();
+        if (!$usuario) {
             return [];
         }
 
         // Primero verificar si el usuario tiene un centro poblado específico configurado
-        $centroPoblado = $this->usuario->getCentroPoblado();
+        $centroPoblado = $usuario->getCentroPoblado();
         if ($centroPoblado && $centroPoblado->getId() !== 182) {
             return [$centroPoblado];
         }
 
         // Si tiene distrito configurado, obtener centros de ese distrito
-        $distrito = $this->usuario->getDistrito();
+        $distrito = $usuario->getDistrito();
         if ($distrito && $distrito->getNombre() !== 'TODOS') {
             return $this->entityManager
                 ->getRepository(CentroPoblado::class)
@@ -204,7 +226,7 @@ class UbigeoFilterService
         }
 
         // Si tiene provincia configurada, obtener centros de esa provincia
-        $provincia = $this->usuario->getProvincia();
+        $provincia = $usuario->getProvincia();
         if ($provincia && $provincia->getNombre() !== 'TODOS') {
             return $this->entityManager
                 ->getRepository(CentroPoblado::class)
@@ -226,7 +248,8 @@ class UbigeoFilterService
      */
     public function puedeVerCaso($caso): bool
     {
-        if (!$this->usuario || !$caso) {
+        $usuario = $this->getUsuario();
+        if (!$usuario || !$caso) {
             return false;
         }
 
@@ -245,10 +268,10 @@ class UbigeoFilterService
         $casoRegion = $casoProvincia ? $casoProvincia->getRegion() : null;
 
         // Verificar si el caso está en la jurisdicción del usuario
-        $usuarioCentroPoblado = $this->usuario->getCentroPoblado();
-        $usuarioDistrito = $this->usuario->getDistrito();
-        $usuarioProvincia = $this->usuario->getProvincia();
-        $usuarioRegion = $this->usuario->getRegion();
+        $usuarioCentroPoblado = $usuario->getCentroPoblado();
+        $usuarioDistrito = $usuario->getDistrito();
+        $usuarioProvincia = $usuario->getProvincia();
+        $usuarioRegion = $usuario->getRegion();
 
         // Nivel más específico: centro poblado
         if ($usuarioCentroPoblado && $usuarioCentroPoblado->getId() !== 182) {
@@ -275,11 +298,12 @@ class UbigeoFilterService
 
     private function isSuperAdmin(): bool
     {
-        if (!$this->usuario) {
+        $usuario = $this->getUsuario();
+        if (!$usuario) {
             return false;
         }
 
-        foreach ($this->usuario->getRoles() as $role) {
+        foreach ($usuario->getRoles() as $role) {
             if ($role === 'ROLE_SUPER_ADMIN') {
                 return true;
             }
@@ -290,11 +314,12 @@ class UbigeoFilterService
 
     private function isAutoridadComun(): bool
     {
-        if (!$this->usuario) {
+        $usuario = $this->getUsuario();
+        if (!$usuario) {
             return false;
         }
 
-        foreach ($this->usuario->getRoles() as $role) {
+        foreach ($usuario->getRoles() as $role) {
             if ($role === 'ROLE_AUTORIDADCOMUN') {
                 return true;
             }

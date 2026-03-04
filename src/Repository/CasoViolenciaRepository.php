@@ -24,9 +24,12 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class CasoViolenciaRepository extends BaseRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private UbigeoFilterService $ubigeoFilterService;
+
+    public function __construct(ManagerRegistry $registry, UbigeoFilterService $ubigeoFilterService)
     {
         parent::__construct($registry, CasoViolencia::class);
+        $this->ubigeoFilterService = $ubigeoFilterService;
     }
 
     protected function filterQuery(array $params): QueryBuilder
@@ -199,22 +202,25 @@ class CasoViolenciaRepository extends BaseRepository
     {
         $queryBuilder = $this->createQueryBuilder('casoViolencia')
             ->select('YEAR(casoViolencia.fechaReporte) as anio')
-            ->addSelect('COUNT(casoViolencia.id) as cantidad');
+            ->addSelect('COUNT(casoViolencia.id) as cantidad')
+            ->innerJoin('casoViolencia.centroPoblado', 'cp');
 
+        // Aplicar filtro automático por ubigeo del usuario
+        $this->ubigeoFilterService->aplicarFiltroQueryBuilder($queryBuilder, 'cp');
+
+        // Aplicar filtros manuales adicionales si se proporcionan
         if (null !== $centro) {
-            $queryBuilder->andwhere('casoViolencia.centroPoblado = :idcentro')
+            $queryBuilder->andwhere('cp.id = :idcentro')
                 ->setParameter('idcentro', $centro->getId());
         }
 
         if (null !== $provincia && 'TODOS' !== $provincia->getNombre()) {
             if (null !== $distrito && 'TODOS' !== $distrito->getNombre()) {
-                $queryBuilder->innerJoin('casoViolencia.centroPoblado', 'centroPoblado')
-                    ->innerJoin('centroPoblado.distrito', 'distrito')
+                $queryBuilder->innerJoin('cp.distrito', 'distrito')
                     ->andWhere('distrito.id =:distritoId')
                     ->setParameter('distritoId', $distrito->getId());
             } else {
-                $queryBuilder->innerJoin('casoViolencia.centroPoblado', 'centroPoblado')
-                    ->innerJoin('centroPoblado.distrito', 'distrito')
+                $queryBuilder->innerJoin('cp.distrito', 'distrito')
                     ->innerJoin('distrito.provincia', 'provincia')
                     ->andWhere('provincia.id =:provinciaId')
                     ->setParameter('provinciaId', $provincia->getId());

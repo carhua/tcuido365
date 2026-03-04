@@ -11,6 +11,7 @@ use App\Entity\CasoTrata;
 use App\Entity\CentroPoblado;
 use App\Entity\Distrito;
 use App\Entity\Provincia;
+use App\Service\UbigeoFilterService;
 use App\Utils\Paginator;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -23,9 +24,12 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class CasoTrataRepository extends BaseRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private UbigeoFilterService $ubigeoFilterService;
+
+    public function __construct(ManagerRegistry $registry, UbigeoFilterService $ubigeoFilterService)
     {
         parent::__construct($registry, CasoTrata::class);
+        $this->ubigeoFilterService = $ubigeoFilterService;
     }
 
     protected function filterQuery(array $params): QueryBuilder
@@ -194,22 +198,25 @@ class CasoTrataRepository extends BaseRepository
     {
         $queryBuilder = $this->createQueryBuilder('casoTrata')
             ->select('YEAR(casoTrata.fechaReporte) as anio')
-            ->addSelect('COUNT(casoTrata.id) as cantidad');
+            ->addSelect('COUNT(casoTrata.id) as cantidad')
+            ->innerJoin('casoTrata.centroPoblado', 'cp');
 
+        // Aplicar filtro automático por ubigeo del usuario
+        $this->ubigeoFilterService->aplicarFiltroQueryBuilder($queryBuilder, 'cp');
+
+        // Aplicar filtros manuales adicionales si se proporcionan
         if (null !== $centro) {
-            $queryBuilder->andwhere('casoTrata.centroPoblado = :idcentro')
+            $queryBuilder->andwhere('cp.id = :idcentro')
                 ->setParameter('idcentro', $centro->getId());
         }
 
         if (null !== $provincia && 'TODOS' !== $provincia->getNombre()) {
             if (null !== $distrito && 'TODOS' !== $distrito->getNombre()) {
-                $queryBuilder->innerJoin('casoTrata.centroPoblado', 'centroPoblado')
-                    ->innerJoin('centroPoblado.distrito', 'distrito')
+                $queryBuilder->innerJoin('cp.distrito', 'distrito')
                     ->andWhere('distrito.id =:distritoId')
                     ->setParameter('distritoId', $distrito->getId());
             } else {
-                $queryBuilder->innerJoin('casoTrata.centroPoblado', 'centroPoblado')
-                    ->innerJoin('centroPoblado.distrito', 'distrito')
+                $queryBuilder->innerJoin('cp.distrito', 'distrito')
                     ->innerJoin('distrito.provincia', 'provincia')
                     ->andWhere('provincia.id =:provinciaId')
                     ->setParameter('provinciaId', $provincia->getId());
