@@ -35,7 +35,7 @@ class CasoDesaparecidoController extends BaseController
     #[Route(path: '/page/{page<[1-9]\d*>}', methods: ['GET'], name: 'caso_desaparecido_index_paginated')]
     public function index(Request $request, int $page, CasoDesaparecidoManager $manager, EntityManagerInterface $em): Response
     {
-        $this->denyAccess(Security::LIST, 'caso_desaparecido_index');
+        $this->denyAccess(Security::LIST, 'caso_desaparecido_search');
 
         $fechaInicio = $request->query->get('finicial');
         $fechaFinal = $request->query->get('ffinal');
@@ -229,7 +229,7 @@ class CasoDesaparecidoController extends BaseController
     public function show(CasoDesaparecido $casoDesaparecido, EntityManagerInterface $em): Response
     {
         $data['caso'] = $casoDesaparecido;
-        $this->denyAccess(Security::VIEW, 'caso_desaparecido_index');
+        $this->denyAccess(Security::VIEW, 'caso_desaparecido_search');
 
         $cod = $casoDesaparecido->getCodigo();
         $distrito = $casoDesaparecido->getDistrito();
@@ -380,7 +380,7 @@ class CasoDesaparecidoController extends BaseController
     #[Route(path: '/{id}/reopen', name: 'caso_desaparecido_reopen', methods: ['POST'])]
     public function reopen(Request $request, CasoDesaparecido $casodesaparecido, EntityManagerInterface $em): Response
     {
-        $this->denyAccess(Security::MASTER, 'caso_desaparecido_index');
+        $this->denyAccess(Security::MASTER, 'caso_desaparecido_search');
 
         if ('Cerrado' !== $casodesaparecido->getEstadoCaso()) {
             $this->addFlash('error', 'Solo se pueden reaperturar casos que se encuentran cerrados.');

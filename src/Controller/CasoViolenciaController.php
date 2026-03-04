@@ -41,7 +41,7 @@ class CasoViolenciaController extends BaseController
     #[Route(path: '/page/{page<[1-9]\d*>}', methods: ['GET'], name: 'caso_violencia_index_paginated')]
     public function index(Request $request, int $page, CasoViolenciaManager $manager, EntityManagerInterface $em): Response
     {
-        $this->denyAccess(Security::LIST, 'caso_violencia_index');
+        $this->denyAccess(Security::LIST, 'caso_violencia_search');
 
         $fechaInicio = $request->query->get('finicial');
         $fechaFinal = $request->query->get('ffinal');
@@ -113,7 +113,7 @@ class CasoViolenciaController extends BaseController
     #[Route(path: '/control/page/{page<[1-9]\d*>}', methods: ['GET'], name: 'caso_violenciac_index_paginated')]
     public function controlCasosViolencia(Request $request, int $page, CasoViolenciaManager $manager, EntityManagerInterface $em): Response
     {
-        $this->denyAccess(Security::LIST, 'caso_violencia_index');
+        $this->denyAccess(Security::LIST, 'caso_violencia_search');
 
         $fechaInicio = $request->query->get('finicial');
         $fechaFinal = $request->query->get('ffinal');
@@ -257,7 +257,7 @@ class CasoViolenciaController extends BaseController
     #[Route(path: '/{id}', name: 'caso_violencia_show', methods: ['GET'])]
     public function show(CasoViolencia $casoviolencia, EntityManagerInterface $em): Response
     {
-        $this->denyAccess(Security::VIEW, 'caso_violencia_index');
+        $this->denyAccess(Security::VIEW, 'caso_violencia_search');
 
         $cod = $casoviolencia->getCodigo();
         $distrito = $casoviolencia->getDistrito();
@@ -348,7 +348,7 @@ class CasoViolenciaController extends BaseController
     #[Route(path: '/{id}', name: 'accion_violencia_new', methods: ['POST'])]
     public function accion(Request $request, CasoViolencia $casoviolencia, EntityManagerInterface $em): Response
     {
-        $this->denyAccess(Security::NEW, 'caso_violencia_index');
+        $this->denyAccess(Security::NEW, 'caso_violencia_search');
 
         if (in_array($casoviolencia->getEstadoCaso(), ['Cerrado', 'Archivado'])) {
             $this->addFlash('error', 'No se pueden registrar nuevas acciones en un caso cerrado o archivado.');
@@ -410,7 +410,7 @@ class CasoViolenciaController extends BaseController
     #[Route(path: '/{id}/reopen', name: 'caso_violencia_reopen', methods: ['POST'])]
     public function reopen(Request $request, CasoViolencia $casoviolencia, EntityManagerInterface $em): Response
     {
-        $this->denyAccess(Security::MASTER, 'caso_violencia_index');
+        $this->denyAccess(Security::MASTER, 'caso_violencia_search');
 
         if ('Cerrado' !== $casoviolencia->getEstadoCaso()) {
             $this->addFlash('error', 'Solo se pueden reaperturar casos que se encuentran cerrados.');

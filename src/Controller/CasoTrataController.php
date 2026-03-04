@@ -36,7 +36,7 @@ class CasoTrataController extends BaseController
     #[Route(path: '/page/{page<[1-9]\d*>}', methods: ['GET'], name: 'caso_trata_index_paginated')]
     public function index(Request $request, int $page, CasoTrataManager $manager, EntityManagerInterface $em): Response
     {
-        $this->denyAccess(Security::LIST, 'caso_trata_index');
+        $this->denyAccess(Security::LIST, 'caso_trata_search');
 
         $fechaInicio = $request->query->get('finicial');
         $fechaFinal = $request->query->get('ffinal');
@@ -255,7 +255,7 @@ class CasoTrataController extends BaseController
     #[Route(path: '/{id}', name: 'caso_trata_show', methods: ['GET'])]
     public function show(CasoTrata $casoTrata, EntityManagerInterface $em): Response
     {
-        $this->denyAccess(Security::VIEW, 'caso_trata_index');
+        $this->denyAccess(Security::VIEW, 'caso_trata_search');
 
         $cod = $casoTrata->getCodigo();
         $distrito = $casoTrata->getDistrito();
@@ -339,7 +339,7 @@ class CasoTrataController extends BaseController
     #[Route(path: '/{id}', name: 'accion_trata_new', methods: ['POST'])]
     public function accion(Request $request, CasoTrata $casotrata, EntityManagerInterface $em): Response
     {
-        $this->denyAccess(Security::NEW, 'caso_trata_index');
+        $this->denyAccess(Security::NEW, 'caso_trata_search');
 
         if (in_array($casotrata->getEstadoCaso(), ['Cerrado', 'Archivado'])) {
             $this->addFlash('error', 'No se pueden registrar nuevas acciones en un caso cerrado o archivado.');
@@ -407,7 +407,7 @@ class CasoTrataController extends BaseController
     #[Route(path: '/{id}/reopen', name: 'caso_trata_reopen', methods: ['POST'])]
     public function reopen(Request $request, CasoTrata $casotrata, EntityManagerInterface $em): Response
     {
-        $this->denyAccess(Security::MASTER, 'caso_trata_index');
+        $this->denyAccess(Security::MASTER, 'caso_trata_search');
 
         if ('Cerrado' !== $casotrata->getEstadoCaso()) {
             $this->addFlash('error', 'Solo se pueden reaperturar casos que se encuentran cerrados.');

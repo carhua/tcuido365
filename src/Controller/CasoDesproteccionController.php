@@ -36,7 +36,7 @@ class CasoDesproteccionController extends BaseController
     #[Route(path: '/page/{page<[1-9]\d*>}', methods: ['GET'], name: 'caso_desproteccion_index_paginated')]
     public function index(Request $request, int $page, CasoDesproteccionManager $manager, EntityManagerInterface $em): Response
     {
-        $this->denyAccess(Security::LIST, 'caso_desproteccion_index');
+        $this->denyAccess(Security::LIST, 'caso_desproteccion_search');
 
         $fechaInicio = $request->query->get('finicial');
         $fechaFinal = $request->query->get('ffinal');
@@ -265,7 +265,7 @@ class CasoDesproteccionController extends BaseController
     #[Route(path: '/{id}', name: 'caso_desproteccion_show', methods: ['GET'])]
     public function show(CasoDesproteccion $casoDesproteccion, EntityManagerInterface $em): Response
     {
-        $this->denyAccess(Security::VIEW, 'caso_desproteccion_index');
+        $this->denyAccess(Security::VIEW, 'caso_desproteccion_search');
 
         $cod = $casoDesproteccion->getCodigo();
         $distrito = $casoDesproteccion->getDistrito();
@@ -356,7 +356,7 @@ class CasoDesproteccionController extends BaseController
     #[Route(path: '/{id}', name: 'accion_desproteccionc_new', methods: ['POST'])]
     public function accion(Request $request, CasoDesproteccion $casoDesproteccion, EntityManagerInterface $em): Response
     {
-        $this->denyAccess(Security::NEW, 'caso_desproteccion_index');
+        $this->denyAccess(Security::NEW, 'caso_desproteccion_search');
 
         if (in_array($casoDesproteccion->getEstadoCaso(), ['Cerrado', 'Archivado'])) {
             $this->addFlash('error', 'No se pueden registrar nuevas acciones en un caso cerrado o archivado.');
@@ -416,7 +416,7 @@ class CasoDesproteccionController extends BaseController
     #[Route(path: '/{id}/reopen', name: 'caso_desproteccion_reopen', methods: ['POST'])]
     public function reopen(Request $request, CasoDesproteccion $casoDesproteccion, EntityManagerInterface $em): Response
     {
-        $this->denyAccess(Security::MASTER, 'caso_desproteccion_index');
+        $this->denyAccess(Security::MASTER, 'caso_desproteccion_search');
 
         if ('Cerrado' !== $casoDesproteccion->getEstadoCaso()) {
             $this->addFlash('error', 'Solo se pueden reaperturar casos que se encuentran cerrados.');
