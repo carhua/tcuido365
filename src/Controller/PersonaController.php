@@ -333,7 +333,7 @@ class PersonaController extends BaseController
         $distritos = $ubigeoFilter->getDistritosDisponibles();
         $centrosPoblados = $ubigeoFilter->getCentrosPobladosDisponibles();
 
-        $paginator = $manager->listHistorialViolencia($request->query->all(), $page, $user);
+        $paginator = $manager->listHistorialViolencia($request->query->all(), $page, $user, $ubigeoFilter);
 
         // Si es una petición AJAX, retornar solo la tabla
         if ($request->isXmlHttpRequest()) {

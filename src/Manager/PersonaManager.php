@@ -45,7 +45,7 @@ final class PersonaManager extends BaseManager
         return $this->repository()->findLatest($params);
     }
 
-    public function listHistorialViolencia(array $queryValues, ?int $page, $user)
+    public function listHistorialViolencia(array $queryValues, ?int $page, $user, $ubigeoFilter = null)
     {
         $params = Paginator::params($queryValues, $page);
         $params = array_merge(
@@ -60,6 +60,11 @@ final class PersonaManager extends BaseManager
         );
 
         $queryBuilder = $this->repository()->filterQueryViolencia($params);
+        
+        // Aplicar filtros de ubigeo si se proporciona el servicio
+        if ($ubigeoFilter) {
+            $queryBuilder = $ubigeoFilter->aplicarFiltroQueryBuilder($queryBuilder, 'centroPoblado');
+        }
 
         return Paginator::create($queryBuilder, $params);
     }
