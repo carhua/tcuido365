@@ -217,10 +217,14 @@ class CasoDesproteccionRepository extends BaseRepository
 
     public function filterChartFechas(array $params)
     {
-        $fi = new \DateTime($params['finicial']);
-        $ff = new \DateTime($params['ffinal']);
-        $anioInicio = (int) $params['anioInicio'];
-        $anioFinal = (int) $params['anioFinal'];
+        $anioInicio = (int) ($params['anioInicio'] ?? 0);
+        $anioFinal = (int) ($params['anioFinal'] ?? 0);
+        $fi = null;
+        $ff = null;
+        if (!empty($params['finicial']) && !empty($params['ffinal'])) {
+            $fi = new \DateTime($params['finicial']);
+            $ff = new \DateTime($params['ffinal']);
+        }
         $provincia = $params['provincia'];
         $distrito = $params['distrito'];
         $usuario = $params['usuario'] ?? null;
@@ -234,16 +238,18 @@ class CasoDesproteccionRepository extends BaseRepository
             ->addSelect('MONTH(casoDesproteccion.fechaReporte) as mes')
             ->join('casoDesproteccion.centroPoblado', 'centroPoblado');
 
-        if ($anioInicio === $anioFinal) {
-            $queryBuilder
-                ->andWhere('casoDesproteccion.fechaReporte BETWEEN :inicio AND :final')
-                ->setParameter('inicio', $fi->format('Y-m-d'))
-                ->setParameter('final', $ff->format('Y-m-d').' 23:59:59');
-        } else {
+        if ($anioInicio > 0 && $anioFinal > 0) {
             $queryBuilder
                 ->andWhere('YEAR(casoDesproteccion.fechaReporte) >= :anioInicio and YEAR(casoDesproteccion.fechaReporte) <= :anioFinal')
                 ->setParameter('anioInicio', $anioInicio)
                 ->setParameter('anioFinal', $anioFinal);
+        }
+
+        if (null !== $fi && null !== $ff) {
+            $queryBuilder
+                ->andWhere('casoDesproteccion.fechaReporte BETWEEN :inicio AND :final')
+                ->setParameter('inicio', $fi->format('Y-m-d'))
+                ->setParameter('final', $ff->format('Y-m-d').' 23:59:59');
         }
         
         // Aplicar filtro automático por ubigeo del usuario si se proporcionó el servicio

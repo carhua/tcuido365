@@ -41,7 +41,8 @@
                     <div class="col-md-2 my-1 my-md-0">
                         <div class="form-group">
                             <label for="anioInicio">Año inicio</label>
-                            <select id="anioInicio" name="anioInicio" required class="form-control">
+                            <select id="anioInicio" name="anioInicio" class="form-control">
+                                <option value="" {% if anioInicio is empty %}selected{% endif %}>Seleccione</option>
                                 {% for anio in range(('now') | date('Y'), 2020) %}
                                     <option value="{{ anio }}" {% if anioInicio == anio %}selected{% endif %}>{{ anio }}</option>
                                 {% endfor %}
@@ -51,9 +52,10 @@
                     <div class="col-md-2 my-1 my-md-0">
                         <div class="form-group">
                             <label for="anioFinal">Año final</label>
-                            <select id="anioFinal" name="anioFinal" required class="form-control">
+                            <select id="anioFinal" name="anioFinal" class="form-control">
+                                <option value="" {% if anioFinal is empty %}selected{% endif %}>Seleccione</option>
                                 {% for anio in range(('now') | date('Y'), 2020) %}
-                                    <option value="{{ anio }}">{{ anio }}</option>
+                                    <option value="{{ anio }}" {% if anioFinal == anio %}selected{% endif %}>{{ anio }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -61,15 +63,15 @@
                         <div class="col-md-3 my-1 my-md-0">
                             <div class="form-group">
                                 <label for="finicial">Fecha Inicial</label>
-                                <input type="date" id="fechaInicio" name="finicial" required class="form-control"
-                                       value="{{ finicio is null ? "now"| date('Y-m-01','America/Lima') : finicio }}">
+                                <input type="date" id="fechaInicio" name="finicial" class="form-control"
+                                       value="{{ finicio is null ? '' : finicio }}">
                             </div>
                         </div>
                         <div class="col-md-3 my-1 my-md-0">
                             <div class="form-group">
                                 <label for="ffinal">Fecha Final</label>
-                                <input type="date" id="fechaFinal" name="ffinal" required class="form-control"
-                                       value="{{ ffinal is null ? "now"| date('Y-m-d','America/Lima')  : ffinal }}">
+                                <input type="date" id="fechaFinal" name="ffinal" class="form-control"
+                                       value="{{ ffinal is null ? '' : ffinal }}">
                             </div>
                         </div>
                     </div>
@@ -151,6 +153,10 @@
                         <button class="btn-send btn btn-light-primary px-6 font-weight-bold mr-2">
                             <i class="fas fa-search"></i>
                             Buscar
+                        </button>
+                        <button type="button" class="btn-clear btn btn-secondary px-6 font-weight-bold mr-2">
+                            <i class="fas fa-eraser"></i>
+                            Limpiar
                         </button>
                     </div>
                 </div>
@@ -251,8 +257,7 @@
 
 
             $(document).on('click', '.btn-clear', function(){
-                route = '{{ path('caso_desproteccion_index') }}';
-                window.location.href = route;
+                window.location.href = '{{ path('grafico_desproteccion_index') }}';
             });
 
             $("#select_provincias").change(function () {

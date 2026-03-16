@@ -225,10 +225,14 @@ class CasoDesaparecidoRepository extends BaseRepository
 
     public function filterChartFechas(array $params)
     {
-        $anioInicio = (int) $params['anioInicio'];
-        $anioFinal = (int) $params['anioFinal'];
-        $fi = new \DateTime($params['finicial']);
-        $ff = new \DateTime($params['ffinal']);
+        $anioInicio = (int) ($params['anioInicio'] ?? 0);
+        $anioFinal = (int) ($params['anioFinal'] ?? 0);
+        $fi = null;
+        $ff = null;
+        if (!empty($params['finicial']) && !empty($params['ffinal'])) {
+            $fi = new \DateTime($params['finicial']);
+            $ff = new \DateTime($params['ffinal']);
+        }
         $provincia = $params['provincia'];
         $distrito = $params['distrito'];
         $usuario = $params['usuario'] ?? null;
@@ -242,16 +246,18 @@ class CasoDesaparecidoRepository extends BaseRepository
             ->addSelect('MONTH(casoDesaparecido.fechaReporte) as mes')
             ->join('casoDesaparecido.centroPoblado', 'centroPoblado');
 
-        if ($anioInicio === $anioFinal) {
-            $queryBuilder
-                ->andWhere('casoDesaparecido.fechaReporte BETWEEN :inicio AND :final')
-                ->setParameter('inicio', $fi->format('Y-m-d'))
-                ->setParameter('final', $ff->format('Y-m-d').' 23:59:59');
-        } else {
+        if ($anioInicio > 0 && $anioFinal > 0) {
             $queryBuilder
                 ->andWhere('YEAR(casoDesaparecido.fechaReporte) >= :anioInicio and YEAR(casoDesaparecido.fechaReporte) <= :anioFinal')
                 ->setParameter('anioInicio', $anioInicio)
                 ->setParameter('anioFinal', $anioFinal);
+        }
+
+        if (null !== $fi && null !== $ff) {
+            $queryBuilder
+                ->andWhere('casoDesaparecido.fechaReporte BETWEEN :inicio AND :final')
+                ->setParameter('inicio', $fi->format('Y-m-d'))
+                ->setParameter('final', $ff->format('Y-m-d').' 23:59:59');
         }
         
         // Aplicar filtro automático por ubigeo del usuario si se proporcionó el servicio

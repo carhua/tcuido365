@@ -174,11 +174,14 @@ class CasoViolenciaController extends BaseController
     public function graficoViolencia(Request $request, CasoViolenciaManager $manager, EntityManagerInterface $em): Response
     {
         $this->denyAccess(Security::LIST, 'grafico_violencia_index');
-        $anioDefault = (int) (new \DateTime('now'))->format('Y');
         $fechaInicio = $request->query->get('finicial');
         $fechaFinal = $request->query->get('ffinal');
-        $anioInicio = $request->query->get('anioInicio', $anioDefault);
-        $anioFinal = $request->query->get('anioFinal', $anioDefault);
+        $fechaInicio = '' === $fechaInicio ? null : $fechaInicio;
+        $fechaFinal = '' === $fechaFinal ? null : $fechaFinal;
+        $anioInicio = $request->query->get('anioInicio');
+        $anioFinal = $request->query->get('anioFinal');
+        $anioInicio = '' === $anioInicio ? null : $anioInicio;
+        $anioFinal = '' === $anioFinal ? null : $anioFinal;
         $distritoId = $request->query->get('distrito');
         $provinciaId = $request->query->get('provincia');
         $centroId = $request->query->get('centroPoblado');
@@ -210,6 +213,26 @@ class CasoViolenciaController extends BaseController
 
         if (null === $request->query->get('tipoMaltrato')) {
             $request->query->set('tipoMaltrato', 0);
+        }
+
+        if (null === $anioInicio) {
+            $request->query->remove('anioInicio');
+        } else {
+            $request->query->set('anioInicio', $anioInicio);
+        }
+
+        if (null === $anioFinal) {
+            $request->query->remove('anioFinal');
+        } else {
+            $request->query->set('anioFinal', $anioFinal);
+        }
+
+        if (null === $fechaInicio) {
+            $request->query->remove('finicial');
+        }
+
+        if (null === $fechaFinal) {
+            $request->query->remove('ffinal');
         }
         /*
         if (null === $request->query->get('estado')) {

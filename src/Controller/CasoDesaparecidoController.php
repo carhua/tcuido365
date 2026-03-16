@@ -150,11 +150,14 @@ class CasoDesaparecidoController extends BaseController
     {
         $this->denyAccess(Security::LIST, 'grafico_desaparecido_index');
 
-        $anioDefault = (int) (new \DateTime('now'))->format('Y');
-        $anioInicio = $request->query->get('anioInicio', $anioDefault);
-        $anioFinal = $request->query->get('anioFinal', $anioDefault);
+        $anioInicio = $request->query->get('anioInicio');
+        $anioFinal = $request->query->get('anioFinal');
+        $anioInicio = '' === $anioInicio ? null : $anioInicio;
+        $anioFinal = '' === $anioFinal ? null : $anioFinal;
         $fechaInicio = $request->query->get('finicial');
         $fechaFinal = $request->query->get('ffinal');
+        $fechaInicio = '' === $fechaInicio ? null : $fechaInicio;
+        $fechaFinal = '' === $fechaFinal ? null : $fechaFinal;
         $distritoId = $request->query->get('distrito');
         $provinciaId = $request->query->get('provincia');
         $centroId = $request->query->get('centroPoblado');
@@ -181,6 +184,26 @@ class CasoDesaparecidoController extends BaseController
 
         if (null !== $odistrito) {
             $request->query->set('odistrito', $odistrito);
+        }
+
+        if (null === $anioInicio) {
+            $request->query->remove('anioInicio');
+        } else {
+            $request->query->set('anioInicio', $anioInicio);
+        }
+
+        if (null === $anioFinal) {
+            $request->query->remove('anioFinal');
+        } else {
+            $request->query->set('anioFinal', $anioFinal);
+        }
+
+        if (null === $fechaInicio) {
+            $request->query->remove('finicial');
+        }
+
+        if (null === $fechaFinal) {
+            $request->query->remove('ffinal');
         }
 /*
         if (null === $request->query->get('estado')) {
